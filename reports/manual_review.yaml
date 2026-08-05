@@ -1,0 +1,19 @@
+scope: full_paper
+automated_status: PASS
+manual_checks:
+  every_question_answered: true
+  model_mechanism_correct: true
+  cross_question_relation_consistent: true
+  model_feasibility_reviewed: true
+  literature_impact_resolved: true
+  model_summary_complete: true
+  algorithm_bound_to_problem: true
+  validation_sufficient: true
+  abstract_body_consistent: true
+  visual_readability: true
+  figure_table_explained: true
+  references_verified: true
+  ai_report_complete: true
+  chinese_style_natural: true
+issues: []
+overall_status: PASS

@@ -1,0 +1,21 @@
+{
+  "scope": "run_02_stage_1_route_decision",
+  "status": "PASS",
+  "checks": {
+    "skill_route_load": "PASS",
+    "source_hash_binding": "PASS",
+    "problem_pages_visually_reviewed": "PASS",
+    "paper_a_pages_indexed": 42,
+    "paper_b_pages_indexed": 77,
+    "official_workbooks_structurally_audited": 4,
+    "question_by_question_reviews_present": "PASS",
+    "own_model_entry_audit": "PASS_WITH_REPRODUCIBILITY_GAPS",
+    "method_provenance_rows": 28,
+    "paper_contribution_share": 0.8,
+    "own_contribution_share": 0.2,
+    "result_registry_frozen_rows": 0,
+    "final_abstract_or_paper_written": false
+  },
+  "open_gate": "USER_CONFIRMATION_REQUIRED_PER_QUESTION",
+  "note_zh": "本门禁仅覆盖第一阶段路线审查，不代表论文、模型实现或数值结果通过最终门禁。"
+}

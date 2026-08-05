@@ -1,0 +1,34 @@
+question_id: Q2
+task_zh: 利用附件1和附件2同片SiC在10度与15度下的光谱确定外延层厚度并评价可靠性
+inputs: [Q1复反射率正算子, 附件1, 附件2, 2000至3900波数带]
+outputs: [SiC厚度, Bootstrap统计区间, 折射率系统范围, 拟合误差]
+constraints: [双角度共享厚度与材料参数, 各角度仅允许独立仿射标定, 参数有界]
+key_object: 同片SiC双角度反射光谱
+key_difficulty: 厚度与折射率尺度近共线，载流子参数弱可辨识
+route_zh: 连续相位给初值和交叉验证，复反射率以全局多启动和局部最小二乘联合反演
+question_type: inverse
+solution_mode: hybrid
+specific_model_name_zh: 双角度共享参数复反射率联合反演
+preliminary_work: [边界异常点审查, 候选波段比较, 折射率尺度锚定, 角度独立仿射标定]
+model:
+  variables_complete: true
+  objective_or_governing_equation_complete: true
+  constraints_or_conditions_complete: true
+  model_summary_complete: true
+algorithm:
+  required: true
+  name: 差分进化多启动—鲁棒最小二乘联合算法
+  exemption_reason_zh: ''
+  derivation_or_calculation_path: shared/code/inversion.py
+  rationale_complete: true
+  principle_short: true
+  problem_bound_steps_complete: true
+  flowchart_path: modules/30_q2/figures/q2_algorithm_flow.pdf
+  pseudocode_path: modules/30_q2/paper/q2.tex
+  code_path: scripts/run_analysis.py
+results: [R-Q2-D, R-Q2-BOOT, R-Q2-SYS, R-Q2-RMSE]
+validation_required: {sensitivity: true, error: true, convergence: true, stability: true, identifiability: true}
+validation_completed: [sensitivity, error, convergence, stability, identifiability, three_seed_agreement, profile_objective, jacobian_svd, block_bootstrap, band_sensitivity, index_scale_sensitivity, phase_cross_validation]
+status: COMPLETE
+result_analysis_complete: true
+parameterized_model: true

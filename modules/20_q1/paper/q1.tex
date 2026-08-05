@@ -1,0 +1,72 @@
+\subsection{问题一的描述与分析}
+本问的核心不是给一个常折射率条纹公式，而是建立后续两问共同调用的复反射率正算子。两篇国一等奖论文分别给出 Sellmeier--Drude--Fresnel 路线与 Cauchy--Drude 路线\cite{paperA,paperB}；本文吸收其三层色散建模结构，但统一界面相位、复平方根分支和单位口径，不另外叠加固定的半波损失。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../shared/figures/overall_route.pdf}
+\caption{三问统一建模路线}\label{fig:overall}
+\end{figure}
+
+\subsection{复介质与界面相位的预备工作}
+\textbf{（1）复色散。} 记第 $j$ 层介电函数为 $\tilde\varepsilon_j(\sigma)$，复折射率取
+\begin{equation}
+\tilde n_j(\sigma)=\sqrt{\tilde\varepsilon_j(\sigma)},\qquad
+\operatorname{Im}\tilde n_j\ge 0 .
+\label{eq:passive}
+\end{equation}
+晶格响应采用论文中登记的 Sellmeier 型背景色散；自由载流子项采用 Drude 复介电函数\cite{drude}：
+\begin{equation}
+\tilde\varepsilon(\sigma)=\varepsilon_b(\sigma)-
+\frac{\sigma_p^2}{\sigma(\sigma+\mathrm{i}\gamma)} .
+\label{eq:drude}
+\end{equation}
+式中 $\sigma_p$、$\gamma$ 分别为等离子体波数和阻尼波数。本文仅把二者作为谱形干扰参数；若可辨识性不足，不赋予独立材料结论。
+
+\textbf{（2）复 Snell 关系。} 空气折射率取 $n_0=1$，定义
+\begin{equation}
+q_j=\sqrt{\tilde n_j^2-\sin^2\theta_0}.
+\label{eq:qj}
+\end{equation}
+同样选择虚部非负的被动分支。这样无需显式求复折射角，吸收和全反射情形可用同一表达式处理。
+
+\subsection{复色散双光束Fresnel测厚模型}
+对偏振态 $u\in\{s,p\}$，定义光学导纳
+\begin{equation}
+Y_j^{(s)}=q_j,\qquad Y_j^{(p)}=\frac{\tilde n_j^2}{q_j},
+\end{equation}
+则从介质 $i$ 入射到介质 $j$ 的 Fresnel 振幅系数为\cite{bornwolf}
+\begin{equation}
+r_{ij}^{(u)}=\frac{Y_i^{(u)}-Y_j^{(u)}}{Y_i^{(u)}+Y_j^{(u)}},\qquad
+t_{ij}^{(u)}=\frac{2Y_i^{(u)}}{Y_i^{(u)}+Y_j^{(u)}}.
+\label{eq:fresnel}
+\end{equation}
+厚度以微米输入时，外延层单程相位为
+\begin{equation}
+\beta=2\pi\sigma\,(10^{-4}d)q_1,
+\label{eq:beta}
+\end{equation}
+其中 $10^{-4}$ 完成 $\mu\mathrm{m}\to\mathrm{cm}$ 缩放。保留表面反射束和第一束内部反射束，偏振态 $u$ 的总复振幅写为
+\begin{equation}
+r_{(1)}^{(u)}=r_{01}^{(u)}+t_{01}^{(u)}t_{10}^{(u)}r_{12}^{(u)}e^{2\mathrm{i}\beta}.
+\label{eq:double}
+\end{equation}
+界面引起的 $\pi$ 相变已包含在复系数 $r_{ij}$ 的符号和相位中，故式\eqref{eq:double}不再人工加入半波损失。非偏振反射率为
+\begin{equation}
+R_{(1)}(\sigma,\theta_0;d)=\frac{1}{2}\left(|r_{(1)}^{(s)}|^2+|r_{(1)}^{(p)}|^2\right).
+\label{eq:runpol}
+\end{equation}
+
+\textbf{模型汇总：} 输入 $\sigma,\theta_0,d,\tilde\varepsilon_1,\tilde\varepsilon_2$；由式\eqref{eq:passive}--\eqref{eq:qj}确定被动复波矢，由式\eqref{eq:fresnel}给出两个界面的相位与振幅，最后由式\eqref{eq:double}--\eqref{eq:runpol}输出可与附件直接比较的反射率。此正算子同时固定三问的相位、偏振、单位和材料接口。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/20_q1/figures/q1_model_flow.pdf}
+\caption{问题一复色散双光束模型流程}\label{fig:q1flow}
+\end{figure}
+
+\subsection{解析模型的数值一致性检验}
+本问免设迭代算法，采用极限情形与合成恢复验证。零厚度时，Airy 表达式严格退化为空气—衬底单界面 Fresnel 反射；保留20束时与无穷级数最大场误差小于 $10^{-10}$。在厚度 $7.35\,\mu\mathrm{m}$ 的合成双角度谱上，从偏移初值重新反演得到 $7.34954\,\mu\mathrm{m}$，厚度绝对误差为 \textbf{$0.00046\,\mu\mathrm{m}$}。四联检查进一步验证代码相位增量与 $4\pi\sigma q_1d\times10^{-4}$ 一致，最大复数误差为 $1.25\times10^{-14}$。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.66\textwidth]{../modules/20_q1/figures/q1_synthetic_recovery.png}
+\caption{合成数据中厚度及干扰参数的相对恢复误差}\label{fig:q1syn}
+\end{figure}
+图\ref{fig:q1syn}显示三项物理参数的相对误差均低于 $0.16\%$，说明正算、单位和反演接口在受控数据上闭合；该检验只证明实现一致性，不代替官方数据的不确定性分析。

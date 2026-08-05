@@ -1,0 +1,8 @@
+run_id: run_02
+artifact: output/pdf/run_02_真题解析.pdf
+sha256: edff96133695c6101c2c6efe63ab9632e9b2aecce7c5504eb8adafce616bd84d
+page_count: 15
+source_tex: paper/paper_template.tex
+gate_report: reports/gate_report.json
+gate_status: PASS
+bound_at: '2026-08-05T12:06:28+08:00'

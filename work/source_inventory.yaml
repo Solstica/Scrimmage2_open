@@ -1,0 +1,46 @@
+version: '1.0'
+run_id: run_02
+inventory_time: '2026-08-05 Asia/Shanghai'
+immutability: source files are read-only; hashes bind the reviewed bytes
+sources:
+  - source_id: PROBLEM
+    path: C:\Users\admin\Documents\CUCCM2026\raw\prob25B\B题.pdf
+    sha256: B0B2CE649282C2D7063AF3C30AC9C0D931512DC86014D3147BC765D8F1C8CF87
+    bytes: 277238
+  - source_id: DATA_1
+    path: C:\Users\admin\Documents\CUCCM2026\raw\prob25B\附件1.xlsx
+    sha256: B42F8BDABE7497951284CD044386C3CDF9D349B5E8EF4BAAA0336E65FF84C67B
+    bytes: 187625
+  - source_id: DATA_2
+    path: C:\Users\admin\Documents\CUCCM2026\raw\prob25B\附件2.xlsx
+    sha256: 24B3113E80D5EC5458BA4F447DF9ED185578481E8B0081BDF0673689505E49D0
+    bytes: 186957
+  - source_id: DATA_3
+    path: C:\Users\admin\Documents\CUCCM2026\raw\prob25B\附件3.xlsx
+    sha256: 79E9F66A00409F1D1130D9F4F3D76B4D5E5A1CCD3AC2D24DC0AF8ECC583D0EC8
+    bytes: 189278
+  - source_id: DATA_4
+    path: C:\Users\admin\Documents\CUCCM2026\raw\prob25B\附件4.xlsx
+    sha256: 9CF1400404C4560958DA06685BEB8C2E1E4DF5918A6E13863663A54440BA12E3
+    bytes: 189423
+  - source_id: PAPER_A
+    path: C:\Users\admin\Documents\CUCCM2026\raw\base25B\2025年A题国一邱杰.pdf
+    sha256: 69CF0090EFC688330261503277493FED60AF9658C9EBA8D962E34B098063DCDC
+    bytes: 4399954
+    note: 文件名标为A题，但正文标题、三问与附件对象均核验为2025B题；按内容登记为PAPER_A
+  - source_id: PAPER_B
+    path: C:\Users\admin\Documents\CUCCM2026\raw\base25B\2025年B题国一路子涵.pdf
+    sha256: 82646AFADD2793C26F56EF2D06D13DC898DBE13C59E276D6CF739777D49A3732
+    bytes: 8934648
+  - source_id: OWN_ABSTRACT
+    path: C:\Users\admin\Documents\CUCCM2026\raw\25B\2025B题摘要_CUMCM_Skill修订版.md
+    sha256: F6619CA6BF7895B27493D4C61AD1FCC3E3131DDC0C54CDD10720C24B1D2E393E
+    bytes: 2648
+  - source_id: OWN_DRAFT
+    path: C:\Users\admin\Documents\CUCCM2026\raw\25B\B题论文正文初稿_摘要假设模型求解结果.md
+    sha256: 4C1D421303984B14E43D84708305D7A4DF4DA6DC93603335A3331D9A67663403
+    bytes: 24341
+  - source_id: OWN_NUMERICAL_PACKAGE
+    path: C:\Users\admin\Documents\CUCCM2026\raw\25B\摄动反演_Neumann_四轮完整数值包.zip
+    sha256: 68A0C349B2E0D0DC15833157FA409455F973F48A50A48F155B185D7BA72E422F
+    bytes: 2522371

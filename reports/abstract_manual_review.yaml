@@ -1,0 +1,8 @@
+scope: abstract
+manual_checks:
+  six_functions_preserved: true
+  body_consistency: true
+  model_algorithm_specificity: true
+  result_interpretation_valid: true
+  chinese_style_natural: true
+reviewer_note_zh: "2026-08-05逐槽对照正文、结果注册表和独立摘要渲染页完成复核；对象、方法、结果、验证、创新与关键词均保留，未发现越界结论。"

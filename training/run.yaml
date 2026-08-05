@@ -1,0 +1,18 @@
+version: '1.0'
+run_id: run_02
+official_name_zh: 真题解析
+round: 2
+problem_type: B
+technical_route: A_inverse_problem
+started_at: '2026-08-05T02:11:28.713139+00:00'
+completed_at: '2026-08-05T03:26:46.306135+00:00'
+skill_version: 3.4.0-rc1
+skill_manifest_sha256: 786aac6d6c52e15308865c8dbaa8e63187821f48c9d65f4e19a482ecb1e76ad2
+baseline:
+  estimated_hours: null
+  existing_asset_ids: []
+outputs:
+  gate_report: reports/gate_report.json
+  issue_log: training/issue_log.yaml
+  review_report: training/review.md
+status: COMPLETE

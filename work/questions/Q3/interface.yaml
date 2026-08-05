@@ -1,0 +1,12 @@
+question_id: Q3
+specific_model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
+inputs: [Q1界面系数, Q2模型, 附件1至4]
+outputs: [SiC回溯结论, Si厚度, 多光束显著性和收敛证据]
+solver: Neumann有限阶延拓、Airy闭式和同目标函数联合重反演
+frozen_results: [R-Q3-SIC-RHO, R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO]
+figures: [modules/40_q3/figures/q3_sic_model_comparison.png, modules/40_q3/figures/q3_si_model_comparison.png, modules/40_q3/figures/q3_si_order_convergence.png]
+tables: [modules/40_q3/tables/q3_sic_order_convergence.csv, modules/40_q3/tables/q3_si_order_convergence.csv, modules/40_q3/tables/q3_si_band_sensitivity.csv]
+assumptions_used: [往返场级数收敛, 材料背景色散锚定, 同片双角度共享参数]
+limitations: [模型未显式估计界面粗糙度和相干长度]
+unresolved_todos: []
+status: COMPLETE

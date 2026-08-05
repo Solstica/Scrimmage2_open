@@ -1,0 +1,86 @@
+\subsection{问题二的描述与分析}
+附件1、2来自同一块 SiC 晶圆，两个角度不能先独立拟合再简单平均。本文继承问题一正算子，把厚度、背景色散和衬底 Drude 干扰参数设为共享量，仅允许两个角度各有一组仿射标定。主要困难是厚度与折射率尺度近共线，因此将登记的背景色散固定为主口径，另用敏感性范围表达材料常数带来的系统误差。
+
+\subsection{数据与参数预备工作}
+四个附件的波数网格均严格递增，共有7469个数值点。四个文件在 $399.6747\,\mathrm{cm}^{-1}$ 的首点均为0，而相邻点明显非零，故只将该共同边界点排除。附件2少量反射率超过 $100\%$，不作截断；每角度的仿射标定可吸收仪器尺度差异，硬截断反而会破坏残差分布。
+
+采用 Savitzky--Golay 局部多项式平滑抑制点噪声\cite{savitzky}。比较两篇论文使用的波段及其邻域后，$1800$--$3900\,\mathrm{cm}^{-1}$ 内厚度形成稳定平台；主模型取 $2000$--$3900\,\mathrm{cm}^{-1}$，同时保留全部波段敏感性结果。连续相位匹配只用于独立检查，不进入主目标函数。
+
+\subsection{双角度共享参数复反射率联合反演}
+记共享物理参数为 $\boldsymbol p=(d,\sigma_p,\gamma)$，第 $k$ 个角度的观测为 $y_{ki}$。对给定 $\boldsymbol p$，先由问题一计算 $R_{(1)}(\sigma_{ki},\theta_k;\boldsymbol p)$，再解析求出仿射标定 $a_k,b_k$。鲁棒联合目标为
+\begin{equation}
+\min_{\boldsymbol p}\ \sum_{k\in\{10,15\}}\sum_i
+\phi\!\left[a_kR_{(1)}(\sigma_{ki},\theta_k;\boldsymbol p)+b_k-y_{ki}\right],
+\label{eq:q2obj}
+\end{equation}
+其中 $\phi$ 为 soft-$L_1$ 损失。约束 $6.5\le d\le8.5\,\mu\mathrm{m}$，Drude 参数取宽物理边界；背景折射率尺度在主解中固定为1，避免把不可辨识的光学厚度分解成两个伪精确参数。
+
+\textbf{模型汇总：} 输入附件1、2和式\eqref{eq:runpol}；共享 $d,\sigma_p,\gamma$，剖面消去 $a_k,b_k$；以式\eqref{eq:q2obj}最小化双角度残差，输出厚度、统计区间、材料常数系统范围和拟合误差。载流子参数仅服务于谱形，不进入题目结论。
+
+\subsection{差分进化多启动—鲁棒最小二乘联合算法}
+目标函数随厚度呈周期性，直接局部拟合容易落入错误条纹级次。本文先用差分进化作有界全局粗搜\cite{storn}，再用有界非线性最小二乘精修\cite{marquardt}；固定随机种子2025、2026、2027重复三次。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/30_q2/figures/q2_algorithm_flow.pdf}
+\caption{问题二联合反演算法流程}\label{fig:q2flow}
+\end{figure}
+
+\begin{lstlisting}[caption={问题二联合反演伪代码}]
+INPUT spectra at 10 and 15 degrees, bounds, three seeds
+FOR each seed:
+    globally search shared physical parameters
+    FOR each trial parameter vector:
+        evaluate complex Fresnel reflectance at both angles
+        profile out angle-specific gain and offset
+        return joint robust residual
+    refine the best vector by bounded nonlinear least squares
+SELECT the solution with minimum joint RMSE
+VALIDATE by profile objective, SVD, band perturbation and block bootstrap
+OUTPUT thickness and separated statistical/systematic uncertainty
+\end{lstlisting}
+
+\subsection{求解结果}
+三次全局搜索的厚度极差仅 $1.05\times10^{-7}\,\mu\mathrm{m}$。最终 SiC 外延层主厚度为
+\begin{equation}
+\boxed{d_{\mathrm{SiC}}=7.3840\,\mu\mathrm{m}},
+\end{equation}
+联合拟合 RMSE 为 $0.1194$ 个反射率百分点，$R^2=0.9672$。图\ref{fig:q2fit}中两角度的条纹位置均由同一厚度解释，仿射系数只改变纵向尺度和基线。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/30_q2/figures/q2_sic_joint_fit.png}
+\caption{SiC 双角度共享参数联合拟合}\label{fig:q2fit}
+\end{figure}
+
+\begin{table}[H]\centering
+\caption{问题二主结果与误差分层}\label{tab:q2result}
+\rowcolors{2}{CumcmLightBlue!45}{white}
+\begin{tabular}{lcc}
+\toprule
+项目 & 数值 & 解释\\
+\midrule
+主厚度 & \textbf{$7.3840\,\mu\mathrm{m}$} & 登记背景色散下的联合主解\\
+块 Bootstrap 分位范围 & $7.3747$--$7.3943\,\mu\mathrm{m}$ & 300次、块长24\\
+折射率尺度系统范围 & $7.2381$--$7.5359\,\mu\mathrm{m}$ & 背景折射率整体扰动 $\pm2\%$\\
+连续相位交叉结果 & $7.4786\,\mu\mathrm{m}$ & 不参与主目标函数\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{结果分析与可靠性检验}
+\textbf{（1）统计不确定性。} 光谱残差沿波数相关，故采用移动块 Bootstrap\cite{kunsch}，而非逐点独立抽样。300次重采样的中位数为 $7.3840\,\mu\mathrm{m}$，2.5\%--97.5\%经验分位为 $7.3747$--$7.3943\,\mu\mathrm{m}$。图\ref{fig:q2boot}表明主解位于分布中心。
+
+\begin{figure}[H]\centering
+\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_thickness_profile.png}\caption{厚度剖面目标}\end{subfigure}
+\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_block_bootstrap.png}\caption{移动块 Bootstrap}\end{subfigure}
+\caption{问题二的局部唯一性与统计不确定性}\label{fig:q2boot}
+\end{figure}
+
+\textbf{（2）波段与材料常数敏感性。} 图\ref{fig:q2sens}(a)显示，舍弃低波数区后，$1800$--$3900\,\mathrm{cm}^{-1}$ 及 $2500$--$3300\,\mathrm{cm}^{-1}$ 的厚度集中在 $7.3775$--$7.3840\,\mu\mathrm{m}$；包含 $1200$--$1800\,\mathrm{cm}^{-1}$ 时厚度升至 $7.4869\,\mu\mathrm{m}$ 且 RMSE 增大。图\ref{fig:q2sens}(b)给出折射率尺度扰动：厚度随折射率近似反比变化，$\pm2\%$ 导致约 $\pm0.15\,\mu\mathrm{m}$ 的系统范围。
+
+\begin{figure}[H]\centering
+\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_band_sensitivity.png}\caption{拟合波段扰动}\end{subfigure}
+\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_index_scale_sensitivity.png}\caption{折射率尺度扰动}\end{subfigure}
+\caption{问题二的主要系统敏感性}\label{fig:q2sens}
+\end{figure}
+
+归一化 Jacobian 的条件数为861，厚度列与折射率尺度列相关系数为0.9996。这一结果否定了“全部材料参数均可由两条光谱精确识别”的表述，但厚度在固定登记色散后具有清晰剖面极小值。故本文同时报告窄的统计分位范围和较宽的材料常数系统范围，不把二者混合成伪置信区间。

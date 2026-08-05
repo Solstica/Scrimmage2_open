@@ -1,0 +1,19 @@
+version: '1.0'
+question_id: Q2
+selected_candidate_id: Q2-MAIN
+candidates:
+- candidate_id: Q2-MAIN
+  model_name_zh: 双角度共享参数复反射率联合反演
+  decision: RISK
+  decision_reason_zh: 用户已确认唯一主模型；共享厚度的双角度联合反演最符合同片测量，风险均已有定量缓解路径
+  dimensions:
+    data: {status: RISK, note_zh: 首点0按边界异常候选剔除，超过100%的点保留并由角度独立仿射标定吸收，波段用交叉验证选择}
+    mechanism: {status: PASS, note_zh: 直接调用Q1正算子}
+    identifiability: {status: RISK, note_zh: 厚度_色散_载流子强相关风险用共享参数、剖面目标、Jacobian-SVD和相位法交叉验证缓解}
+    implementation: {status: PASS, dependencies: [numpy, scipy], expected_runtime_zh: 多启动分钟级, note_zh: 采用全局粗搜加局部精修}
+    validation: {status: PASS, note_zh: 已确定多启动、SVD、剖面、块Bootstrap、波段扰动和合成恢复路线}
+    writing: {status: PASS, expected_pages: 5, note_zh: 能形成模型算法结果验证闭环}
+  implementation_ready: true
+  blockers: []
+  risks: [边界命中, 局部最优, 参数不可辨识, 标定偏差]
+  mitigations: [共享参数, 多启动, 剖面似然, 连续相位交叉验证]

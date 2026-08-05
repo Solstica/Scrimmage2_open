@@ -1,0 +1,34 @@
+question_id: Q3
+task_zh: 给出多光束干涉条件，求Si外延层厚度，并判断SiC结果是否需要修正
+inputs: [Q1界面系数, Q2参数与残差, 附件1至4]
+outputs: [往返强度保持率, 有限阶收敛, Si厚度, SiC回溯结论]
+constraints: [往返场级数收敛, 同波段同参数同损失函数公平比较, 双角度共享物理参数]
+key_object: 薄膜内高阶往返反射场
+key_difficulty: 区分高阶反射在数学上存在与对厚度反演有实质影响
+route_zh: 用复往返因子量化必要性，以Neumann有限阶连接双光束和Airy极限并重反演
+question_type: inverse
+solution_mode: hybrid
+specific_model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
+preliminary_work: [复往返因子定义, 强度口径统一, 嵌套模型比较规则]
+model:
+  variables_complete: true
+  objective_or_governing_equation_complete: true
+  constraints_or_conditions_complete: true
+  model_summary_complete: true
+algorithm:
+  required: true
+  name: Neumann有限阶延拓—Airy联合重反演算法
+  exemption_reason_zh: ''
+  derivation_or_calculation_path: shared/code/optics.py
+  rationale_complete: true
+  principle_short: true
+  problem_bound_steps_complete: true
+  flowchart_path: modules/40_q3/figures/q3_algorithm_flow.pdf
+  pseudocode_path: modules/40_q3/paper/q3.tex
+  code_path: scripts/run_analysis.py
+results: [R-Q3-SIC-RHO, R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO]
+validation_required: {sensitivity: true, error: true, convergence: true, stability: true, identifiability: false}
+validation_completed: [sensitivity, error, convergence, stability, nested_model_comparison, finite_order_convergence, three_seed_agreement, band_sensitivity, direct_loop_metric, identifiability]
+status: COMPLETE
+result_analysis_complete: true
+parameterized_model: true

@@ -1,0 +1,11 @@
+name: phasefield
+channels:
+  - defaults
+dependencies:
+  - python
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - openpyxl
+  - pyyaml

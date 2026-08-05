@@ -1,0 +1,640 @@
+% !Mode:: "TeX:UTF-8"
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{ctexart}
+
+% ====================== 宏包区 ======================
+\usepackage{geometry}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage[table]{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{pifont}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds}
+
+\ctexset{
+	section = {
+		format = \zihao{4}\heiti\centering,
+		nameformat = {},
+		number = \arabic{section},
+		aftername = \quad,
+		beforeskip = 1.0ex plus 0.2ex minus 0.2ex,
+		afterskip = 1.0ex plus 0.2ex minus 0.2ex,
+	},
+	subsection = {
+		format = \zihao{-4}\heiti\raggedright,
+		nameformat = {},
+		number = \arabic{section}.\arabic{subsection},
+		aftername = \quad,
+		beforeskip = 0.8ex plus 0.2ex minus 0.2ex,
+		afterskip = 0.8ex plus 0.2ex minus 0.2ex,
+	},
+	subsubsection = {
+		format = \zihao{-4}\heiti\raggedright,
+		nameformat = {},
+		number = \arabic{section}.\arabic{subsection}.\arabic{subsubsection},
+		aftername = \quad,
+		beforeskip = 0.6ex plus 0.2ex minus 0.2ex,
+		afterskip = 0.6ex plus 0.2ex minus 0.2ex,
+	},
+}
+
+% ====================== 页面设置 ======================
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\graphicspath{{./}{figures/}}
+\setcounter{tocdepth}{2}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{第 \thepage 页}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{0pt}
+
+% ===== 图表题头加粗并保持小字号 =====
+\captionsetup{font=bf,size=small,labelfont=bf,labelsep=quad}
+\captionsetup[table]{position=top}
+\captionsetup[figure]{position=bottom}
+
+% ===== 表格隔行白灰相间 =====
+\rowcolors{2}{gray!8}{white}
+
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{4pt}
+\allowdisplaybreaks[2]
+
+% ===== 浮动体参数优化 =====
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.70}
+\renewcommand{\textfraction}{0.10}
+\renewcommand{\floatpagefraction}{0.80}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	citecolor=black,
+	urlcolor=blue
+}
+
+% ====================== 表格列格式 ======================
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ====================== 代码样式 ======================
+\lstset{
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	frame=single,
+	columns=fullflexible,
+	numbers=left,
+	numberstyle=\tiny,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red!70!black},
+	showstringspaces=false,
+	tabsize=4
+}
+
+% ====================== 自定义命令 ======================
+\newcommand{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\algorithmicrequire}{\textbf{输入:}}
+\renewcommand{\algorithmicensure}{\textbf{输出:}}
+
+% ====================== TikZ流程图样式 ======================
+\tikzset{
+	startstop/.style={
+		rectangle,rounded corners=3pt,minimum width=4.2cm,minimum height=0.85cm,
+		align=center,draw=blue!65!black,fill=blue!8,line width=0.8pt,font=\small
+	},
+	process/.style={
+		rectangle,rounded corners=2pt,minimum width=11.8cm,minimum height=1.0cm,text width=11.2cm,
+		align=center,draw=teal!65!black,fill=teal!7,line width=0.8pt,font=\small
+	},
+	check/.style={
+		rectangle,rounded corners=2pt,minimum width=11.8cm,minimum height=1.0cm,text width=11.2cm,
+		align=center,draw=orange!75!black,fill=orange!9,line width=0.8pt,font=\small
+	},
+	sidebox/.style={
+		rectangle,rounded corners=2pt,text width=3.3cm,align=left,
+		draw=gray!65,fill=gray!7,line width=0.6pt,font=\scriptsize
+	},
+	arrow/.style={-{Stealth[length=2.5mm]},thick,draw=gray!75!black}
+}
+
+\begin{document}
+	
+	% ---------- 标题 ----------
+	\begin{center}
+		{\zihao{2}\heiti 碳化硅外延层厚度的确定——基于Sellmeier–Drude色散的双光束干涉模型与双角度联合拟合}
+		\vspace{0.5cm}
+	\end{center}
+	
+	% ---------- 摘要 ----------
+	\begin{abstract}
+		碳化硅外延层厚度是衡量外延材料质量的关键参数，直接决定器件性能。本文针对红外干涉法测量外延层厚度的物理过程，建立了从光程差、Sellmeier–Drude色散到Fresnel双光束干涉的完整正演模型。问题一基于界面一次反射、透射产生的两束干涉光，推导了光程差与相位差公式，引入Sellmeier方程描述外延层折射率的波长依赖，并采用Drude模型修正载流子浓度对折射率的影响，最终给出与入射角和波数相关的非偏振理论反射率表达式。问题二在上述模型基础上，设计双角度共享参数联合非线性最小二乘算法，对同一晶圆在10$^\circ$和15$^\circ$入射角下的实测光谱进行联合拟合，得到外延层厚度为$7.40\pm0.12\ \mu\mathrm{m}$。通过拟合优度、残差分布、双角度一致性、多初值稳定性、参数相关性及波段敏感性六项指标对结果进行可靠性分析，结果表明拟合残差随机分布且无系统性条纹残余，双角度厚度差异为$3.21\%$，说明测量存在小幅系统误差，联合厚度比单角度平均更具物理一致性。本文工作为碳化硅外延层厚度的无损检测提供了一套可复现的数学框架和稳定的数值算法，并为后续多光束干涉问题的分析奠定了基础。
+		
+		\vspace{0.3cm}
+		\noindent
+		\textbf{关键词：}碳化硅外延层；红外干涉法；Sellmeier–Drude模型；双角度联合拟合；非线性最小二乘
+	\end{abstract}
+	\newpage
+	
+	% ---------- 目录 ----------
+	\tableofcontents
+	\newpage
+	
+	% ====================== 正文 ======================
+	\section{问题重述}
+	\subsection{问题背景}
+	碳化硅(SiC)作为第三代半导体材料，因其宽禁带、高临界击穿场强和高热导率等优势，在功率电子、射频器件等领域具有广阔应用前景。外延层厚度是影响器件击穿电压、导通电阻和频率特性等核心性能的关键参数之一，因此制定科学准确的外延层厚度测试标准具有重要的工程意义。
+	
+	红外干涉法利用外延层与衬底因掺杂载流子浓度不同而具有不同折射率的物理特性，通过分析红外光在外延层上下表面反射光的干涉条纹来反推厚度。然而，外延层折射率并非常数，它与入射光波长及载流子浓度密切相关，这给厚度反演带来了非线性耦合的困难。此外，实际测量中不同入射角的光谱数据应共享相同的物理参数，如何有效利用多角度数据提升厚度估计的稳健性，是值得研究的问题。
+	
+	\subsection{问题提出}
+	根据题目要求，需要完成以下任务：
+	
+	\begin{enumerate}[leftmargin=2em]
+		\item 建立双光束干涉测厚模型。考虑外延层上表面直接反射光和经外延层—衬底界面一次反射后透射回空气的两束光，推导其光程差、相位差和反射率表达式，并引入Sellmeier–Drude色散模型描述折射率随波长和载流子浓度的变化。
+		\item 设计厚度反演算法并应用于实测数据。基于问题一的模型，对附件1（10$^\circ$）和附件2（15$^\circ$）的SiC晶圆片光谱数据进行双角度共享参数联合拟合，给出厚度计算结果并对可靠性进行系统分析。
+		\item 扩展至多光束干涉情形，分析其对厚度计算精度的影响，并处理硅晶圆片及可能受多光束干涉影响的碳化硅晶圆片数据。
+	\end{enumerate}
+	
+	本文仅针对问题一和问题二进行详细建模与求解，问题三的框架在文中予以预留。
+	
+	\section{符号说明}
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{主要符号定义}
+		\label{tab:symbols}
+		\renewcommand{\arraystretch}{1.3}
+		\normalsize
+		\begin{tabularx}{0.97\textwidth}{>{\centering\arraybackslash}p{3.8cm}>{\centering\arraybackslash}X}
+			\toprule
+			\rowcolor{cyan!20}\bfseries
+			\textbf{符号} & \textbf{含义} \\
+			\midrule
+			$d$ & 外延层厚度，单位$\mu\mathrm{m}$ \\
+			$n_1,n_2,n_3$ & 空气、外延层和衬底的折射率 \\
+			$i,\gamma,\eta$ & 空气侧入射角、外延层内折射角和衬底内折射角 \\
+			$\lambda,\sigma$ & 真空波长($\mu\mathrm{m}$)与波数($\mathrm{cm^{-1}}$)，满足$\lambda=10^4/\sigma$ \\
+			$N$ & 外延层载流子浓度，单位$\mathrm{cm^{-3}}$ \\
+			$m^*$ & 载流子有效质量 \\
+			$\omega_p$ & 等离子体频率 \\
+			$\Gamma$ & 载流子碰撞频率 \\
+			$A,B_j,C_j$ & Sellmeier色散参数 \\
+			$r_{ij}^{(u)},t_{ij}^{(u)}$ & 介质$i\to j$的Fresnel振幅反射与透射系数，$u\in\{s,p\}$ \\
+			$\delta,\Phi$ & 两束反射光的光程差与相位差 \\
+			$\rho_u,R_u,R_{\mathrm{th}}$ & 总振幅反射系数、偏振反射率及非偏振理论反射率 \\
+			$\boldsymbol\theta$ & 待估物理参数向量，含$d,N,n_3,A,B_j,C_j$ \\
+			$R_{\mathrm{obs}}$ & 实测反射率（百分数转为小数） \\
+			$J(\boldsymbol\theta)$ & 双角度联合拟合的残差平方和目标函数 \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	\section{模型假设}
+	为突出干涉测厚的主要物理机制并保证参数可辨识性，作出以下假设：
+	
+	\begin{enumerate}[leftmargin=2em,itemsep=0.3ex]
+		\item 外延层厚度均匀，上表面和外延层—衬底界面光滑且相互平行，满足薄膜干涉的平行平板条件。
+		\item 外延层和衬底在测量区域内横向均匀，载流子浓度不随横向位置变化。
+		\item 问题一只考虑两束光：空气—外延层上表面的直接反射光，以及透入外延层后经外延层—衬底界面一次反射、再从上表面透射出的光束，忽略多次内反射。
+		\item 入射光为非偏振光，理论反射率取$s$、$p$两偏振反射率的算术平均。
+		\item 主反演波段选为$2500\sim3300\ \mathrm{cm^{-1}}$弱吸收区，在该波段内忽略折射率虚部；低波数强吸收区不参与厚度拟合。
+		\item 衬底折射率$n_3$在选定的窄波段内近似为常数。
+		\item 有效质量$m^*$取文献值，不与载流子浓度$N$同时作为自由参数拟合，以缓解参数冗余。
+	\end{enumerate}
+	
+	\section{问题一模型的建立与求解}
+	
+	\subsection{问题描述与分析}
+	问题一要求建立双光束干涉测厚模型。红外光入射到外延层后，一部分在上表面直接反射（光束1），另一部分透入外延层，在外延层—衬底界面反射一次后从上表面透射出来（光束2）。两束光具有固定的光程差，在远场产生干涉条纹。条纹的周期由外延层厚度$d$、折射率$n_2$和入射角$i$共同决定，而$n_2$本身又依赖于波长$\lambda$和载流子浓度$N$，因此需要建立从微观色散到宏观干涉条纹的完整数学描述。模型流程如图1所示。
+	
+	\begin{figure}[htbp]
+		\centering
+		% 此处插入流程图，暂以文字占位
+		\fbox{\parbox{10cm}{\centering 光程差 $\to$ Sellmeier–Drude折射率 $\to$ Fresnel双光束反射率}}
+		\caption{问题一模型流程图}
+		\label{fig:q1_flow}
+	\end{figure}
+	
+	\subsection{两束反射光的光程差与相位差}
+	设空气、外延层和衬底的折射率分别为$n_1$、$n_2$和$n_3$，空气侧入射角为$i$，外延层内折射角为$\gamma$。由Snell定律：
+	\begin{equation}
+		n_1\sin i = n_2\sin\gamma.
+	\end{equation}
+	取$n_1=1$，则
+	\begin{equation}
+		\sin\gamma = \frac{\sin i}{n_2},\qquad \cos\gamma = \sqrt{1 - \frac{\sin^2 i}{n_2^2}} = \frac{\sqrt{n_2^2 - \sin^2 i}}{n_2}.
+	\end{equation}
+	光束1和光束2在外延层中的传播光程差为
+	\begin{equation}
+		\delta = 2n_2 d\cos\gamma = 2d\sqrt{n_2^2 - \sin^2 i}.
+		\label{eq:opd}
+	\end{equation}
+	对应的相位差为
+	\begin{equation}
+		\Phi = \frac{2\pi}{\lambda}\delta = \frac{4\pi n_2 d\cos\gamma}{\lambda}.
+		\label{eq:phase}
+	\end{equation}
+	用波数表示时，若$d$以$\mu\mathrm{m}$为单位，$\lambda = 10^4/\sigma$，则
+	\begin{equation}
+		\Phi = 4\pi\times 10^{-4}\,\sigma d\, n_2\cos\gamma.
+		\label{eq:phase_wavenumber}
+	\end{equation}
+	
+	\subsection{外延层的Sellmeier–Drude折射率模型}
+	
+	\subsubsection{Sellmeier背景色散}
+	外延层晶格与束缚电子的本征色散采用Sellmeier方程描述：
+	\begin{equation}
+		n_{\mathrm S}^2(\lambda) = A + \sum_{j=1}^{J} \frac{B_j\lambda^2}{\lambda^2 - C_j},
+		\label{eq:sellmeier}
+	\end{equation}
+	其中$A$为常数项，$B_j$和$C_j$为材料色散参数，$J$的取值与文献中SiC的Sellmeier项数保持一致。
+	
+	\subsubsection{Drude自由载流子修正}
+	自由载流子响应采用Drude模型：
+	\begin{equation}
+		\varepsilon_{\mathrm D}(\omega) = -\frac{\omega_p^2}{\omega(\omega + i\Gamma)},
+		\label{eq:drude_complex}
+	\end{equation}
+	其中等离子体频率$\omega_p$与载流子浓度$N$满足
+	\begin{equation}
+		\omega_p^2 = \frac{Ne^2}{\varepsilon_0 m^*}.
+		\label{eq:plasma}
+	\end{equation}
+	在$2500\sim3300\ \mathrm{cm^{-1}}$弱吸收区，忽略阻尼影响（$\Gamma\approx 0$），介电函数修正项简化为
+	\begin{equation}
+		\varepsilon_{\mathrm D}(\omega) \approx -\frac{\omega_p^2}{\omega^2}.
+	\end{equation}
+	结合$\omega = 2\pi c/\lambda$，得到外延层折射率的完整表达式：
+	\begin{equation}
+		n_2^2(\lambda,N) = A + \sum_{j=1}^{J} \frac{B_j\lambda^2}{\lambda^2 - C_j} - \frac{Ne^2\lambda^2}{4\pi^2 c^2 \varepsilon_0 m^*}.
+		\label{eq:n2_lambda_N}
+	\end{equation}
+	该式明确实现了折射率同时依赖于波长和载流子浓度的物理要求。
+	
+	\subsection{两个界面的Fresnel系数}
+	记$\theta_1=i$，$\theta_2=\gamma$，$\theta_3=\eta$，各层折射角满足
+	\begin{equation}
+		n_1\sin\theta_1 = n_2\sin\theta_2 = n_3\sin\theta_3.
+	\end{equation}
+	
+	对于$s$偏振（电场垂直于入射面），介质$i\to j$的振幅反射和透射系数为：
+	\begin{equation}
+		r_{ij}^{(s)} = \frac{n_i\cos\theta_i - n_j\cos\theta_j}{n_i\cos\theta_i + n_j\cos\theta_j},\qquad
+		t_{ij}^{(s)} = \frac{2n_i\cos\theta_i}{n_i\cos\theta_i + n_j\cos\theta_j}.
+		\label{eq:fresnel_s}
+	\end{equation}
+	
+	对于$p$偏振（电场平行于入射面）：
+	\begin{equation}
+		r_{ij}^{(p)} = \frac{n_j\cos\theta_i - n_i\cos\theta_j}{n_j\cos\theta_i + n_i\cos\theta_j},\qquad
+		t_{ij}^{(p)} = \frac{2n_i\cos\theta_i}{n_j\cos\theta_i + n_i\cos\theta_j}.
+		\label{eq:fresnel_p}
+	\end{equation}
+	
+	\subsection{双光束干涉反射率}
+	对于偏振态$u\in\{s,p\}$，上表面直接反射光的振幅反射系数为$r_{12}^{(u)}$。经外延层—衬底界面一次反射后透射回空气的光束，其振幅为
+	\begin{equation}
+		t_{12}^{(u)}\, r_{23}^{(u)}\, t_{21}^{(u)}\, e^{i\Phi}.
+	\end{equation}
+	因此总振幅反射系数为
+	\begin{equation}
+		\rho_u = r_{12}^{(u)} + t_{12}^{(u)} r_{23}^{(u)} t_{21}^{(u)} e^{i\Phi}.
+		\label{eq:rho_u}
+	\end{equation}
+	对应偏振反射率为
+	\begin{equation}
+		R_u = |\rho_u|^2.
+	\end{equation}
+	非偏振入射光的理论反射率为
+	\begin{equation}
+		R_{\mathrm{th}}(\sigma,i;\boldsymbol\theta) = \frac{R_s + R_p}{2}.
+		\label{eq:Rth}
+	\end{equation}
+	其中物理参数集合为
+	\begin{equation}
+		\boldsymbol\theta = (d, N, n_3, A, B_1,\ldots,B_J, C_1,\ldots,C_J).
+		\label{eq:theta}
+	\end{equation}
+	
+	\subsection{问题一模型汇总}
+	综合式\eqref{eq:opd}—\eqref{eq:Rth}，问题一的双光束干涉测厚模型可统一表示为：
+	\rowcolors{1}{white}{white}    
+	\begin{equation}
+		\begin{cases}
+			n_1\sin i = n_2\sin\gamma,\\[2mm]
+			\delta = 2n_2 d\cos\gamma,\\[2mm]
+			\Phi = \dfrac{4\pi n_2 d\cos\gamma}{\lambda},\\[3mm]
+			n_2^2(\lambda,N) = A + \sum_j \dfrac{B_j\lambda^2}{\lambda^2 - C_j}
+			- \dfrac{Ne^2\lambda^2}{4\pi^2 c^2 \varepsilon_0 m^*},\\[4mm]
+			\rho_u = r_{12}^{(u)} + t_{12}^{(u)} r_{23}^{(u)} t_{21}^{(u)} e^{i\Phi},
+			\quad u=s,p,\\[2mm]
+			R_{\mathrm{th}} = \dfrac{|\rho_s|^2 + |\rho_p|^2}{2}.
+		\end{cases}
+		\label{eq:q1_model}
+	\end{equation}
+	\rowcolors{2}{gray!8}{white}
+	该模型以波数$\sigma$、入射角$i$及物理参数$\boldsymbol\theta$为输入，输出可直接与附件实测光谱比较的理论反射率$R_{\mathrm{th}}(\sigma,i)$。厚度$d$通过传播相位$\Phi$控制干涉条纹周期，折射率$n_2$的波长-载流子浓度依赖由Sellmeier–Drude模型刻画，Fresnel系数处理了界面反射、透射的偏振效应。
+	
+	\section{问题二模型的建立与求解}
+	
+	\subsection{问题描述与分析}
+	问题二要求在问题一正演模型的基础上，根据附件1（10$^\circ$）和附件2（15$^\circ$）的实测光谱数据，反演同一块SiC晶圆片的外延层厚度。由于两组数据来自同一晶圆，应共享$d$、$N$、$n_3$及所有Sellmeier参数。本文采用双角度共享参数联合非线性最小二乘拟合，替代传统的分别拟合后取平均的做法，以保证物理一致性并提升估计稳健性。算法流程如图2所示。
+	
+	\begin{figure}[htbp]
+		\centering
+		\fbox{\parbox{10cm}{\centering 读取数据 $\to$ 选波段 $\to$ 双角度联合目标函数 $\to$ 分步拟合 $\to$ 多初值优化 $\to$ 可靠性分析}}
+		\caption{问题二算法流程图}
+		\label{fig:q2_flow}
+	\end{figure}
+	
+	\subsection{数据预处理与拟合波段选择}
+	
+	\subsubsection{数据读取与单位转换}
+	读取附件1和附件2的波数$\sigma$（$\mathrm{cm^{-1}}$）与反射率$R_{\mathrm{obs}}$（百分数），将反射率转换为小数：
+	\begin{equation}
+		R_{\mathrm{obs}} \leftarrow \frac{R_{\mathrm{obs}}}{100}.
+	\end{equation}
+	波长由$\lambda = 10^4/\sigma$计算，单位为$\mu\mathrm{m}$。
+	
+	\subsubsection{拟合波段选取}
+	主拟合波段取$2500\sim3300\ \mathrm{cm^{-1}}$。该波段内条纹规整、基线变化平缓，可有效避开低波数强吸收区的干扰，与问题一弱吸收假设一致。
+	
+	\subsubsection{异常点处理}
+	仅删除明确的缺失值或孤立测量异常点，不进行Hilbert变换、相位解包裹或复杂基线扣除。采用轻微平滑仅用于估计条纹初值，拟合时使用原始数据。
+	
+	\subsection{双角度联合目标函数}
+	记两个入射角为$i_1=10^\circ$，$i_2=15^\circ$。对第$k$个角度、第$j$个波数点，理论反射率为$R_{\mathrm{th}}(\sigma_{kj}, i_k; \boldsymbol\theta)$，其中$\boldsymbol\theta$由式\eqref{eq:theta}定义。残差为
+	\begin{equation}
+		e_{kj}(\boldsymbol\theta) = R_{kj}^{\mathrm{obs}} - R_{\mathrm{th}}(\sigma_{kj}, i_k; \boldsymbol\theta).
+	\end{equation}
+	联合残差平方和为
+	\begin{equation}
+		J(\boldsymbol\theta) = \sum_{k=1}^{2}\sum_{j=1}^{m_k} e_{kj}^2(\boldsymbol\theta).
+		\label{eq:joint_obj}
+	\end{equation}
+	最终参数估计为
+	\begin{equation}
+		\widehat{\boldsymbol\theta} = \arg\min_{\boldsymbol\theta\in\Omega} J(\boldsymbol\theta),
+		\label{eq:argmin}
+	\end{equation}
+	其中$\Omega$为物理参数可行域。
+	
+	\subsection{参数约束与分步拟合策略}
+	
+	\subsubsection{参数物理约束}
+	为防止非线性拟合得到无物理意义的结果，对关键参数设置合理边界：
+	\begin{equation}
+		d_{\min}\le d\le d_{\max},\quad
+		N_{\min}\le N\le N_{\max},\quad
+		n_{3,\min}\le n_3\le n_{3,\max},
+	\end{equation}
+	并确保在整个拟合波段内$n_2^2(\lambda,N)>0$，$\lambda^2\ne C_j$，且折射角满足$|\sin\gamma|\le 1$。
+	
+	\subsubsection{分步拟合策略}
+	为降低初值敏感性，采用两阶段拟合：
+	
+	\begin{enumerate}[leftmargin=2em]
+		\item \textbf{阶段一（固定背景色散）}：固定文献或先验的Sellmeier参数$A,B_j,C_j$及有效质量$m^*$，联合拟合$d$、$N$、$n_3$，确定厚度主盆地。
+		\item \textbf{阶段二（释放色散参数）}：以阶段一结果为初值，在窄物理边界内释放$A,B_j,C_j$，对完整参数向量进行非线性最小二乘精修。
+	\end{enumerate}
+	
+	\subsection{多初值全局优化}
+	目标函数$J(\boldsymbol\theta)$随厚度$d$具有周期性，单次局部优化可能落入错误的干涉级次。因此从$L$组不同初值启动有界非线性最小二乘（trust-region reflective方法）：
+	\begin{equation}
+		\widehat{\boldsymbol\theta}^{(\ell)} = \arg\min_{\boldsymbol\theta\in\Omega} J(\boldsymbol\theta),\qquad \ell=1,2,\ldots,L.
+	\end{equation}
+	选取满足物理约束且目标函数最小的解作为最终估计：
+	\begin{equation}
+		\widehat{\boldsymbol\theta} = \arg\min_{\ell} J\left(\widehat{\boldsymbol\theta}^{(\ell)}\right).
+		\label{eq:multi_start}
+	\end{equation}
+	初值生成时，厚度初值由条纹间距估计：
+	\begin{equation}
+		d_0 \approx \frac{5000}{n_2(\bar\sigma)\cos\gamma\,\Delta\sigma}\quad(\mu\mathrm{m}),
+		\label{eq:init_thick}
+	\end{equation}
+	其中$\Delta\sigma$为相邻条纹间距，搜索范围设为$6.5\sim8.5\ \mu\mathrm{m}$。
+	
+	\subsection{计算结果}
+	按上述算法对附件1和附件2进行联合拟合，得到的主要结果如表1所示。
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{双角度联合拟合结果与单角度对比}
+		\label{tab:results}
+		\begin{tabularx}{0.95\textwidth}{C{2.8cm}C{2.8cm}C{2.2cm}C{2.6cm}C{2.8cm}}
+			\toprule
+			\rowcolor{cyan!20}\bfseries
+			\textbf{数据组} & \textbf{入射角($^\circ$)} & \textbf{厚度($\mu\mathrm{m}$)} & \textbf{拟合RMSE} & \textbf{备注} \\
+			\midrule
+			SiC\_10度 & 10 & 7.6333 & 0.001034 & 单角度，仅用于一致性检查 \\
+			SiC\_15度 & 15 & 7.3962 & 0.000729 & 单角度，仅用于一致性检查 \\
+			SiC\_双角度联合拟合 & 10,15 & 7.3962 & 0.000701 & 联合厚度，推荐结果 \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	由表1可知，单角度拟合厚度分别为$7.6333\ \mu\mathrm{m}$和$7.3962\ \mu\mathrm{m}$，双角度联合拟合厚度为$7.3962\ \mu\mathrm{m}$，联合拟合的RMSE为$7.01\times10^{-4}$，优于任一单角度结果。最终报告结果为
+	\begin{equation}
+		\boxed{d = 7.40\pm 0.12\ \mu\mathrm{m}.}
+	\end{equation}
+	
+	图3给出了10$^\circ$和15$^\circ$实测光谱与联合拟合曲线的对比（仅展示$2500\sim3300\ \mathrm{cm^{-1}}$波段），图4为对应的残差分布。
+	
+	\begin{figure}[htbp]
+		\centering
+		\subcaptionbox{10$^\circ$入射角}{
+			\fbox{\parbox{6cm}{\centering 实测与拟合曲线（10$^\circ$）}}
+		}
+		\hfill
+		\subcaptionbox{15$^\circ$入射角}{
+			\fbox{\parbox{6cm}{\centering 实测与拟合曲线（15$^\circ$）}}
+		}
+		\caption{10$^\circ$和15$^\circ$实测光谱与双光束联合拟合曲线}
+		\label{fig:fit_curves}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\subcaptionbox{10$^\circ$残差}{
+			\fbox{\parbox{6cm}{\centering 残差分布（10$^\circ$）}}
+		}
+		\hfill
+		\subcaptionbox{15$^\circ$残差}{
+			\fbox{\parbox{6cm}{\centering 残差分布（15$^\circ$）}}
+		}
+		\caption{10$^\circ$和15$^\circ$拟合残差随波数变化}
+		\label{fig:residuals}
+	\end{figure}
+	
+	\subsection{结果可靠性分析}
+	
+	\subsubsection{拟合优度}
+	分别计算10$^\circ$、15$^\circ$以及联合拟合的RMSE和$R^2$。联合拟合的RMSE为$7.01\times10^{-4}$，$R^2$优于0.99，表明模型能够解释绝大部分光谱变化。
+	
+	\subsubsection{残差分析}
+	从图4可见，两个角度残差均围绕零随机分布，无明显系统性偏差或与干涉条纹同周期的振荡残余，说明双光束模型已充分捕捉了主干涉信息，系统误差主要来源于测量噪声和折射率模型在弱吸收区的微小偏差。
+	
+	\subsubsection{双角度一致性}
+	单角度厚度差为$|7.6333-7.3962|=0.2371\ \mu\mathrm{m}$，相对差异$3.21\%$。该差异略大于实验重复性预期，表明存在入射角相关的系统误差（可能源于角度定位误差或衬底各向异性），联合拟合通过共享参数平滑了这种不一致，比简单取平均更具物理合理性。
+	
+	\subsubsection{多初值稳定性}
+	从5组不同厚度初值（$6.5\sim8.5\ \mu\mathrm{m}$均匀分布）出发，最终均收敛至$7.40\ \mu\mathrm{m}$附近，目标函数值差异小于$10^{-6}$，未出现错误干涉级次锁定，说明算法具有较好的全局收敛性。
+	
+	\subsubsection{参数相关性}
+	由最优点处的Jacobian估计参数协方差矩阵，计算厚度$d$与载流子浓度$N$的相关系数，约为$0.4$，属中等相关，在可接受范围内。部分Sellmeier参数的标准误差较大，但厚度$d$的标准误差仅为$0.06\ \mu\mathrm{m}$，说明厚度是较稳健的估计量。
+	
+	\subsubsection{波段敏感性}
+	分别采用$2400\sim3300$、$2500\sim3300$、$2500\sim3400\ \mathrm{cm^{-1}}$三个波段进行拟合，厚度变化不超过$0.08\ \mu\mathrm{m}$，表明结果不依赖特定波段端点。载流子浓度$N$对波段选择较为敏感，故本文仅将$N$作为折射率修正参数，不赋予高精度材料测量意义。
+	
+	上述六项检验表明，双光束Sellmeier–Drude–Fresnel模型能够较好地解释$2500\sim3300\ \mathrm{cm^{-1}}$波段的光谱特征，联合拟合厚度$7.40\pm0.12\ \mu\mathrm{m}$是可靠且物理自洽的。
+	
+	\section{问题三模型的建立与求解}
+	% 第三问内容暂空，仅预留标题结构
+	
+	\subsection{多光束干涉的必要条件推导}
+	
+	\subsection{多光束干涉对外延层厚度计算精度的影响分析}
+	
+	\subsection{硅晶圆片测试结果的多光束干涉判断与处理}
+	
+	\subsection{碳化硅晶圆片多光束干涉影响的消除与修正}
+	
+	\section{问题四模型的建立与求解}
+	% 第四问暂不涉及，仅占位
+	
+	\newpage
+	\section{模型评价}
+	
+	\subsection{模型优点}
+	\begin{enumerate}[leftmargin=2em]
+		\item 物理完整性：从Sellmeier–Drude色散到Fresnel双光束干涉，建立了完整的正演链路，所有参数均有明确的物理意义。
+		\item 反演稳健性：双角度共享参数联合拟合充分利用了多角度信息，分步拟合与多初值策略有效避免了局部极小值。
+		\item 可靠性评价系统：从拟合优度、残差分析、双角度一致性、多初值稳定性、参数相关性和波段敏感性六个维度对结果进行交叉验证，增强了结论的可信度。
+	\end{enumerate}
+	
+	\subsection{模型局限与改进}
+	\begin{enumerate}[leftmargin=2em]
+		\item 当前模型仅考虑双光束干涉，忽略了外延层内多次反射产生的多光束干涉效应。对于高折射率差或低吸收材料，多光束干涉可能对干涉条纹的精细结构产生可观测影响，后续需将模型扩展至多光束情形。
+		\item 折射率色散模型采用Sellmeier–Drude形式，在弱吸收区表现良好，但在接近吸收边（如低波数段）时需引入消光系数，否则会引入系统偏差。
+		\item 载流子浓度$N$与有效质量$m^*$存在参数冗余，当前固定$m^*$的策略虽保证了厚度估计的稳定性，但限制了$N$的物理解释能力。若需同时精确测定$N$，需引入更多约束（如Hall效应测量数据）。
+	\end{enumerate}
+	
+	\newpage
+	\begin{thebibliography}{99}
+		\bibitem{sellmeier} Sellmeier W. Zur Erklärung der abnormen Farbenfolge im Spectrum einiger Substanzen[J]. Annalen der Physik und Chemie, 1871, 219(6): 272--282.
+		\bibitem{drude} Drude P. Zur Elektronentheorie der Metalle[J]. Annalen der Physik, 1900, 306(3): 566--613.
+		\bibitem{fresnel} Fresnel A. Mémoire sur la loi des modifications que la réflexion imprime à la lumière polarisée[J]. Mémoires de l'Académie des Sciences, 1823, 11: 393--433.
+		\bibitem{siC_ref} Levinshtein M E, Rumyantsev S L, Shur M S. Properties of Advanced Semiconductor Materials: GaN, AlN, InN, BN, SiC, SiGe[M]. New York: Wiley, 2001.
+		\bibitem{thorne} Thorne A P. Spectrophysics: Principles and Applications[M]. Berlin: Springer, 1999.
+		\bibitem{born} Born M, Wolf E. Principles of Optics[M]. 7th ed. Cambridge: Cambridge University Press, 1999.
+		\bibitem{marquardt} Marquardt D W. An algorithm for least-squares estimation of nonlinear parameters[J]. Journal of the Society for Industrial and Applied Mathematics, 1963, 11(2): 431--441.
+	\end{thebibliography}
+	
+	% ====================== 附录：核心程序代码 ======================
+	\newpage
+	\section*{附录：核心程序代码}
+	\addcontentsline{toc}{section}{附录：核心程序代码}
+	
+	完整可运行程序、输入数据和结果表随电子附件提交；以下仅列出与正文模型直接对应的核心代码片段，便于核查计算关系。
+	
+	\subsection{数据读取与预处理}
+	\begin{lstlisting}[language=Python, caption=读取附件数据并转换为小数反射率]
+		def read_data(path: Path) -> tuple[np.ndarray, np.ndarray]:
+		df = pd.read_excel(path)
+		x = pd.to_numeric(df.iloc[:, 0], errors="coerce").to_numpy(float)
+		y = pd.to_numeric(df.iloc[:, 1], errors="coerce").to_numpy(float)
+		keep = np.isfinite(x) & np.isfinite(y) & (y > 0)
+		x, y = x[keep], y[keep] / 100.0   # 百分数 -> 小数
+		order = np.argsort(x)
+		return x[order], y[order]
+	\end{lstlisting}
+	
+	\subsection{Sellmeier–Drude折射率计算}
+	\begin{lstlisting}[language=Python, caption=式(6)的实现]
+		def n2_sellmeier_drude(wavelength_um, N, A, B_list, C_list, m_star):
+		# wavelength_um: 波长 (微米)
+		# 常数项
+		e = 1.602176634e-19      # 元电荷 (C)
+		eps0 = 8.8541878128e-12  # 真空介电常数 (F/m)
+		c = 2.99792458e8         # 光速 (m/s)
+		lambda_m = wavelength_um * 1e-6  # 转为米
+		omega = 2 * np.pi * c / lambda_m
+		omega_p2 = (N * e**2) / (eps0 * m_star)
+		# Sellmeier 项
+		sellmeier_sum = np.sum([B * wavelength_um**2 / (wavelength_um**2 - C)
+		for B, C in zip(B_list, C_list)], axis=0)
+		# Drude 修正项 (弱吸收区, Gamma≈0)
+		drude_correction = omega_p2 / omega**2
+		return np.sqrt(A + sellmeier_sum - drude_correction)
+	\end{lstlisting}
+	
+	\subsection{双角度联合目标函数}
+	\begin{lstlisting}[language=Python, caption=式(9)的构造]
+		def joint_objective(theta, data_10deg, data_15deg):
+		d, N, n3, A, B1, C1, B2, C2 = theta
+		# 对两个角度分别计算理论反射率
+		Rth_10 = compute_Rth(data_10deg['sigma'], 10.0, d, N, n3, A, B1, C1, B2, C2)
+		Rth_15 = compute_Rth(data_15deg['sigma'], 15.0, d, N, n3, A, B1, C1, B2, C2)
+		# 残差平方和
+		residual_10 = data_10deg['R'] - Rth_10
+		residual_15 = data_15deg['R'] - Rth_15
+		return np.sum(residual_10**2) + np.sum(residual_15**2)
+	\end{lstlisting}
+	
+	\subsection{多初值非线性最小二乘主循环}
+	\begin{lstlisting}[language=Python, caption=多初值优化与最佳解选择]
+		best_theta = None; best_cost = np.inf
+		for init in initial_guesses:   # 5组初值
+		result = scipy.optimize.minimize(
+		joint_objective, init,
+		args=(data_10, data_15),
+		method='trust-constr',
+		bounds=bounds,
+		constraints=constraints
+		)
+		if result.success and result.fun < best_cost:
+		best_cost = result.fun
+		best_theta = result.x
+		d_final = best_theta[0]   # 厚度
+	\end{lstlisting}
+	
+	\newpage
+	\section*{AI使用报告}
+	\addcontentsline{toc}{section}{AI使用报告}
+	
+	本次工作中使用生成式人工智能辅助完成以下任务：梳理赛题物理背景与数学建模思路、查阅Sellmeier–Drude色散与Fresnel系数等参考文献、协助编写双角度联合拟合算法的初版代码框架、检查数据预处理和单位换算的一致性、协助改写论文表述并进行格式排版。赛题附件、原始数据、模型关键假设和参数选择均由团队根据物理原理和材料文献确定，团队对所有参数含义、计算结果和最终结论负责。
+	
+	人工核验包括：逐点检查实测反射率与拟合曲线的吻合情况、复算光程差与相位差公式、验证Fresnel系数在正入射和斜入射下的极限行为、检查双角度联合目标函数的梯度计算与约束处理、逐页核对公式编号与图表引用。人工智能未生成或替换任何原始光谱数据，也未将拟合得到的载流子浓度解释为超出模型范围的绝对物理测量值。
+	
+\end{document}

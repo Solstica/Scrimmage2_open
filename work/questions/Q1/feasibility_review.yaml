@@ -1,0 +1,19 @@
+version: '1.0'
+question_id: Q1
+selected_candidate_id: Q1-MAIN
+candidates:
+- candidate_id: Q1-MAIN
+  model_name_zh: 复色散双光束Fresnel测厚模型
+  decision: ACCEPT
+  decision_reason_zh: 用户已确认唯一主模型；两篇论文共同支持主体，OWN用于纠正相位、分支和单位口径
+  dimensions:
+    data: {status: PASS, note_zh: Q1以理论推导为主，官方观测定义完整}
+    mechanism: {status: PASS, note_zh: 薄膜干涉与Fresnel边界物理闭合}
+    identifiability: {status: RISK, note_zh: 材料色散参数与厚度相关性转交Q2以联合角度、剖面目标和SVD检查}
+    implementation: {status: PASS, dependencies: [numpy, scipy], expected_runtime_zh: 秒级正算, note_zh: 需从公式重写}
+    validation: {status: PASS, note_zh: 已确定合成恢复、单位换算、无吸收极限和Neumann极限测试路线}
+    writing: {status: PASS, expected_pages: 4, note_zh: 可形成模型摘要与完整系统}
+  implementation_ready: true
+  blockers: []
+  risks: [复平方根分支, 半波损失重复, 单位缩放]
+  mitigations: [复Fresnel统一相位, 四联检查, 合成数据测试]

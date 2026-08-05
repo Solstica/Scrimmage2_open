@@ -1,0 +1,19 @@
+version: '1.0'
+question_id: Q3
+selected_candidate_id: Q3-MAIN
+candidates:
+- candidate_id: Q3-MAIN
+  model_name_zh: 物理条件—复公比—Neumann/Airy多光束联合模型
+  decision: RISK
+  decision_reason_zh: 用户已确认唯一主模型；统一复公比口径可裁决两篇论文冲突并以有限阶收敛提供复现证据
+  dimensions:
+    data: {status: PASS, note_zh: 四个附件网格一致，支持同波段公平比较}
+    mechanism: {status: PASS, note_zh: Airy闭式与Neumann有限阶等价}
+    identifiability: {status: RISK, note_zh: 材料参数和多光束谱形强耦合，以同参数、同波段、同损失函数的嵌套模型比较缓解}
+    implementation: {status: PASS, dependencies: [numpy, scipy], expected_runtime_zh: 多种子分钟到小时级, note_zh: 需控制搜索规模}
+    validation: {status: PASS, note_zh: 已确定rho直接输出、阶数收敛、公平模型比较、合成判别与波段敏感性路线}
+    writing: {status: PASS, expected_pages: 6, note_zh: 可形成必要条件_算法_结果_回溯闭环}
+  implementation_ready: true
+  blockers: []
+  risks: [q口径混乱, A阈值无标定, 波段不公平, 强非线性]
+  mitigations: [统一rho定义, 同目标函数比较, 多种子, 阶数收敛]

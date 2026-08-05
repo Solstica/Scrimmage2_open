@@ -1,0 +1,63 @@
+version: '1.0'
+status: REVIEWED
+paper_route_zh: 复色散双光束正模型到双角度联合反演，再到Neumann/Airy多光束诊断与回溯修正
+abstract_route_consistent: true
+nodes:
+  Q1:
+    model_name_zh: 复色散双光束Fresnel测厚模型
+    question_type: inverse_forward_model
+    inputs: [波数, 入射角, 外延层与衬底光学参数]
+    outputs: [双光束复反射率正算子, 相位厚度关系]
+    assumptions: [层状均匀介质, 界面平行, 第一束内部反射]
+  Q2:
+    model_name_zh: 双角度共享参数复反射率联合反演
+    question_type: parameter_inverse_problem
+    inputs: [Q1正算子, 附件1, 附件2, 波段与预处理规则]
+    outputs: [SiC厚度候选, 参数可辨识性, 残差与不确定性]
+    assumptions: [同片共享厚度与材料参数, 角度已知, 波段模型适配]
+  Q3:
+    model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
+    question_type: model_selection_and_inverse_problem
+    inputs: [Q1界面系数, Q2残差与候选参数, 附件1至4]
+    outputs: [多光束显著性, Si厚度候选, SiC是否修正]
+    assumptions: [高阶场级数收敛, 同片双角度共享参数]
+edges:
+- from: Q1
+  to: Q2
+  relation: extend
+  inherited:
+    symbols: [sigma, theta_0, d, n_tilde, r_ij]
+    equations: [Snell复角关系, s_p偏振Fresnel系数, 双光束复反射率正算子]
+    assumptions: [层状均匀介质, 界面平行, 非偏振平均]
+    code_modules: [shared/code/optics.py, shared/code/materials.py]
+    result_ids: []
+  changed:
+    added: [附件1和附件2, 共享厚度约束, 角度独立仿射标定, 有界联合反演]
+    modified: [解析正算改为数据驱动反问题]
+    removed: []
+  reason_zh: Q2直接调用Q1双光束复反射率核，并增加数据预处理、共享参数和反演算法
+- from: Q2
+  to: Q3
+  relation: extend
+  inherited:
+    symbols: [sigma, theta_0, d, n_tilde, r_ij]
+    equations: [双光束复反射率正算子, 双角度共享参数目标函数]
+    assumptions: [同片共享厚度与材料参数, 非偏振平均]
+    code_modules: [shared/code/optics.py, shared/code/inversion.py]
+    result_ids: [R-Q2-THICKNESS]
+  changed:
+    added: [往返复公比, Neumann有限阶场, Airy无穷阶极限, 附件3和附件4]
+    modified: [双光束截断改为可控阶数并执行嵌套模型比较]
+    removed: []
+  reason_zh: Q3以Q2残差和界面参数诊断高阶反射；若模型升级成立，Q2厚度必须标记STALE并重新反演
+shared_symbols:
+- {symbol: sigma, meaning_zh: 真空波数, unit: cm^-1}
+- {symbol: d, meaning_zh: 外延层厚度, unit: um}
+- {symbol: theta_0, meaning_zh: 空气侧入射角, unit: degree}
+- {symbol: n_tilde, meaning_zh: 复折射率, unit: '1'}
+- {symbol: r_ij, meaning_zh: 介质i到j界面复振幅反射系数, unit: '1'}
+- {symbol: rho, meaning_zh: 内部往返场因子模长的平方, unit: '1'}
+review:
+  all_questions_connected_or_independent: true
+  no_unexplained_redefinition: true
+  route_matches_abstract: true

@@ -1,0 +1,12 @@
+question_id: Q2
+specific_model_name_zh: 双角度共享参数复反射率联合反演
+inputs: [Q1正算子, 附件1, 附件2]
+outputs: [SiC厚度及统计和系统误差范围]
+solver: 三种子差分进化粗搜与有界鲁棒最小二乘精修
+frozen_results: [R-Q2-D, R-Q2-BOOT, R-Q2-SYS, R-Q2-RMSE]
+figures: [modules/30_q2/figures/q2_sic_joint_fit.png, modules/30_q2/figures/q2_thickness_profile.png, modules/30_q2/figures/q2_block_bootstrap.png, modules/30_q2/figures/q2_band_sensitivity.png]
+tables: [modules/30_q2/tables/q2_band_sensitivity.csv, modules/30_q2/tables/q2_block_bootstrap.csv, modules/30_q2/tables/q2_index_scale_sensitivity.csv, modules/30_q2/tables/q2_thickness_profile.csv]
+assumptions_used: [同片双角度共享厚度, 背景色散采用登记值, 角度差异仅作仿射标定]
+limitations: [折射率尺度与厚度高度相关, 载流子参数不作独立物理解释]
+unresolved_todos: []
+status: COMPLETE

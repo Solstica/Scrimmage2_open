@@ -1,0 +1,88 @@
+\subsection{问题三的描述与分析}
+两篇国一等奖论文对 SiC 是否需要多光束修正给出相反结论\cite{paperA,paperB}。仅凭条纹不对称度或“高阶光存在”不能裁决该冲突。本文把问题一的双光束截断推广为有限阶 Neumann 级数和 Airy 极限，在相同波段、参数、损失函数与标定结构下比较各阶模型；若 SiC 的厚度修正小于统计误差，则保留问题二结果，否则触发 STALE 并重算。
+
+\subsection{多光束形成条件与复公比}
+对偏振态 $u$，第一束内部反射场为
+\begin{equation}
+B^{(u)}=t_{01}^{(u)}t_{10}^{(u)}r_{12}^{(u)}e^{2\mathrm{i}\beta},
+\end{equation}
+每增加一次往返，场乘以
+\begin{equation}
+g^{(u)}=r_{10}^{(u)}r_{12}^{(u)}e^{2\mathrm{i}\beta},\qquad
+\rho^{(u)}=|g^{(u)}|^2.
+\label{eq:loop}
+\end{equation}
+可观测多光束干涉需要同时满足：光源相干长度覆盖相关光程差；界面平整且近平行；吸收和界面损耗后 $|g|$ 未降至噪声以下；并且 $|g|<1$ 以保证无穷级数收敛。前两项由实验条件控制，后两项可由复 Fresnel 模型和拟合残差直接量化。
+
+\subsection{物理条件—复公比—Neumann/Airy多光束模型}
+保留 $M$ 束内部反射时，反射场为
+\begin{equation}
+r_{(M)}^{(u)}=r_{01}^{(u)}+B^{(u)}\sum_{m=0}^{M-1}(g^{(u)})^m
+=r_{01}^{(u)}+B^{(u)}\frac{1-(g^{(u)})^M}{1-g^{(u)}}.
+\label{eq:neumann}
+\end{equation}
+令 $M\to\infty$ 得 Airy 闭式
+\begin{equation}
+r_{(\infty)}^{(u)}=r_{01}^{(u)}+\frac{B^{(u)}}{1-g^{(u)}}.
+\label{eq:airy}
+\end{equation}
+其中 $M=1$ 正好退化为问题一双光束模型。各阶均按式\eqref{eq:runpol}形成非偏振反射率，并调用问题二相同的双角度联合目标函数。
+
+\textbf{模型汇总：} 输入问题一界面系数与四个附件；由式\eqref{eq:loop}输出往返场因子和强度保持率，再按式\eqref{eq:neumann}计算 $M=1,2,3,4,6$，最后以式\eqref{eq:airy}给出极限。只有当高阶模型在公平比较中显著降低误差、阶数收敛且厚度变化超过已有误差尺度时，才修正双光束厚度。
+
+\subsection{Neumann有限阶延拓—Airy联合重反演算法}
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_algorithm_flow.pdf}
+\caption{问题三的模型升级与回溯流程}\label{fig:q3flow}
+\end{figure}
+
+\begin{lstlisting}[caption={问题三有限阶延拓伪代码}]
+INPUT Q1 interface coefficients and the two-angle spectra
+FIT the order-1 model under the common objective
+COMPUTE complex loop factor and intensity retention rho
+FOR M in {2, 3, 4, 6}:
+    evaluate the finite Neumann field
+    jointly re-estimate shared physical parameters
+FIT the Airy limit with the same band and loss
+COMPARE thickness, RMSE, AIC and successive-order differences
+IF correction exceeds existing uncertainty and convergence holds:
+    mark inherited thickness STALE and replace it
+ELSE:
+    retain the order-1 thickness
+\end{lstlisting}
+
+\subsection{SiC的多光束回溯检验}
+SiC 在主波段内的最大往返场因子仅 $0.00442$，最大往返强度保持率为 $1.95\times10^{-5}$。Airy 厚度为 $7.3841268\,\mu\mathrm{m}$，相对双光束仅增加
+\begin{equation}
+\Delta d_{\mathrm{SiC}}=0.0000876\,\mu\mathrm{m},
+\end{equation}
+约为问题二 Bootstrap 标准差的 $1.9\%$。RMSE 仅由 $0.119397$ 降至 $0.119295$ 个反射率百分点，模型复杂化没有产生实质收益。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_sic_model_comparison.png}
+\caption{SiC 双光束与 Airy 模型的同口径比较}\label{fig:q3sic}
+\end{figure}
+图\ref{fig:q3sic}中两条预测曲线几乎重合；二阶以后厚度变化已低于 $2\times10^{-7}\,\mu\mathrm{m}$。因此本文支持“SiC 不需多光束修正”的结论，问题二结果保持 FROZEN，不触发 STALE 传播。
+
+\subsection{Si外延层厚度的多光束反演}
+Si 使用 $750$--$1800\,\mathrm{cm}^{-1}$ 主波段，背景折射率采用 Li 的293 K数据插值\cite{li1980}。其最大往返场因子为0.3557，最大强度保持率为0.1265，高阶束不能忽略。Airy 双角度联合反演得到
+\begin{equation}
+\boxed{d_{\mathrm{Si}}=3.3960\,\mu\mathrm{m}}.
+\end{equation}
+双光束模型 RMSE 为4.3052个反射率百分点，Airy 模型为1.2715个反射率百分点，\textbf{相对降低70.47\%}，$R^2$ 从0.9420提高到0.9949。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_si_model_comparison.png}
+\caption{Si 双光束与 Airy 多光束拟合比较}\label{fig:q3si}
+\end{figure}
+图\ref{fig:q3si}显示双光束模型对峰谷形状存在系统偏差，而 Airy 模型同时改善两个角度，说明提升来自共享物理结构而非单角度过拟合。
+
+\subsection{收敛性、波段敏感性与结果分析}
+有限阶结果见图\ref{fig:q3conv}。厚度由 $M=1$ 的 $3.4072\,\mu\mathrm{m}$ 依次收敛，$M=6$ 与 Airy 极限只差 $5.2\times10^{-6}\,\mu\mathrm{m}$，RMSE 差 $3.90\times10^{-4}$ 个百分点。三个随机种子的 Airy 厚度极差小于 $8\times10^{-10}\,\mu\mathrm{m}$。
+
+\begin{figure}[H]\centering
+\begin{subfigure}{.55\textwidth}\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_si_order_convergence.png}\caption{有限阶收敛}\end{subfigure}
+\begin{subfigure}{.43\textwidth}\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_si_band_sensitivity.png}\caption{拟合波段敏感性}\end{subfigure}
+\caption{Si 多光束结果的收敛性与敏感性}\label{fig:q3conv}
+\end{figure}
+四个邻近波段给出的 Si 厚度为 $3.3949$--$3.4030\,\mu\mathrm{m}$，主解位于范围内部。由此，多光束对 Si 的必要性同时得到复公比、误差降幅、双角度一致改善、有限阶收敛和波段扰动五类证据；对 SiC 则五类证据均指向保留双光束结果。

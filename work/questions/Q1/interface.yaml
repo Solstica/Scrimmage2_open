@@ -1,0 +1,12 @@
+question_id: Q1
+specific_model_name_zh: 复色散双光束Fresnel测厚模型
+inputs: [波数, 入射角, 复折射率, 厚度]
+outputs: [复反射率正算子, 干涉相位]
+solver: 解析推导与NumPy向量化正算
+frozen_results: [R-Q1-SYNTHETIC]
+figures: [modules/20_q1/figures/q1_model_flow.pdf]
+tables: []
+assumptions_used: [各层横向均匀, 界面平行, 非偏振光, 被动介质]
+limitations: [一维层状模型不描述界面粗糙散射与厚度横向梯度]
+unresolved_todos: []
+status: COMPLETE

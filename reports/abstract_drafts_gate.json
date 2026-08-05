@@ -1,0 +1,16 @@
+{
+  "gate": "abstract_source",
+  "stage": "drafts",
+  "status": "PASS",
+  "meta": {
+    "slots": {
+      "questions": 3,
+      "keywords": 5
+    },
+    "drafts": {
+      "additive_chars": 641,
+      "compressed_chars": 541
+    }
+  },
+  "issues": []
+}

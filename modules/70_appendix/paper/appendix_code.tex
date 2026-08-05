@@ -1,0 +1,31 @@
+\subsection{程序与结果文件清单}
+\begin{longtable}{p{.28\textwidth}p{.62\textwidth}}
+\toprule
+文件 & 功能\\\midrule
+\endfirsthead
+\toprule 文件 & 功能\\\midrule\endhead
+\texttt{data\_io.py} & 读取四个官方工作簿、排除共同边界异常点、平滑与波段抽取。\\
+\texttt{materials.py} & SiC Sellmeier 背景、Si 293 K 插值与 Drude 复介电函数。\\
+\texttt{optics.py} & 被动复平方根、s/p Fresnel 系数、双光束、有限阶 Neumann 与 Airy 正算。\\
+\texttt{inversion.py} & 双角度剖面目标、全局—局部联合反演、SVD、厚度剖面与块 Bootstrap。\\
+\texttt{run\_analysis.py} & 正式全流程入口，生成 JSON、CSV 与全部数值图。\\
+\texttt{test\_physics.py} & 四项物理单元测试。\\
+\texttt{verify\_results.py} & 公式—代码—单位—缩放四联检查和冻结前数值门禁。\\
+\texttt{make\_all\_figures.py} & 生成流程图与敏感性补充图。\\
+\bottomrule
+\end{longtable}
+
+公共数值内核位于 \path{shared/code/}，全项目入口位于 \path{scripts/}，各问独有代码位于对应的 \path{modules/*/code/}。数据从仓库外的 \path{raw/prob25B/} 只读加载。正式复现命令为：
+\begin{lstlisting}
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+& 'C:\Users\admin\miniconda3\shell\condabin\conda-hook.ps1'
+conda activate phasefield
+python -m scripts.run_analysis --data-dir ..\CUCCM2026\raw\prob25B --project .
+python -m unittest -v scripts.test_physics
+python -m scripts.verify_results --project .
+\end{lstlisting}
+运行环境由 \path{shared/config/environment.yml} 登记。正式结果文件为 \path{output/results/analysis_results.json}。其 SHA-256 分行登记如下：
+\begin{center}\ttfamily\small
+f17eaa6c9128c55069e1bb47eeb57d6\\
+f1732bd6dd8db50c189d4334017eb581e
+\end{center}

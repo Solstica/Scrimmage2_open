@@ -1,0 +1,85 @@
+version: '1.0'
+status: COMPLETE
+review_scope:
+  all_model_relevant_sources_checked: true
+  source_registry_sha256: 67d339cc8b8cf638eca4e396459620c3ba949abc558746c03a2cadb08440d076
+reviewed_no_impact_source_ids: []
+entries:
+- source_id: PAPER_A
+  impact_level: equation_change
+  affected_questions: [Q1, Q2, Q3]
+  affected_artifacts: [shared/code/optics.py, modules/20_q1/paper/q1.tex, modules/30_q2/paper/q2.tex, modules/40_q3/paper/q3.tex]
+  dependent_result_ids: []
+  impact_zh: 提供Sellmeier-Drude-Fresnel主线、分角度拟合和高阶强度判据；其SiC多光束可忽略结论需重验
+  action: ADOPT_WITH_CORRECTION
+  decision: {status: RESOLVED, note_zh: 保留Sellmeier-Drude-Fresnel与Airy结构，统一用复Fresnel相位而不另加固定半波损失}
+  revalidation_completed: true
+  rollback_zh: 若统一实现否定其阈值或结果，仅保留物理条件与Airy结构，不继承数值
+- source_id: PAPER_B
+  impact_level: model_revision
+  affected_questions: [Q1, Q2, Q3]
+  affected_artifacts: [shared/code/inversion.py, scripts/run_analysis.py, modules/30_q2/paper/q2.tex, modules/40_q3/paper/q3.tex]
+  dependent_result_ids: []
+  impact_zh: 提供Cauchy-Drude、双角度联合拟合、残差驱动Airy回溯；其参数边界与SiC修正结论需重验
+  action: ADOPT_WITH_CORRECTION
+  decision: {status: RESOLVED, note_zh: 采用双角度共享参数与残差回溯结构，取消未经标定的不对称度阈值和拟合变差仍修正的结论}
+  revalidation_completed: true
+  rollback_zh: 若多光束模型在公平比较中无改善，则回退到双光束Q2结果并记录原因
+- source_id: OWN
+  impact_level: model_revision
+  affected_questions: [Q1, Q2, Q3]
+  affected_artifacts: [shared/code/optics.py, scripts/verify_results.py, modules/30_q2/paper/q2.tex, modules/40_q3/paper/q3.tex]
+  dependent_result_ids: []
+  impact_zh: 提供复相位纠错、SVD可辨识性、Neumann余项和验证设计；旧数值不继承
+  action: ADOPT_METHOD_ONLY
+  decision: {status: RESOLVED, note_zh: 仅吸收复平方根分支、SVD、Neumann余项和验证思路，所有公式接口与数值从零实现}
+  revalidation_completed: true
+  rollback_zh: 若规范化重实现不能复现，则只保留通用验证框架并标记相关候选结果STALE
+- source_id: S-PROBLEM
+  impact_level: citation_only
+  affected_questions: [Q1, Q2, Q3]
+  impact_zh: 核定赛题任务、角度和附件材料对应关系
+  action: ADOPT
+- source_id: S-LI1980
+  impact_level: parameter_update
+  affected_questions: [Q3]
+  affected_artifacts: [shared/code/materials.py, modules/40_q3/paper/q3.tex]
+  dependent_result_ids: [R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO]
+  impact_zh: 以293 K Si折射率表替代常折射率近似
+  action: ADOPT
+  decision: {status: RESOLVED, note_zh: 已写入材料插值模块并重新完成三种子、波段和阶数验证}
+  revalidation_completed: true
+- source_id: S-SG1964
+  impact_level: citation_only
+  affected_questions: [Q2, Q3]
+  impact_zh: 支持Savitzky-Golay局部多项式平滑
+  action: ADOPT
+- source_id: S-DE1997
+  impact_level: citation_only
+  affected_questions: [Q2, Q3]
+  impact_zh: 支持连续有界参数的差分进化粗搜
+  action: ADOPT
+- source_id: S-MARQ1963
+  impact_level: citation_only
+  affected_questions: [Q2, Q3]
+  impact_zh: 支持非线性最小二乘精修框架
+  action: ADOPT
+- source_id: S-KUNSCH1989
+  impact_level: citation_only
+  affected_questions: [Q2]
+  impact_zh: 支持对相关光谱残差采用块Bootstrap而非独立重采样
+  action: ADOPT
+- source_id: S-DRUDE1900
+  impact_level: equation_change
+  affected_questions: [Q1, Q2, Q3]
+  affected_artifacts: [shared/code/materials.py, modules/20_q1/paper/q1.tex]
+  dependent_result_ids: [R-Q2-D, R-Q3-SI-D]
+  impact_zh: 引入复Drude自由载流子项并统一时间与吸收符号约定
+  action: ADOPT_WITH_CONVENTION
+  decision: {status: RESOLVED, note_zh: 被动平方根分支与传播衰减测试通过，正式全运行已重算}
+  revalidation_completed: true
+- source_id: S-BORN1999
+  impact_level: citation_only
+  affected_questions: [Q1, Q3]
+  impact_zh: 支持复Fresnel边界系数与多层干涉场叠加
+  action: ADOPT

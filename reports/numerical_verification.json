@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "analysis_results_sha256": "f17eaa6c9128c55069e1bb47eeb57d6f1732bd6dd8db50c189d4334017eb581e",
+  "rmse_reduction_si_percent": 70.466255161613,
+  "checks": [
+    {
+      "name": "official_full_run",
+      "status": "PASS",
+      "evidence": {
+        "mode": "full",
+        "random_seeds": [
+          2025,
+          2026,
+          2027
+        ],
+        "official_data_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\raw\\prob25B"
+      }
+    },
+    {
+      "name": "q2_three_seed_agreement",
+      "status": "PASS",
+      "evidence": [
+        {
+          "seed": 2025,
+          "thickness_um": 7.384039253397902,
+          "rmse": 0.0011939733641702986
+        },
+        {
+          "seed": 2026,
+          "thickness_um": 7.384039192375902,
+          "rmse": 0.0011939733664189749
+        },
+        {
+          "seed": 2027,
+          "thickness_um": 7.384039148012189,
+          "rmse": 0.0011939733718375216
+        }
+      ]
+    },
+    {
+      "name": "q2_bootstrap_contains_main",
+      "status": "PASS",
+      "evidence": {
+        "replicates": 300,
+        "block_length": 24,
+        "quantile_2.5_50_97.5_um": [
+          7.374678414840458,
+          7.383976897489801,
+          7.394278274992767
+        ],
+        "std_um": 0.004719801590472475
+      }
+    },
+    {
+      "name": "si_multibeam_rmse_reduction",
+      "status": "PASS",
+      "evidence": 70.466255161613
+    },
+    {
+      "name": "si_six_beam_convergence",
+      "status": "PASS",
+      "evidence": [
+        [
+          6.0,
+          3.3959698151792344,
+          1.2718694330572806,
+          -9499.007573807665
+        ],
+        [
+          Infinity,
+          3.395964620838862,
+          1.2714792244815158,
+          -9499.6764987695
+        ]
+      ]
+    },
+    {
+      "name": "sic_multibeam_negligible",
+      "status": "PASS",
+      "evidence": {
+        "double": {
+          "material": "sic",
+          "order": 1,
+          "band_cm-1": [
+            2000.0,
+            3900.0
+          ],
+          "thickness_um": 7.384039253397902,
+          "plasma_wavenumber_cm-1": 993.2115947259412,
+          "damping_wavenumber_cm-1": 558.693638927774,
+          "index_scale": 0.9999990000000001,
+          "calibration": [
+            [
+              1.0612243201645133,
+              -0.016637379297420637
+            ],
+            [
+              1.2960816242121853,
+              -0.0521618680499617
+            ]
+          ],
+          "rmse_fraction": 0.0011939733641702986,
+          "rmse_percentage_point": 0.11939733641702986,
+          "mae_fraction": 0.0009416395302999099,
+          "r2": 0.9672108985723731,
+          "AIC_BIC": {
+            "AIC": -26528.968049252293,
+            "BIC": -26484.27362097099
+          },
+          "success": true
+        },
+        "Airy": {
+          "material": "sic",
+          "order": "infinity",
+          "band_cm-1": [
+            2000.0,
+            3900.0
+          ],
+          "thickness_um": 7.384126848674008,
+          "plasma_wavenumber_cm-1": 993.4715904146769,
+          "damping_wavenumber_cm-1": 561.2939885962121,
+          "index_scale": 0.9999990000000002,
+          "calibration": [
+            [
+              1.0613751652913332,
+              -0.016665578386337088
+            ],
+            [
+              1.296326882137186,
+              -0.052207629060797414
+            ]
+          ],
+          "rmse_fraction": 0.0011929452878991923,
+          "rmse_percentage_point": 0.11929452878991922,
+          "mae_fraction": 0.0009410709398854636,
+          "r2": 0.9672673406760157,
+          "AIC_BIC": {
+            "AIC": -26532.36551154994,
+            "BIC": -26487.671083268637
+          },
+          "success": true
+        },
+        "loop": {
+          "loop_amplitude_max": 0.0044204445715891275,
+          "loop_amplitude_median": 0.001912848351859229,
+          "rho_intensity_max": 1.9540330210491786e-05,
+          "rho_intensity_median": 3.6589899649289356e-06
+        },
+        "delta_d_Airy_minus_double_um": 8.759527610546769e-05,
+        "order_convergence": [
+          [
+            1.0,
+            7.384039253397902,
+            0.11939733641702986,
+            -26528.968049252293
+          ],
+          [
+            2.0,
+            7.384126716537081,
+            0.11929450606138735,
+            -26532.36626297869
+          ],
+          [
+            3.0,
+            7.38412683713548,
+            0.11929452825498413,
+            -26532.365529235445
+          ],
+          [
+            4.0,
+            7.3841268537706215,
+            0.11929452829481202,
+            -26532.365527918693
+          ],
+          [
+            6.0,
+            7.384126782249128,
+            0.11929452877301037,
+            -26532.365512108965
+          ],
+          [
+            Infinity,
+            7.384126848674008,
+            0.11929452878991922,
+            -26532.36551154994
+          ]
+        ]
+      }
+    },
+    {
+      "name": "formula_code_unit_scaling_quartet",
+      "status": "PASS",
+      "evidence": {
+        "formula": "exp(4*pi*i*sigma*d_cm*q)",
+        "code": "optics.layer_amplitudes",
+        "unit": "d_cm=d_um*1e-4",
+        "max_error": 1.2474610610294271e-14
+      }
+    },
+    {
+      "name": "registered_outputs_exist",
+      "status": "PASS",
+      "evidence": [
+        "modules\\30_q2\\tables\\q2_block_bootstrap.csv",
+        "modules\\40_q3\\tables\\q3_si_order_convergence.csv",
+        "modules\\30_q2\\figures\\q2_sic_joint_fit.png",
+        "modules\\40_q3\\figures\\q3_si_model_comparison.png"
+      ]
+    }
+  ]
+}

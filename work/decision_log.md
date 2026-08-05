@@ -1,0 +1,31 @@
+# Decision log
+
+Record model, solver, preprocessing, approximation, and reporting decisions. Each entry states the decision, evidence, alternative rejected, and affected results.
+
+## 2026-08-05：run_02 第一阶段边界
+
+- 决策：当前采用 `AUDIT + PLAN`，只做资料审查与路线决策，不写论文正文、不冻结模型、不生成终稿摘要。
+- 证据：用户明确要求完成 A-H 后暂停并逐问确认；技能规定未复现、未冻结结果不得传播到摘要与结论。
+- 拒绝方案：直接复用获奖论文结果或自有方案结果；直接开始大规模编码。
+- 影响：所有候选结果状态均视为 `UNVERIFIED`，后续复现完成前不得进入 `result_registry.csv` 的 `FROZEN` 状态。
+
+## 2026-08-05：竞赛题号与技术路由分离
+
+- 决策：训练记录中的题号保持 `problem_type: B`，技术载入路由使用 `domain: A`。
+- 证据：2025B 为光学干涉参数反演；技能 `domain B` 专用于规划/优化，而 `domain A` 明确覆盖 inverse problem。
+- 拒绝方案：仅因赛题字母为 B 而套用优化类规则。
+- 影响：反演结果必须安排灵敏度、可辨识性与正则化审查。
+
+## 2026-08-05：Git 操作边界
+
+- 决策：本对话只规范化 `Exe2` 文件，不再修改 Git 元数据；分支、worktree、提交与推送由用户在 Sourcetree 中操作。
+- 证据：用户明确要求“不用你访问 git，我用 Sourcetree 操作”。
+- 拒绝方案：由本对话配置 remote、创建分支或提交。
+- 影响：阶段文件按小粒度目录组织，并附带基线与所有权说明。
+
+## 2026-08-05：五项路线确认与实施授权
+
+- 决策：Q1、Q2、Q3 的唯一主模型、80/20 组件贡献口径以及两篇论文冲突处置方案全部确认；项目由 `AUDIT` 转入 `PLAN / MODEL_IMPLEMENTATION`。
+- 证据：用户明确回复“五个问题全部确认通过，接着做”。
+- 拒绝方案：沿用两篇论文或自有包中的既有数值；继续保留多个并列主模型。
+- 影响：允许从零重写正算与反演代码、运行官方数据、验证后冻结结果；本对话成为当前单一整合任务的文件所有者，但仍不执行 Git 操作。

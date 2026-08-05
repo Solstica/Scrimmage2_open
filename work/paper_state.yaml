@@ -1,0 +1,16 @@
+version: 3.4.0-rc1
+competition: CUMCM
+problem_id: CUMCM-2025-B
+title_status: FINAL
+question_count: 3
+questions:
+- Q1
+- Q2
+- Q3
+current_mode: FINAL
+current_phase: DELIVERY_GATE_PASS
+body_language: zh-CN
+latex_template: templates/latex/paper_template.tex
+last_updated: '2026-08-05T04:00:00+00:00'
+training_mode: true
+training_run_id: run_02

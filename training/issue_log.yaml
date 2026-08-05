@@ -1,0 +1,50 @@
+version: '1.0'
+issues:
+- issue_id: RUN02-P0-001
+  severity: P0
+  status: RESOLVED
+  question_id: Q3
+  summary_zh: PAPER_A与PAPER_B对SiC多光束效应给出相反结论
+  action_zh: 用统一Airy-Neumann实现、同波段同目标函数重新裁决
+  resolution_zh: 统一实现显示SiC往返强度保持率最大仅1.954e-5，Airy相对双光束厚度修正0.000088微米，因此不修正问题二结果。
+  evidence: [output/analysis_results.json, figures/q3_sic_model_comparison.png, reports/numerical_verification.json]
+- issue_id: RUN02-P0-002
+  severity: P0
+  status: RESOLVED
+  question_id: Q3
+  summary_zh: PAPER_B多光束修正后拟合变差但宣称更接近真值
+  action_zh: 无外部真值时降低结论强度并要求公平模型比较及合成验证
+  resolution_zh: 全文改用同波段、同损失函数的嵌套模型比较，不再把拟合变差解释为更接近未知真值。
+  evidence: [paper/sections/Q3.tex, tables/q3_sic_model_comparison.csv]
+- issue_id: RUN02-P1-003
+  severity: P1
+  status: RESOLVED
+  question_id: Q2
+  summary_zh: PAPER_B参数命中边界且存在高相关风险
+  action_zh: 增加多启动、边界活跃检查、SVD与剖面似然
+  resolution_zh: 已完成三种子全局—局部反演、厚度剖面、归一化Jacobian-SVD、移动块Bootstrap和折射率尺度敏感性分析；载流子参数不作可辨识性强结论。
+  evidence: [output/analysis_results.json, figures/q2_thickness_profile.png, figures/q2_index_scale_sensitivity.png]
+- issue_id: RUN02-P1-004
+  severity: P1
+  status: RESOLVED
+  question_id: Q3
+  summary_zh: q、绝对值q和绝对值q平方口径不统一且正文数值未在代码中直接复现
+  action_zh: 统一定义复振幅公比rho并自动输出rho模及其平方
+  resolution_zh: 代码统一以复振幅往返因子rho建模，并分别输出其模和强度保持率的平方口径。
+  evidence: [code/optics.py, output/analysis_results.json, paper/sections/Q3.tex]
+- issue_id: RUN02-P1-005
+  severity: P1
+  status: RESOLVED
+  question_id: mixed
+  summary_zh: OWN代码入口与Windows路径未规范化
+  action_zh: 第二阶段重新实现参数化入口，不修改旧数值包
+  resolution_zh: 已建立run_analysis.py参数化入口及data_io、materials、optics、inversion模块，旧OWN目录保持只读。
+  evidence: [code/run_analysis.py, code/README.md, FILE_OWNERSHIP.md]
+- issue_id: RUN02-P1-006
+  severity: P1
+  status: RESOLVED
+  question_id: mixed
+  summary_zh: OWN跨问Drude所属层和厚度修正符号口径不一致
+  action_zh: 统一层参数注册与delta_d等于d_multi减d_double
+  resolution_zh: 新实现按空气—外延层—衬底注册材料，厚度修正统一定义为d_multi减d_double并写入结果注册表。
+  evidence: [code/materials.py, code/optics.py, work/result_registry.csv]
