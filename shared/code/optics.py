@@ -5,6 +5,124 @@ import math
 import numpy as np
 
 
+def _signed_fresnel(
+    n_i: np.ndarray | complex | float,
+    n_j: np.ndarray | complex | float,
+    theta_i: np.ndarray | float,
+    theta_j: np.ndarray | float,
+    polarization: str,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Signed PAPER_A Fresnel amplitude coefficients."""
+    ni = np.asarray(n_i, dtype=complex)
+    nj = np.asarray(n_j, dtype=complex)
+    ci = np.cos(theta_i)
+    cj = np.cos(theta_j)
+    if polarization == "s":
+        denominator = ni * ci + nj * cj
+        return (ni * ci - nj * cj) / denominator, 2.0 * ni * ci / denominator
+    if polarization == "p":
+        denominator = nj * ci + ni * cj
+        return (nj * ci - ni * cj) / denominator, 2.0 * ni * ci / denominator
+    raise ValueError("polarization must be 's' or 'p'")
+
+
+def fresnel_coefficients_real_angle(
+    n_i: np.ndarray | complex | float,
+    n_j: np.ndarray | complex | float,
+    theta_i: np.ndarray | float,
+    polarization: str,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """PAPER_A Fresnel coefficients using a real Snell refraction angle."""
+    ni = np.asarray(n_i, dtype=complex)
+    nj = np.asarray(n_j, dtype=complex)
+    argument = np.real(ni) * np.sin(theta_i) / np.maximum(np.real(nj), 1.0e-12)
+    theta_j = np.arcsin(np.clip(argument, -1.0, 1.0))
+    reflection, transmission = _signed_fresnel(ni, nj, theta_i, theta_j, polarization)
+    return reflection, transmission, theta_j
+
+
+def _paper_a_components(
+    wavenumber_cm: np.ndarray,
+    angle_deg: float,
+    thickness_um: float,
+    film_index: np.ndarray,
+    substrate_index: np.ndarray | float,
+    air_index: float = 1.0003,
+) -> dict[str, dict[str, np.ndarray]]:
+    sigma = np.asarray(wavenumber_cm, dtype=float)
+    n1 = np.full(sigma.shape, complex(air_index), dtype=complex)
+    n2 = np.broadcast_to(np.asarray(film_index, dtype=complex), sigma.shape)
+    n3 = np.broadcast_to(np.asarray(substrate_index, dtype=complex), sigma.shape)
+    theta1 = np.full(sigma.shape, np.deg2rad(angle_deg), dtype=float)
+    output: dict[str, dict[str, np.ndarray]] = {}
+    for polarization in ("s", "p"):
+        r12, t12, theta2 = fresnel_coefficients_real_angle(n1, n2, theta1, polarization)
+        r23, _, _ = fresnel_coefficients_real_angle(n2, n3, theta2, polarization)
+        r21, t21, _ = fresnel_coefficients_real_angle(n2, n1, theta2, polarization)
+        phase = 4.0 * np.pi * 1.0e-4 * sigma * float(thickness_um) * n2 * np.cos(theta2)
+        propagation = np.exp(-1j * phase)
+        output[polarization] = {
+            "surface": r12,
+            "first_internal": t12 * r23 * t21 * propagation,
+            "loop": r21 * r23 * propagation,
+            "propagation": propagation,
+            "theta_film": theta2,
+        }
+    return output
+
+
+def double_beam_reflectance_paper_a(
+    wavenumber_cm: np.ndarray,
+    angle_deg: float,
+    thickness_um: float,
+    film_index: np.ndarray,
+    substrate_index: np.ndarray | float,
+    air_index: float = 1.0003,
+) -> np.ndarray:
+    """PAPER_A signed-Fresnel double-beam unpolarized reflectance."""
+    parts = _paper_a_components(
+        wavenumber_cm, angle_deg, thickness_um, film_index, substrate_index, air_index
+    )
+    fields = [parts[p]["surface"] + parts[p]["first_internal"] for p in ("s", "p")]
+    return 0.5 * (np.abs(fields[0]) ** 2 + np.abs(fields[1]) ** 2)
+
+
+def airy_reflectance_paper_a(
+    wavenumber_cm: np.ndarray,
+    angle_deg: float,
+    thickness_um: float,
+    film_index: np.ndarray,
+    substrate_index: np.ndarray | float,
+    air_index: float = 1.0003,
+) -> np.ndarray:
+    """PAPER_A Airy infinite-beam unpolarized reflectance."""
+    parts = _paper_a_components(
+        wavenumber_cm, angle_deg, thickness_um, film_index, substrate_index, air_index
+    )
+    fields = [
+        parts[p]["surface"] + parts[p]["first_internal"] / (1.0 - parts[p]["loop"])
+        for p in ("s", "p")
+    ]
+    return 0.5 * (np.abs(fields[0]) ** 2 + np.abs(fields[1]) ** 2)
+
+
+def third_beam_ratio_paper_a(
+    wavenumber_cm: np.ndarray,
+    angle_deg: float,
+    thickness_um: float,
+    film_index: np.ndarray,
+    substrate_index: np.ndarray | float,
+    air_index: float = 1.0003,
+) -> np.ndarray:
+    """Return PAPER_A's third-beam to surface-beam intensity ratio."""
+    parts = _paper_a_components(
+        wavenumber_cm, angle_deg, thickness_um, film_index, substrate_index, air_index
+    )
+    numerator = sum(np.abs(parts[p]["first_internal"] * parts[p]["loop"]) ** 2 for p in ("s", "p"))
+    denominator = sum(np.abs(parts[p]["surface"]) ** 2 for p in ("s", "p"))
+    return numerator / np.maximum(denominator, 1.0e-30)
+
+
 def passive_sqrt(value: np.ndarray | complex) -> np.ndarray:
     """Return the passive square-root branch (Im>=0, then Re>=0)."""
     root = np.sqrt(np.asarray(value, dtype=complex) + 0j)
