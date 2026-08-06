@@ -1,4 +1,5 @@
-# 问题三代码边界
+# 第三问代码说明
 
-问题三复用 `shared/code/optics.py` 与 `shared/code/inversion.py`，由 `scripts/run_analysis.py` 执行有限阶 Neumann—Airy 重反演。本目录仅放未来问题三独有实现。
+`问题3求解.py` 是第三问主入口：读取附件 1–4，按第三束光强比判据判断模型；硅在 `1500–3500 cm^-1` 对 10°、15°分别拟合 Airy 无穷多光束模型，参数为厚度、衬底折射率、载流子浓度和碰撞参数；SiC 读取第二问正式结果并回溯判据。
 
+`整理问题3结果.py` 将原始 JSON 整理为中文 XLSX 和 Origin 使用报告。脚本不生成 CSV、图片，不包含有限阶 Neumann 或 AIC。
