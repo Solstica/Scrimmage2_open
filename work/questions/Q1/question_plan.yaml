@@ -1,24 +1,15 @@
 question_id: Q1
-task_zh: 建立波数、入射角、复折射率和外延层厚度之间的红外干涉测厚关系
-inputs: [真空波数, 空气侧入射角, 外延层与衬底复介电函数]
-outputs: [双光束复反射率正算子, 干涉相位与厚度关系]
-constraints: [Snell关系, Fresnel边界条件, 被动介质复平方根分支, 非偏振平均]
-key_object: 空气—外延层—衬底三层光学系统
-key_difficulty: 色散、吸收、界面相位和单位缩放必须采用同一复数约定
-route_zh: 从复Snell关系推导s/p偏振Fresnel系数，再叠加表面束与第一束内部反射
+task_zh: 建立波数_入射角_材料色散与外延层厚度之间的双光束干涉关系
 question_type: calculation
 solution_mode: analytic_derivation
-specific_model_name_zh: 复色散双光束Fresnel测厚模型
-preliminary_work: [复介电函数与复折射率, 被动平方根分支, 微米到厘米单位换算]
-model:
-  variables_complete: true
-  objective_or_governing_equation_complete: true
-  constraints_or_conditions_complete: true
-  model_summary_complete: true
+specific_model_name_zh: Sellmeier-Drude-Fresnel双光束模型
+inputs: [真空波数, 入射角, SiC材料参数]
+outputs: [非偏振双光束反射率正演算子]
+model: {variables_complete: true, objective_or_governing_equation_complete: true, constraints_or_conditions_complete: true, model_summary_complete: true}
 algorithm:
   required: false
   name: 解析推导与直接正算
-  exemption_reason_zh: 本问要求建立数学关系，不含待求数值反演；以解析推导和合成数值一致性检验替代算法束
+  exemption_reason_zh: 本问只要求建立数学关系_以解析推导和五项物理门禁替代迭代算法
   derivation_or_calculation_path: shared/code/optics.py
   rationale_complete: true
   principle_short: true
@@ -26,9 +17,7 @@ algorithm:
   flowchart_path: modules/20_q1/figures/q1_model_flow.pdf
   pseudocode_path: ''
   code_path: shared/code/optics.py
-results: [R-Q1-SYNTHETIC]
-validation_required: {sensitivity: true, error: true, convergence: false, stability: false, identifiability: false}
-validation_completed: [sensitivity, error, synthetic_recovery, limiting_case, dimensional_consistency]
+results: [R-A-Q1-GATE]
 status: COMPLETE
 result_analysis_complete: true
 parameterized_model: true

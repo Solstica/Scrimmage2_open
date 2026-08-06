@@ -1,63 +1,52 @@
-version: '1.0'
-status: REVIEWED
-paper_route_zh: 复色散双光束正模型到双角度联合反演，再到Neumann/Airy多光束诊断与回溯修正
+version: '2.0'
+status: COMPLETE
+paper_route_zh: Sellmeier-Drude-Fresnel双光束正演到SiC分角度反演_再到硅Airy分角度反演与SiC回溯
 abstract_route_consistent: true
 nodes:
   Q1:
-    model_name_zh: 复色散双光束Fresnel测厚模型
-    question_type: inverse_forward_model
-    inputs: [波数, 入射角, 外延层与衬底光学参数]
-    outputs: [双光束复反射率正算子, 相位厚度关系]
-    assumptions: [层状均匀介质, 界面平行, 第一束内部反射]
+    model_name_zh: Sellmeier-Drude-Fresnel双光束模型
+    source: PAPER_A
+    outputs: [双光束非偏振反射率, R-A-Q1-GATE]
   Q2:
-    model_name_zh: 双角度共享参数复反射率联合反演
-    question_type: parameter_inverse_problem
-    inputs: [Q1正算子, 附件1, 附件2, 波段与预处理规则]
-    outputs: [SiC厚度候选, 参数可辨识性, 残差与不确定性]
-    assumptions: [同片共享厚度与材料参数, 角度已知, 波段模型适配]
+    model_name_zh: 双角度独立反演后平均
+    source: PAPER_A
+    inputs: [Q1正演算子, 附件1, 附件2]
+    outputs: [R-A-Q2-D10, R-A-Q2-D15, R-A-Q2-DAVG]
   Q3:
-    model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
-    question_type: model_selection_and_inverse_problem
-    inputs: [Q1界面系数, Q2残差与候选参数, 附件1至4]
-    outputs: [多光束显著性, Si厚度候选, SiC是否修正]
-    assumptions: [高阶场级数收敛, 同片双角度共享参数]
+    model_name_zh: 双振子-Drude-Airy多光束分角度反演
+    source: PAPER_A
+    inputs: [Q1界面系数, R-A-Q2-DAVG, 附件3, 附件4]
+    outputs: [R-A-Q3-SI-DAVG, R-A-Q3-SIC-RHO, R-A-Q3-SIC-D]
 edges:
 - from: Q1
   to: Q2
-  relation: extend
+  relation: reuse
   inherited:
-    symbols: [sigma, theta_0, d, n_tilde, r_ij]
-    equations: [Snell复角关系, s_p偏振Fresnel系数, 双光束复反射率正算子]
-    assumptions: [层状均匀介质, 界面平行, 非偏振平均]
-    code_modules: [shared/code/optics.py, shared/code/materials.py]
+    symbols: [sigma, d, n1, n2, n3]
+    equations: [Sellmeier-Drude折射率, 带符号Fresnel系数, 双光束反射率]
+    assumptions: [弱吸收波段]
+    code_modules: [shared/code/materials.py, shared/code/optics.py]
     result_ids: []
-  changed:
-    added: [附件1和附件2, 共享厚度约束, 角度独立仿射标定, 有界联合反演]
-    modified: [解析正算改为数据驱动反问题]
-    removed: []
-  reason_zh: Q2直接调用Q1双光束复反射率核，并增加数据预处理、共享参数和反演算法
+  changed: {added: [官方光谱与单角度有界反演], modified: [], removed: []}
 - from: Q2
   to: Q3
   relation: extend
   inherited:
-    symbols: [sigma, theta_0, d, n_tilde, r_ij]
-    equations: [双光束复反射率正算子, 双角度共享参数目标函数]
-    assumptions: [同片共享厚度与材料参数, 非偏振平均]
-    code_modules: [shared/code/optics.py, shared/code/inversion.py]
-    result_ids: [R-Q2-THICKNESS]
+    symbols: [sigma, d, n1, n2, n3]
+    equations: [带符号Fresnel系数]
+    assumptions: []
+    code_modules: [shared/code/optics.py]
+    result_ids: [R-A-Q2-DAVG]
   changed:
-    added: [往返复公比, Neumann有限阶场, Airy无穷阶极限, 附件3和附件4]
-    modified: [双光束截断改为可控阶数并执行嵌套模型比较]
-    removed: []
-  reason_zh: Q3以Q2残差和界面参数诊断高阶反射；若模型升级成立，Q2厚度必须标记STALE并重新反演
-shared_symbols:
-- {symbol: sigma, meaning_zh: 真空波数, unit: cm^-1}
-- {symbol: d, meaning_zh: 外延层厚度, unit: um}
-- {symbol: theta_0, meaning_zh: 空气侧入射角, unit: degree}
-- {symbol: n_tilde, meaning_zh: 复折射率, unit: '1'}
-- {symbol: r_ij, meaning_zh: 介质i到j界面复振幅反射系数, unit: '1'}
-- {symbol: rho, meaning_zh: 内部往返场因子模长的平方, unit: '1'}
+    added: [硅双振子-Drude复折射率, Airy多光束模型, 第三束光强比]
+    modified: [外延层材料与传播因子]
+    removed: [SiC弱吸收近似]
 review:
   all_questions_connected_or_independent: true
   no_unexplained_redefinition: true
   route_matches_abstract: true
+  q1_gate: PASS
+  q2_gate: PASS
+  q3_physics_gate: PASS
+  q3_five_percent_numerical_gate: USER_ACCEPTED_EXCEPTION
+  abstract_update_allowed: true

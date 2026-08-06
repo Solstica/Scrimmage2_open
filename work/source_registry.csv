@@ -1,12 +1,8 @@
 source_id,type,title,authors,year,quality,purpose,citation_location,verified,status
-PAPER_A,national_first_paper,基于色散模型和最小二乘拟合的外延层厚度测量,邱杰等,2025,national_first_training_reference,复色散Fresnel模型、双光束反演与Airy模型的结构来源；数值不继承,Q1-Q3方法来源与比较,true,accepted_with_correction
-PAPER_B,national_first_paper,基于Cauchy-Drude色散效应的外延层厚度红外干涉测量研究,路子涵等,2025,national_first_training_reference,共享参数联合反演、复折射率模型与残差驱动模型回溯的结构来源；数值不继承,Q1-Q3方法来源与比较,true,accepted_with_correction
-OWN,own_model_archive,摄动反演与Neumann四轮完整数值包,用户已有方案,2026,internal_unverified_method_reference,复相位分支、Neumann余项、SVD可辨识性和验证框架来源；旧模型代码与结果不继承,Q1-Q3融合修正与验证设计,true,method_only
-S-PROBLEM,problem_statement,2025年全国大学生数学建模竞赛B题：碳化硅外延层厚度的确定,全国大学生数学建模竞赛组委会,2025,official,赛题任务与附件语义定义,问题重述,true,accepted
-S-LI1980,journal_article,Refractive index of silicon and germanium and its wavelength and temperature derivatives,H. H. Li,1980,NIST_reference_data,Si背景折射率参数来源,Q3材料参数,true,accepted
-S-SG1964,journal_article,Smoothing and Differentiation of Data by Simplified Least Squares Procedures,A. Savitzky; M. J. E. Golay,1964,primary,光谱平滑算法来源,Q2预处理,true,accepted
-S-DE1997,journal_article,Differential Evolution—A Simple and Efficient Heuristic for Global Optimization over Continuous Spaces,R. Storn; K. Price,1997,primary,差分进化全局反演算法来源,Q2算法,true,accepted
-S-MARQ1963,journal_article,An Algorithm for Least-Squares Estimation of Nonlinear Parameters,D. W. Marquardt,1963,primary,非线性最小二乘模型求解来源,Q2算法,true,accepted
-S-KUNSCH1989,journal_article,The Jackknife and the Bootstrap for General Stationary Observations,H. R. Kunsch,1989,primary,相关光谱残差块Bootstrap不确定性来源,Q2结果验证,true,accepted
-S-DRUDE1900,journal_article,Zur Elektronentheorie der Metalle,P. Drude,1900,primary,自由载流子复介电函数模型来源,Q1色散预备工作,true,accepted
-S-BORN1999,book,Principles of Optics,M. Born; E. Wolf,1999,authoritative_monograph,复Fresnel边界与薄膜干涉模型来源,Q1模型,true,accepted
+PAPER_A,national_first_paper,基于色散模型和最小二乘拟合的外延层厚度测量,邱杰等,2025,national_first_training_reference,Q1至Q3唯一主体方法来源,Q1-Q3,true,accepted_primary
+PAPER_B,national_first_paper,基于Cauchy-Drude色散效应的外延层厚度红外干涉测量研究,路子涵等,2025,national_first_training_reference,仅作第一阶段比较_不进入当前核心路线,work/archive,true,archived_secondary
+OWN,own_model_archive,摄动反演与Neumann四轮完整数值包,用户已有方案,2026,internal_reference,仅保留单位符号门禁和简单验证思想,work/archive,true,archived_method_reference
+S-PROBLEM,problem_statement,2025年全国大学生数学建模竞赛B题：碳化硅外延层厚度的确定,全国大学生数学建模竞赛组委会,2025,official,任务与附件语义,问题重述,true,accepted
+S-MARQ1963,journal_article,An Algorithm for Least-Squares Estimation of Nonlinear Parameters,D. W. Marquardt,1963,primary,有界非线性最小二乘思想,Q2-Q3,true,accepted
+S-DRUDE1900,journal_article,Zur Elektronentheorie der Metalle,P. Drude,1900,primary,自由载流子介电函数,Q1-Q3,true,accepted
+S-BORN1999,book,Principles of Optics,M. Born; E. Wolf,1999,authoritative_monograph,Fresnel边界与薄膜干涉,Q1-Q3,true,accepted

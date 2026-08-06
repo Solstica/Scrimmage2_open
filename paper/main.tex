@@ -1,3 +1,32 @@
-% Friendly entry point. The competition-gate compatible composition lives in
-% paper_template.tex; all editable section content lives under ../modules/.
-\input{paper_template.tex}
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[withoutpreface]{cumcmthesis}
+\providecommand{\ProjectRoot}{..}
+\input{preamble.tex}
+\title{基于Fresnel干涉反演的外延层厚度测量}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract.tex}
+\end{abstract}
+
+\section{问题重述}
+\input{sections/restatement.tex}
+\section{符号说明}
+\input{sections/notation.tex}
+\section{模型假设}
+\input{sections/assumptions.tex}
+\section{问题一模型的建立与求解}
+\input{sections/Q1.tex}
+\section{问题二模型的建立与求解}
+\input{sections/Q2.tex}
+\section{问题三模型的建立与求解}
+\input{sections/Q3.tex}
+\section{模型总结与评价}
+\input{sections/evaluation.tex}
+\input{sections/references.tex}
+\section{附录：程序代码}
+\input{sections/appendix.tex}
+\section{AI使用报告}
+\input{sections/ai_report.tex}
+\end{document}
