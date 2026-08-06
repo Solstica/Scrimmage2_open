@@ -9,7 +9,7 @@
 其中Sellmeier参数在登记值的$\pm5\%$范围内变化，厚度满足$6.5\le d\le8.5\,\mu\mathrm m$。
 
 \subsection{PAPER\_A单角度有界反演模型}
-对入射角$\theta_k\in\{10^\circ,15^\circ\}$，将问题一式\eqref{eq:q1-reflectance}记为$R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k)$，单角度最小二乘目标为
+对入射角$\theta_k\in\{10^\circ,15^\circ\}$，记第$k$个角度的参数为$\boldsymbol p_k$。问题一建立的非偏振反射率正演算子写作$R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k)$，单角度最小二乘目标为
 \begin{equation}
 \min_{\boldsymbol p_k}\;J_k(\boldsymbol p_k)
 =\sum_{i:\,2500\le\sigma_i\le3300}
@@ -24,6 +24,17 @@
 
 \textbf{模型汇总：} 输入附件1、2和问题一双光束正演模型；在$2500$--$3300\,\mathrm{cm}^{-1}$内分别执行有界多初值最小二乘；输出两个单角度厚度、拟合误差、边界命中情况，并由式\eqref{eq:q2-average}得到正式结果。
 
+图\ref{fig:q2-algorithm}说明两个角度始终分开求解，避免把“分别反演后平均”误写成共享参数联合拟合。随后给出与程序变量一一对应的伪代码。
+
+\begin{figure}[!htbp]
+\centering
+\input{\ProjectRoot/modules/30_q2/figures/q2_algorithm_flow.tex}
+\caption{问题二分角度有界反演流程。}
+\label{fig:q2-algorithm}
+\end{figure}
+
+\lstinputlisting[caption={问题二反演伪代码}]{\ProjectRoot/modules/30_q2/paper/q2_pseudocode.txt}
+
 \subsection{求解结果}
 两个角度的拟合结果分别为
 \begin{equation}
@@ -36,19 +47,21 @@ d_{15^\circ}=7.6230\,\mu\mathrm m,
 \end{equation}
 两角度结果相差$0.2337\,\mu\mathrm m$，以半极差$0.1168\,\mu\mathrm m$表征角度间离散程度。$10^\circ$和$15^\circ$拟合的RMSE分别为$5.9820\times10^{-4}$和$7.0652\times10^{-4}$，$R^2$分别为$0.9551$和$0.9526$。
 
-\begin{figure}[H]
+图\ref{fig:q2-paper-a-fit}同时展示理论曲线与残差，用于判断模型能否复现实测峰谷以及误差是否随波数系统漂移。
+
+\begin{figure}[!htbp]
 \centering
 \begin{minipage}{.49\textwidth}
-\centering\includegraphics[width=\linewidth]{../modules/30_q2/figures/q2_10deg_paper_a_fit.png}
+\centering\includegraphics[width=\linewidth]{\ProjectRoot/modules/30_q2/figures/q2_10deg_paper_a_fit.png}
 \end{minipage}
 \begin{minipage}{.49\textwidth}
-\centering\includegraphics[width=\linewidth]{../modules/30_q2/figures/q2_15deg_paper_a_fit.png}
+\centering\includegraphics[width=\linewidth]{\ProjectRoot/modules/30_q2/figures/q2_15deg_paper_a_fit.png}
 \end{minipage}
 \caption{PAPER\_A路线下两个入射角的独立拟合与残差。}
 \label{fig:q2-paper-a-fit}
 \end{figure}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{问题二单角度反演结果}
 \label{tab:q2-paper-a-results}
@@ -65,4 +78,6 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.9526 & 平均值分量\\
 \end{table}
 
 \subsection{验证、灵敏度与局限性}
-首先，两角度均得到稳定的同一条纹级次，拟合曲线能够复现实测峰谷位置；其次，独立结果的相对差异为$3.02\%$，支持取平均作为同一晶圆的厚度估计。需要说明的是，载流子浓度及若干Sellmeier扰动参数达到约束边界，表明这些干扰参数在窄波段内不可作精确材料表征；它们只用于吸收谱形差异，不进入题目最终结论。主厚度与PAPER\_A复现值一致，且未引入角度增益、偏置或共享参数联合拟合。
+两个角度的拟合曲线均复现实测峰谷位置，并落入同一条纹级次；独立厚度的相对差异为$3.02\%$，支持以算术平均表示同一晶圆厚度。载流子浓度及若干Sellmeier扰动参数达到约束边界，说明这些附属参数在窄波段内不足以用于材料表征；它们只吸收谱形差异，不进入厚度结论。主厚度与PAPER\_A复现值一致，计算中未加入角度增益、偏置或共享参数联合拟合。
+
+\FloatBarrier
