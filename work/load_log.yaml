@@ -1,6 +1,6 @@
-task_zh: 审查并规范化全仓库文件位置，拆分Q1/Q2混合资产，编写队友AI协作规范
-route: audit
-domain: mixed
+task_zh: 将run_02切换为PAPER_A唯一主体并按Q1/Q2/Q3独立分支重建代码结果图表正文与门禁
+route: full_paper
+domain: A
 required_files:
 - SKILL.md
 - control/task_router.yaml
@@ -15,14 +15,28 @@ required_files:
 - rules/visuals_format.md
 - rules/literature.md
 - rules/end_matter.md
+- workflows/01_full_paper.md
+- workflows/03_abstract.md
 - workflows/05_final_audit.md
-- gates/manual_review.md
+- profiles/chinese_style_default.md
+- profiles/team_signature.md
+- examples/exemplar/layout_baseline.md
+- examples/exemplar/section_naming_and_structure.md
+- examples/exemplar/flowchart_and_result_visuals.md
+- examples/exemplar/teacher_annotations.yaml
+- examples/failures/abstract_failure_patterns.md
+- examples/failures/algorithm_failure_patterns.md
 - rules/model_relation.md
 - rules/literature_impact.md
 - rules/feasibility.md
+- rules/training_iteration.md
+- rules/asset_library.md
+- workflows/06_training_iteration.md
+- workflows/07_model_relation.md
+- workflows/08_literature_impact.md
+- workflows/09_feasibility.md
+- workflows/10_asset_learning.md
 - rules/A_pde_inverse.md
-- rules/B_optimization.md
-- rules/C_statistics.md
 file_sha256:
   SKILL.md: ce68b5d306f18bd01b6bb159e345fcf6976838553c99767f82eb5b79c28930ec
   control/task_router.yaml: b201e91ebde5df360b3013499e275270ad5bf383302d5a81c63de0bf46586c2b
@@ -37,16 +51,30 @@ file_sha256:
   rules/visuals_format.md: dddc6f5c614df095a0b1acf75b46e062c9d1077fbe6fdd023aa18547be697e22
   rules/literature.md: 531c45ebfc5f874cebe80b8a93efa697b1d242ca4bc3256c75c371b105f5d617
   rules/end_matter.md: efa248a1808126e568cd6f7f3c6a75ea5fdb7a4d1281d530dedffebb7adf5112
+  workflows/01_full_paper.md: 9927980f34fb56ec80c9e8a0a95de726c4d0834ac7a57665017eafa9cd94e36b
+  workflows/03_abstract.md: 67d17d961114bdcd4bba9ba6082c2a841180b262ecf82af1894f6c2163170ad6
   workflows/05_final_audit.md: b7130882967605d073e17b51bd85f0777987d6bbe9b6db1e791a9797f2a114bb
-  gates/manual_review.md: ae0d549cc64f35c0c3befa12ef6b512bb441281768abc14d2d6bea7a76b059a4
+  profiles/chinese_style_default.md: 2da6f4c411fba8e0183366c2508cac8b7384b52f812945ef350b9ac7d3f8e31b
+  profiles/team_signature.md: 97af09b2f46d22a4bb7c63e8be54927eac74313254d0052afcb456be09d75090
+  examples/exemplar/layout_baseline.md: 925fd547214a2e9e06e66a46bc0312284088bd3d63bd3ce9e5c57e6456784c0e
+  examples/exemplar/section_naming_and_structure.md: d051791f59fd74333f18ed72d67543ba22177a0fb9d9daae939f2c531023bf98
+  examples/exemplar/flowchart_and_result_visuals.md: f360d1652f1838264e04a71c13028c19ba3bcf82cf5304e82e5ee88d2d7372f1
+  examples/exemplar/teacher_annotations.yaml: 800e8908c09587b12e5b85c0af8f93d46e3b924501ef93cf916c4d89661ec232
+  examples/failures/abstract_failure_patterns.md: 734b16eebc2b41ae31303664086f196d2ea698ddc6e5cbcdddc87fc20a1390e2
+  examples/failures/algorithm_failure_patterns.md: 73e7f0e1b1f0b5100a24dde9658f6dd8d4f163cc798e5dac7f43d1132004a457
   rules/model_relation.md: 054813a6b9b4aa611333d012d2f90d364d143fbe28eae1b950bc07a917a3c8b1
   rules/literature_impact.md: a74fccdc8b23c5636ad65b1f0b44dade3ad5f4fd63ef833e7a9af3c5bc576642
   rules/feasibility.md: cce84b6a930c84e4d2b35f98c3366fe5e46e5c1ffbafc75a82cb8e92f3dee987
+  rules/training_iteration.md: f7f3109c365c529c73928a065de00d299ce699dc6b45c7c3b9c2aff6aea77a23
+  rules/asset_library.md: 44615966b4fb0ed47bd4521da06731a1aa71079eb18cdfa76c0c6c007bbd3b15
+  workflows/06_training_iteration.md: 0c502286e78fbb6ab99b89dd93a2517ef8db89563a92ea5286369518488814f6
+  workflows/07_model_relation.md: 8ea6e07a966039cd4f9a7e1307c760bc21efc6913f2b44e9ac4eeb97e02b4af5
+  workflows/08_literature_impact.md: 91d5de01ce2880aed9e98905d1c7e6d1823a4e8804afe87df3d826dd00acd3ac
+  workflows/09_feasibility.md: 80dc1cf0226f5ca7c18052a82094381536dc3d851ee01b68ba813f642bd8840f
+  workflows/10_asset_learning.md: 2b127692d30f8f130c36bafdd599e6cea1c6833c3d64584a2b93b7e8390d8dcf
   rules/A_pde_inverse.md: 1d75f4f260a0e7f774cb23ac27fb3dd0e1d107b87bcd139aa23edd42518cc912
-  rules/B_optimization.md: d9c97b9154e32fa25481ff594c016cb7dff53ade60fc466a230ede7a4ba80aea
-  rules/C_statistics.md: bdba39b2604583d216699762d64aed038c24e90f1073a38e56c9b7781c9dbecc
 bundle_path: work/route_bundle.md
-bundle_sha256: 0f8c6a0f5b70d198ca3fff3015f26bec371828af96114f15f6b075c1578445a3
+bundle_sha256: b7de62504f9255bf11d7746a2b3cab989ce7af2a4aa39e9e916d015c45ec98d0
 missing_files: []
-timestamp: '2026-08-06T06:34:40.869378+00:00'
+timestamp: '2026-08-06T10:24:27.628032+00:00'
 status: COMPLETE

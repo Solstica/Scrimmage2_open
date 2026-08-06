@@ -17,7 +17,7 @@
 
 ```tex
 \input{../modules/30_q2/paper/q2.tex}
-\includegraphics{../modules/30_q2/figures/q2_sic_joint_fit.png}
+\includegraphics{../modules/30_q2/figures/q2_10deg_paper_a_fit.png}
 \lstinputlisting{../modules/30_q2/code/example.py}
 ```
 
@@ -49,3 +49,16 @@
 `modules/document.*`、`output/results/document.*` 与 `output/图/` 当前由指定队友调整。解除冻结前，其他协作者和 AI 不得移动、改写或删除；后续迁移方案见 `work/document_migration_pending.md`。
 
 完整 AI 协作规则见 `AI_COLLABORATION_GUIDE.md`。
+
+## 当前结果依赖链
+
+```text
+Q1 PAPER_A双光束物理核
+        ↓
+Q2 10°与15°独立拟合 → 平均7.7398 μm
+        ↓
+Q3读取Q2 JSON及哈希 → SiC第三束回溯
+Q3硅Airy结果 → REVIEW_REQUIRED → 阻断摘要与PDF
+```
+
+`work/archive/fusion_80_20_20260806/`中的代码、图表、结果和PDF均为STALE，只可复盘，不得被活动构建入口读取。

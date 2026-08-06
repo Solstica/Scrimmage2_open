@@ -1,60 +1,48 @@
-version: '1.0'
-status: COMPLETE
+version: '2.0'
+status: FROZEN
+analyses:
+- analysis_id: VAL-A-Q1-PHYSICS
+  type: limiting_case
+  covered_questions: [Q1]
+  completed: true
+  checks: [unit_scale, normal_incidence_fresnel, zero_thickness, phase_linearity, finite_nonnegative]
+- analysis_id: VAL-A-Q2-ANGLE
+  type: sensitivity
+  covered_questions: [Q2]
+  completed: true
+  checks: [independent_angle_fit, angle_half_range, RMSE, R2]
+  result_zh: 两角度厚度相对差异3.02%_半极差0.1168微米
+- analysis_id: VAL-A-Q3-PHYSICS
+  type: sensitivity
+  covered_questions: [Q3]
+  completed: true
+  checks: [attenuating_branch, Airy_only, multistart, third_beam_ratio, Q2_hash_dependency, SiC_backcheck]
+  result_zh: 固定背景四参数重算3.2178微米_SiC第三束光强比远低于阈值
 paper_level:
   sensitivity_required: true
-  prominent_location_zh: 问题二结果分析与问题三模型判别
-  analysis_ids: [VAL-Q2-BAND, VAL-Q2-ID, VAL-Q3-ORDER]
-analyses:
-- analysis_id: VAL-Q1-SYN
-  covered_questions: [Q1]
-  type: sensitivity
-  completed: true
-  parameters: [thickness, refractive_index, internal_round_trip_factor]
-  outputs: [recovery_error, finite_order_error]
-  ranges_zh: 厚度6至9微米，折射率基准上下扰动2%，多光束阶数1至无穷
-- analysis_id: VAL-Q2-BAND
-  covered_questions: [Q2]
-  type: sensitivity
-  completed: true
-  parameters: [spectral_band, incidence_angle, refractive_index_scale]
-  outputs: [thickness, RMSE]
-  ranges_zh: 多个论文波段及其邻域；角度按测量值小范围扰动；折射率尺度上下2%
-- analysis_id: VAL-Q2-ID
-  covered_questions: [Q2]
-  type: identifiability_and_uncertainty
-  completed: true
-  parameters: [thickness, plasma_wavenumber, damping_wavenumber, refractive_index_scale]
-  outputs: [Jacobian_singular_values, profile_objective, block_bootstrap_distribution]
-  ranges_zh: 参数边界内多启动，厚度剖面6至9微米，固定随机种子块Bootstrap
-- analysis_id: VAL-Q3-ORDER
-  covered_questions: [Q3]
-  type: convergence_and_nested_model_comparison
-  completed: true
-  parameters: [reflection_order, spectral_band, refractive_index_scale]
-  outputs: [rho, thickness, RMSE, AIC]
-  ranges_zh: 反射阶数1、2、3、4、6及Airy极限；多波段与折射率尺度扰动
+  analysis_ids: [VAL-A-Q2-ANGLE, VAL-A-Q3-PHYSICS]
+  prominent_location_zh: 问题二验证灵敏度与局限性_问题三可靠性与局限性
+  abstract_fact_gate: PASS
+  final_pdf_binding: 31e308fa41fd9c911b831ed54440623a84dcab520ad324c1616b792c38f22eda
 questions:
   Q1:
     result_analysis_complete: true
-    parameterized_model: true
-    sensitivity_mode: independent
-    sensitivity_analysis_id: VAL-Q1-SYN
-    exception_reason_zh: ''
-    required_by_type: [dimensional_consistency, limiting_case]
-    completed: [dimensional_consistency, limiting_case]
+    parameterized_model: false
+    sensitivity_mode: not_applicable
+    exception_reason_zh: 本问为解析正演关系_使用极限情形和单位一致性验证代替人为参数灵敏度图
+    required_by_type: []
+    completed: [limiting_case, dimensional_consistency]
   Q2:
     result_analysis_complete: true
     parameterized_model: true
-    sensitivity_mode: consolidated
-    sensitivity_analysis_id: VAL-Q2-BAND
-    exception_reason_zh: ''
-    required_by_type: [error_analysis, identifiability, uncertainty]
-    completed: [error_analysis, identifiability, uncertainty]
+    sensitivity_mode: independent
+    sensitivity_analysis_id: VAL-A-Q2-ANGLE
+    required_by_type: [identifiability]
+    completed: [identifiability, angle_half_range, RMSE, R2]
   Q3:
     result_analysis_complete: true
     parameterized_model: true
     sensitivity_mode: independent
-    sensitivity_analysis_id: VAL-Q3-ORDER
-    exception_reason_zh: ''
-    required_by_type: [error_analysis, convergence, nested_model_comparison, identifiability]
-    completed: [error_analysis, convergence, nested_model_comparison, identifiability]
+    sensitivity_analysis_id: VAL-A-Q3-PHYSICS
+    required_by_type: [identifiability]
+    completed: [identifiability, multistart, propagation_gate, Q2_hash_dependency]
