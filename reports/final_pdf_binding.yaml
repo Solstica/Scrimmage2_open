@@ -1,8 +1,15 @@
 run_id: run_02
 artifact: output/pdf/run_02_真题解析.pdf
-sha256: edff96133695c6101c2c6efe63ab9632e9b2aecce7c5504eb8adafce616bd84d
-page_count: 15
-source_tex: paper/paper_template.tex
+sha256: 31e308fa41fd9c911b831ed54440623a84dcab520ad324c1616b792c38f22eda
+page_count: 14
+page_size: A4
+source_tex: paper/main.tex
+shared_preamble: paper/preamble.tex
+preview_entries:
+  - modules/20_q1/paper/q1_preview.tex
+  - modules/30_q2/paper/q2_preview.tex
+  - modules/40_q3/paper/q3_preview.tex
 gate_report: reports/gate_report.json
 gate_status: PASS
-bound_at: '2026-08-05T12:06:28+08:00'
+visual_review: PASS
+bound_at: '2026-08-06T23:10:00+08:00'

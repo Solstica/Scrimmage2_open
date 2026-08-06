@@ -1,16 +1,25 @@
 version: 3.4.0-rc1
 competition: CUMCM
 problem_id: CUMCM-2025-B
-title_status: FINAL
-question_count: 3
-questions:
-- Q1
-- Q2
-- Q3
-current_mode: FINAL
-current_phase: DELIVERY_GATE_PASS
-body_language: zh-CN
-latex_template: templates/latex/paper_template.tex
-last_updated: '2026-08-05T04:00:00+00:00'
 training_mode: true
 training_run_id: run_02
+question_count: 3
+questions: [Q1, Q2, Q3]
+current_mode: REVISE
+current_phase: FULL_PAPER_VALIDATION
+body_language: zh-CN
+latex_template: paper/cumcmthesis.cls
+result_chain:
+  Q1: FROZEN
+  Q2: FROZEN
+  Q3: FROZEN
+q3_exception:
+  five_percent_numerical_gate_pass: false
+  user_accepted: true
+  accepted_value_um: 3.217758548031541
+  accepted_on: '2026-08-06'
+  reason: 固定硅背景参数且仅拟合四参数，保留诚实重算值
+abstract_status: FROZEN_RENDERED_ONE_PAGE
+final_pdf_status: FROZEN_HASH_BOUND
+final_pdf_sha256: 31e308fa41fd9c911b831ed54440623a84dcab520ad324c1616b792c38f22eda
+last_updated: '2026-08-06T23:10:00+08:00'

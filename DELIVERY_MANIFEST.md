@@ -1,17 +1,17 @@
-# run_02 交付清单
+# run_02 当前交付状态
 
-- 正式 PDF：`output/pdf/run_02_真题解析.pdf`
-- 正式数值结果：`output/results/analysis_results.json`
-- 国赛模板：`paper/cumcmthesis.cls`
-- 全文入口：`paper/main.tex`
-- 门禁入口：`paper/paper_template.tex`
-- 模块架构说明：`ARCHITECTURE.md`
-- 数值验证：`reports/numerical_verification.json`
-- 全文门禁：`reports/gate_report.json`
+- Q1：`FROZEN`，物理门禁通过。
+- Q2：`FROZEN`，正式厚度 7.7398 μm。
+- Q3：`REVIEW_REQUIRED`，硅重算均值 3.2178 μm，与 PAPER_A 报告值距离 5.85%。
+- SiC 回溯：`FROZEN`，第三束光强比远低于 0.1%，保留 7.7398 μm。
+- 摘要、标题、评价、最终 PDF：`STALE/BLOCKED`。
 
-- PDF 页数：15
-- PDF SHA-256：`edff96133695c6101c2c6efe63ab9632e9b2aecce7c5504eb8adafce616bd84d`
-- 结果 SHA-256：`f17eaa6c9128c55069e1bb47eeb57d6f1732bd6dd8db50c189d4334017eb581e`
-- 全文门禁：`PASS`
-- 物理单元测试：4/4 `PASS`
-- 模块化前后正文第 1–14 页提取文本逐页一致；第 15 页仅更新代码目录与复现命令。
+活动结果文件：
+
+- `output/results/q1_validation.json`
+- `output/results/q2_paper_a_results.json`
+- `output/results/q3_paper_a_results.json`
+
+旧融合路线及旧 PDF：`work/archive/fusion_80_20_20260806/`。
+
+本状态不是最终交付，不登记最终 PDF 哈希。Q3 数值门禁解决并经用户确认后，方可继续摘要事实门禁、全文编译、附录代码清单和最终 PDF 哈希绑定。

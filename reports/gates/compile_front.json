@@ -1,7 +1,7 @@
 {
   "gate": "compile_front",
   "status": "PASS",
-  "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\front_matter_check.tex",
-  "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\front",
+  "tex": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\paper\\front_matter_check.tex",
+  "out_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\front",
   "issues": []
 }
