@@ -1,8 +1,8 @@
 # Route execution bundle
 
-- route: `full_paper`
-- domain: `A`
-- task_zh: 将run_02切换为PAPER_A唯一主体并按Q1/Q2/Q3独立分支重建代码结果图表正文与门禁
+- route: `audit`
+- domain: `mixed`
+- task_zh: 审查并规范化全仓库文件位置，拆分Q1/Q2混合资产，编写队友AI协作规范
 
 > This file is generated from the exact mandatory source files. Read this bundle before writing. Do not rely on filenames alone.
 
@@ -879,159 +879,6 @@ Include complete runnable programs, code list/table, environment and dependency 
 
 ---
 
-## FILE: `workflows/01_full_paper.md`
-
-# Full paper workflow
-
-Execute in this order. Each phase creates observable files; no phase may be claimed complete from hidden reasoning.
-
-## Phase 0 - route and load evidence
-
-Initialize the project and record the selected route:
-
-```bash
-python scripts/init_project.py <project> --questions <N>
-python scripts/record_load.py --project <project> --skill-root <skill-root> --route full_paper --task "<任务说明>"
-python gates/check_load_log.py --project <project> --skill-root <skill-root>
-```
-
-## Phase 1 - problem, relation, evidence, and feasibility
-
-- Decompose each question into input, output, constraints, required precision, and validation.
-- Build `work/model_relation_graph.yaml`; declare inheritance, extension, simplification, replacement, or independence across questions.
-- Register data and literature. Use `scripts/registry_upsert.py` rather than hand-editing comma-containing CSV fields.
-- Review every model-relevant source in `work/literature_impact_log.yaml`; newly found literature may invalidate current assumptions or results.
-- Create per-question plans, interfaces, and feasibility reviews. Select an implementable candidate before large-scale coding.
-- Create `work/validation_plan.yaml`: every question needs result analysis, the paper needs explicit sensitivity analysis, and model-type triggers are declared.
-- Run relation, literature, feasibility, validation-plan, and registry gates.
-- Write the title builder fields but do not freeze the final title.
-
-## Phase 2 - closed question units
-
-For each question, execute `02_question_unit.md`.
-
-- Use a specific model name.
-- Include a model summary.
-- Freeze results only after required validation.
-- Save a question interface before moving to the next question.
-- Any model or code change marks dependent results `STALE`.
-
-## Phase 3 - front matter and end matter
-
-- Write problem restatement, notation, and 3-6 justified assumptions.
-- Compile `front_matter_check.tex`; the three parts together must occupy no more than 2 pages.
-- Write model evaluation with summary, strengths, limitations, and improvement/outlook.
-- Supply at least 10 references, including at least 3 English references.
-- Supply complete runnable code and the AI-use report.
-
-## Phase 4 - abstract and title
-
-Execute `03_abstract.md` only after all abstracted results are `FROZEN`. Then finalize `work/title_builder.yaml` and make `\title{}` exactly match `final_title`.
-
-## Phase 5 - style and final audit
-
-- Run technical gates.
-- Apply the Chinese style profile without changing technical content.
-- Compile the front matter, abstract, and full paper.
-- Execute `05_final_audit.md`.
-- Complete `reports/manual_review.yaml`.
-- Deliver only after `reports/gate_report.json` reports `overall_status: PASS`.
-
-
----
-
-## FILE: `workflows/03_abstract.md`
-
-# Abstract workflow - observable add then subtract
-
-## Preconditions
-
-- The body already contains the model, method, results, and validation statements being summarized.
-- Every abstract result is `FROZEN` in `work/result_registry.csv` and marked `used_in_abstract=true`.
-- Run `gates/check_registries.py` before writing the abstract. CSV row misalignment must be corrected first.
-
-## Stage A - six-slot worksheet
-
-Fill `work/abstract_slots.yaml`. Each question has six mandatory functions:
-
-1. central sentence;
-2. preliminary work;
-3. mathematical model;
-4. solution method or algorithm;
-5. result;
-6. result analysis.
-
-For an analytic derivation question, the fourth slot states the derivation or direct-calculation route. Do not invent an algorithm.
-
-Frozen result anchors need not be byte-for-byte copies. The gate normalizes typography and verifies the registered numerical/content anchor.
-
-```bash
-python gates/check_abstract_source.py --project <project> --stage slots
-```
-
-## Stage B - additive Chinese draft
-
-Generate, do not manually copy, the additive draft:
-
-```bash
-python scripts/build_additive_draft.py --project <project>
-```
-
-This file preserves every slot and proves that the six functions were written before compression.
-
-## Stage C - compressed Chinese draft
-
-Write `work/abstract_compressed_zh.md` under the markers `INTRO`, `Q1...Qn`, optional `INNOVATION`, and `KEYWORDS`.
-
-- one paragraph per question;
-- each question begins with “针对问题…”;
-- final paragraphs retain all frozen result anchors;
-- keywords follow problem -> specific model -> method/algorithm;
-- the compressed text is observably shorter than the additive draft;
-- use Markdown `**...**` only for selective bolding.
-
-```bash
-python gates/check_abstract_source.py --project <project> --stage drafts
-```
-
-## Stage D - generated LaTeX source
-
-Do not manually translate the compressed draft into custom LaTeX macros. Generate stable tagged content:
-
-```bash
-python scripts/build_abstract_tex.py --project <project>
-```
-
-The output `paper/abstract_content.tex` contains plain paragraphs inside `% <ABS:...>` blocks and a normal `\keywords{...}` command. The main document uses the standard `abstract` environment from `cumcmthesis.cls`.
-
-```bash
-python gates/check_abstract_source.py --project <project> --stage tex
-```
-
-## Stage E - compile and measure
-
-```bash
-python gates/run_all.py --project <project> --skill-root <skill-root> --scope abstract
-```
-
-Required rendered limits:
-
-- overview: at most 3 lines;
-- each question: 4-6 lines;
-- innovation: at most 2 lines;
-- abstract and keywords: one A4 page.
-
-## Stage F - author-style revision
-
-Revise the compressed Chinese draft, not the generated TeX. Preserve values, units, uncertainty qualifiers, model names, and conclusions. Then rerun `build_abstract_tex.py` and all abstract gates.
-
-## Stage G - manual review
-
-Complete every boolean in `reports/abstract_manual_review.yaml`. Automated pass with unfinished manual review is reported as `AUTOMATED_PASS_MANUAL_PENDING`, not as a final pass.
-
-
----
-
 ## FILE: `workflows/05_final_audit.md`
 
 # Final teacher audit
@@ -1054,331 +901,23 @@ Audit in this order:
 
 ---
 
-## FILE: `profiles/chinese_style_default.md`
-
-# 中文作者修订型表达
-
-技术内容和结构先通过，再执行本层。
-
-## 写法
-
-- 每段直接写对象、变量、方法、结果或限制，不用空泛背景起句。
-- 判断必须有具体主语和依据。资料不足时保留缺口。
-- 使用动作表达：定义、推导、拟合、计算、比较、扰动、检验、收敛。
-- “影响、提升、优化、促进”后写清对象、方向和可测结果。
-- 文献结论说明材料/问题体系、方法、观察和适用范围。
-- 段落结尾给出具体后果、限制或下一步，不自动升华。
-
-## 避免
-
-- “不是……而是……”的模板化对比；
-- “不仅……更是……”“从……到……”等排比；
-- “具有重要意义、广阔前景、核心在于、本质上是、主线、抓手、闭环、赋能”；
-- “值得注意的是、可以看出、不难发现”；
-- 无来源的“研究表明、普遍认为、已有研究指出”；
-- 为降低字数而堆名词和缩写；
-- 把稳定性范围误写成严格置信区间；
-- 机械重复“针对问题X，本文……”。摘要中心句可保留该形式，正文不必反复使用。
-
-## 修订门禁
-
-修订前后逐项比较公式、符号、数值、单位、误差范围和结论。任何变化均需回到技术层确认。修订后重新编译并运行门禁。
-
-
----
-
-## FILE: `profiles/team_signature.md`
-
-# Team signature
-
-- Problem-driven rather than method-driven.
-- One final model per question, generalized when possible.
-- Small, verifiable modules instead of a large coupled model without evidence.
-- A/B emphasize numerical correctness and reproducibility.
-- C emphasizes data semantics, statistics, and interpretation; use machine learning cautiously.
-- Innovation is expressed as a resolved difficulty and measured consequence.
-- Visuals carry information and are edited for readability.
-
-
----
-
-## FILE: `examples/exemplar/layout_baseline.md`
-
-# 易良禹范文LaTeX版式反推
-
-## 1. 可确认的技术参数
-
-该PDF由LaTeX生成，生产器为 `xdvipdfmx`。页面为A4：595.28 pt × 841.89 pt（210.00 mm × 297.00 mm）。正文主字体为12.01 pt的Fandol宋体，拉丁字符主要使用Times New Roman，数学公式使用Computer Modern。
-
-| 项目 | 测量值 | 后续用途 |
-|---|---:|---|
-| 左页边距 | 70.9 pt = 25.01 mm | 设为约25 mm |
-| 右页边距 | 70.9 pt = 25.00 mm | 设为约25 mm |
-| 正文宽度 | 453.5 pt = 159.98 mm | 约38个全角汉字/满行 |
-| 正文字号 | 12.01 pt | 对应小四附近 |
-| 正文基线距 | 约19.87 pt | 约为字号的1.65倍 |
-| 首行缩进 | 24.0 pt | 正好2个12 pt汉字 |
-| 论文标题 | 16 pt，加粗，居中 | 摘要页标题 |
-| “摘要”标题 | 14 pt，加粗，居中 | 摘要单独标题 |
-| 一级标题 | 15 pt，加粗，居中 | “4 问题一模型的建立与求解” |
-| 二、三级标题 | 12 pt，加粗，左对齐 | 编号与文字间留空格 |
-| 页码 | 页脚居中，基线约803.8 pt | 摘要页不显示页码，正文从1起 |
-
-## 2. 摘要页的实际行数
-
-自动按PDF基线统计得到：
-
-- 总体段：2行；
-- 问题一：6行；
-- 问题二：5行；
-- 问题三：5行；
-- 问题四：5行；
-- 问题五：4行；
-- 亮点段：2行；
-- 关键词：1行。
-
-该结果与录音179的评价完全对应：总体段两行，中间各段最多六行，通常四至五行；问题一正好六行，其余为四至五行。以后不能再用“约多少字”替代行数门禁，必须用固定LaTeX模板编译后统计实际基线。
-
-## 3. 前置部分的版面基准
-
-摘要之后的第2-3页包含问题重述、模型假设和符号说明，合计正好两页。问题背景只有两小段并配一幅合成示意图；模型假设3条；符号说明采用带单位列的浅蓝色三线表。
-
-## 4. 推荐模板参数与限制
-
-以下参数可作为新版Skill的默认基准，最终仍以官方模板和当年提交要求为上限：
-
-```yaml
-paper: a4
-margins_mm: {left: 25, right: 25, top: 25, bottom: 25}
-body_font_zh: FandolSong-Regular
-body_font_latin: Times New Roman
-body_font_size_pt: 12
-first_line_indent_em: 2
-baseline_skip_pt: 19.9
-title_size_pt: 16
-abstract_heading_size_pt: 14
-level1_size_pt: 15
-level2_size_pt: 12
-level3_size_pt: 12
-figure_caption_position: below
-table_caption_position: above
-page_number: centered_footer
-```
-
-“每行约38字”只适用于纯中文、无加粗、无英文和无数学符号的满行估计。摘要、公式混排和英文术语会改变实际换行，所以最终门禁必须依据渲染页面。
-
-
----
-
-## FILE: `examples/exemplar/section_naming_and_structure.md`
-
-# 范文章节命名与结构标注
-
-## 1. 老师明确认可的命名方式
-
-每问一级标题统一采用“问题X模型的建立与求解”。每问内部先写“问题X的描述与分析”，随后直接写具体模型名称。优化问题不使用空泛的“模型的建立”，而写为：
-
-- 单无人机单烟幕弹遮蔽优化模型；
-- 单无人机多烟幕弹遮蔽优化模型；
-- 多无人机多烟幕弹遮蔽优化模型；
-- 多导弹多无人机遮蔽优化模型。
-
-具体模型名称应体现对象、规模或任务，不能只写“优化模型”“预测模型”“评价模型”。
-
-## 2. 计算型问题的推荐结构
-
-```text
-问题X模型的建立与求解
-  问题X的描述与分析
-  [问题X流程图]
-  具体计算模型
-    子模型/机制1
-    子模型/机制2
-    判定或状态模型
-    输出量计算模型
-    模型汇总
-  模型求解和结果分析
-    离散化或算法准备
-    求解步骤
-    求解结果
-    必要的误差/灵敏度/稳定性分析
-```
-
-问题一的“模型汇总”受到老师明确强调。模型汇总应集中给出输入、关键状态方程、判定条件和输出量，不把模型散落在数页推导中。
-
-## 3. 优化型问题的推荐结构
-
-```text
-问题X模型的建立与求解
-  问题X的描述与分析
-  [问题X流程图]
-  具体优化模型名称
-    决策变量
-    目标函数
-    约束条件
-    模型汇总
-  XX算法求解XX模型
-    选择理由
-    原理简述
-    与本题模型结合的步骤
-    流程图
-    伪代码
-  结果分析
-  灵敏度分析
-  收敛性分析（智能优化必需）
-```
-
-老师将“模型汇总”判定为高权重内容：缺少汇总会被视为模型没有完整建立。目标函数的长推导应移入“预备工作”，模型段只保留最终主体、符号解释和必要约束。
-
-## 4. 本范文可保留但不应照抄的地方
-
-- 将算法步骤写成三线表：视觉简洁，可作为一种呈现形式；但不能误称为伪代码，也不能替代流程图和真正伪代码。
-- 三维轨迹图：信息完整但可读性一般，应补充二维投影、局部放大或时间编码。
-- 模型评价只写优缺点：老师明确指出应补全文小结和改进/展望。
-- “优化模型”作为关键词：范围过大，应替换为具体模型名。
-
-
----
-
-## FILE: `examples/exemplar/flowchart_and_result_visuals.md`
-
-# 范文流程图与结果图组织方式
-
-## 1. 五幅逐问流程图的共同结构
-
-问题一、二、三、四、五分别在PDF第4、11、17、24、29页给出流程图。共同布局为：
-
-1. 横向排列3-4个阶段；
-2. 顶部使用浅黄色箭头形标题标明阶段；
-3. 每个阶段用虚线框限定边界；
-4. 框内用圆角矩形、椭圆和箭头表示输入、模型、算法和输出；
-5. 不同阶段使用浅红、浅蓝、浅绿等低饱和背景色；
-6. 图题统一置于图下。
-
-问题一采用“基础参数与运动分析—核心数学模型构建—算法应用求解—结果输出”；问题二采用“优化目标与决策变量定义—约束条件构建—算法求解—结果输出”。后续问题按变量规模和模型扩展调整模块名称。
-
-## 2. 老师评价对应的使用规则
-
-- 每问先写一段短的“描述与分析”，再放流程图；流程图不能替代文字分析。
-- 流程图属于该问内容导航，框内应出现本题变量、模型和输出，不得套用通用“初始化—迭代—输出”模板。
-- 算法章节还应另设算法流程图。范文只有逐问建模流程图，没有算法专用流程图，因此老师将其列为缺点。
-- 流程图的主要作用是压缩结构信息，不应把完整公式或长句塞入图中。
-
-## 3. 结果图的组织
-
-范文对三维运动轨迹采用“3D图+xy/xz/yz投影图”的组合，并在图后逐图解释。该方式适合空间轨迹问题，但新版Skill应增加可读性判断：
-
-- 三维图若遮挡严重、尺度差异大或无法判断时间关系，必须补二维投影、局部放大或时间颜色编码；
-- 每幅图后写明图中对象、观察到的现象和该现象对结论的作用；
-- 结果图与灵敏度图、收敛曲线分开，不用一幅图承担多个检验任务。
-
-
----
-
-## FILE: `examples/exemplar/teacher_annotations.yaml`
-
-version: 2.0
-exemplar: "2025 CUMCM A, Yi Liangyu"
-source_recording: "standard_recording_179"
-labels: [APPROVED, REQUIRED, CRITIQUED, TOLERATED, OPTIONAL]
-annotations:
-  - id: EXM-TITLE-001
-    pages: [1]
-    recording: "00:18-00:37"
-    label: APPROVED
-    statement_zh: "标题保留研究问题和算法，省略模型后仍可接受。"
-  - id: EXM-ABS-001
-    pages: [1]
-    recording: "00:37-01:17"
-    label: APPROVED
-    statement_zh: "总体段2行；各问4-6行；中心句、结果和重点加粗；最后1条亮点。"
-  - id: EXM-KEY-001
-    pages: [1]
-    recording: "00:55-01:17"
-    label: CRITIQUED
-    statement_zh: "关键词‘优化模型’过宽。"
-  - id: EXM-FRONT-001
-    pages: [2,3]
-    recording: "01:17-02:18"
-    label: APPROVED
-    statement_zh: "问题背景短、问题提出简洁、彩色三线符号表含单位，前置部分两页。"
-  - id: EXM-ASM-001
-    pages: [3]
-    recording: "01:57-02:18"
-    label: TOLERATED
-    statement_zh: "假设未写理由仍可合格，但不覆盖课程中‘建议写理由’的规则。"
-  - id: EXM-Q1-001
-    pages: [4,10]
-    recording: "02:45-03:39"
-    label: REQUIRED
-    statement_zh: "短问题分析、逐问流程图、具体模型、模型汇总、加粗结果。"
-  - id: EXM-OPT-001
-    pages: [11,13]
-    recording: "03:48-04:28"
-    label: REQUIRED
-    statement_zh: "优化模型标题写具体名称；依次给出决策变量、目标函数、约束条件和模型汇总。"
-  - id: EXM-ALG-001
-    pages: [13]
-    recording: "04:28-05:12"
-    label: CRITIQUED
-    statement_zh: "缺少算法选择理由、本题化步骤、算法流程图和真正伪代码。"
-  - id: EXM-RES-001
-    pages: [14,16]
-    recording: "05:35-06:17"
-    label: REQUIRED
-    statement_zh: "结果加粗，彩色表格，图后解释，灵敏度分析；智能优化补收敛性。"
-  - id: EXM-PRE-001
-    pages: [17,20,24,26]
-    recording: "06:17-07:40"
-    label: REQUIRED
-    statement_zh: "目标函数推导过长时移入预备工作，模型段保留主体表达。"
-  - id: EXM-FORM-001
-    pages: [29,34]
-    recording: "08:09-08:33"
-    label: APPROVED
-    statement_zh: "公式编号和句末标点规范；所有问题均需模型汇总。"
-  - id: EXM-EVAL-001
-    pages: [34]
-    recording: "08:33-09:00"
-    label: CRITIQUED
-    statement_zh: "模型评价缺全文小结和改进/展望。"
-  - id: EXM-AI-001
-    pages: [35,72]
-    recording: "09:00-09:19"
-    label: REQUIRED
-    statement_zh: "提交论文必须包含AI使用报告。"
-
-
----
-
-## FILE: `examples/failures/abstract_failure_patterns.md`
-
-# Abstract failure patterns
-
-1. **Direct final draft**: no six-slot worksheet and no additive draft. Fails `E_MISSING_INTERMEDIATE`.
-2. **Miniature body section**: long mechanism derivation and several equations. Fails source gate and rendered line limit.
-3. **Unknown variables**: uses `d`, `N`, `rho`, or other notation-table symbols. Replace with normal Chinese result prose.
-4. **Pseudo confidence interval**: writes “95% confidence interval” for a perturbation range. Use “模型稳定性范围” unless a formal interval is constructed.
-5. **Generic keyword**: “优化模型”. Replace with the specific model name.
-6. **Missing result**: says “效果良好” without the numerical or requested qualitative result.
-7. **No result analysis**: provides a value but no sensitivity/error/convergence/identifiability conclusion.
-8. **Markdown leakage**: `**bold**` or `\(...\)` appears literally in DOCX/LaTeX output.
-9. **One-paragraph abstract**: no per-question paragraph boundaries.
-10. **Body mismatch**: abstract claims an algorithm or result absent from the body.
-
-
----
-
-## FILE: `examples/failures/algorithm_failure_patterns.md`
-
-# Algorithm failure patterns
-
-- Copies generic algorithm steps without current variables, objective, constraints, or stopping rule.
-- Calls a step table “pseudocode”.
-- Gives no solver-selection reason.
-- Uses black-and-white flowchart or crossed arrows that obscure direction.
-- Gives only source code in the appendix and no pseudocode in the body.
-- Claims faster convergence without repeated runs or a baseline.
+## FILE: `gates/manual_review.md`
+
+# Manual review fields
+
+Automated gates cannot establish physical correctness or genuine visual quality. Record these fields in `reports/manual_review.yaml`:
+
+- Every question requirement is answered.
+- Model mechanism and assumptions are physically/mathematically plausible.
+- Parameter sources and units are correct.
+- Figures are readable at normal PDF zoom and colors remain distinguishable.
+- Flowcharts correspond to the written method.
+- Pseudocode corresponds to the implementation.
+- Literature claims were checked against original sources.
+- Chinese prose reads as an author revision, without promotional or generic AI wording.
+- Frozen values are identical across code output, tables, figures, body, abstract, and conclusion.
+
+A reviewer must set each item to `true` before final delivery.
 
 
 ---
@@ -1475,123 +1014,6 @@ The selected candidate must be `ACCEPT` or a fully mitigated `RISK`, must contai
 
 ---
 
-## FILE: `rules/training_iteration.md`
-
-# Four-training-run iteration policy
-
-The skill core is read-only during a run. Training produces logs and candidate assets; rule changes occur only after review.
-
-- Run 1: baseline observation. Collect failures, model relations, literature impacts, feasibility reviews, and candidate assets.
-- Run 2: controlled reuse. Compare asset-assisted work with the baseline and check for old-problem leakage.
-- Run 3: cross-type validation. Test the mechanisms and assets on a different A/B/C problem type.
-- Run 4: release rehearsal. Freeze the core, use only reviewed assets, execute clean builds and final gates.
-
-After each run, create a training review. Only human-approved changes are merged into the next release candidate.
-
-
----
-
-## FILE: `rules/asset_library.md`
-
-# Training-derived LaTeX asset library
-
-Reusable assets are learned from completed training projects, never copied blindly from a problem-specific paper.
-
-The pipeline is:
-
-`training project -> candidate extraction -> de-problematization -> parameterization -> dependency check -> isolated validation -> human approval -> stable asset`.
-
-Rules:
-
-- Imported files enter `assets/candidates/`; they never become stable automatically.
-- Remove old problem names, numbers, symbols, labels, paths, and conclusions before promotion.
-- Every asset has an ID, version, category, source run, parameters, dependencies, applicable scope, prohibited scope, validation record, and rollback version.
-- Stable assets must compile or pass the relevant static validation independently.
-- Formal competition runs may use stable assets and may create candidates, but may not modify `SKILL.md` or auto-promote assets.
-- A candidate should normally succeed in at least two training runs and one cross-problem-type use before stable promotion.
-
-
----
-
-## FILE: `workflows/06_training_iteration.md`
-
-# Training-run iteration workflow
-
-1. Initialize a run with `scripts/init_training_run.py`.
-2. Freeze the current skill version and asset manifest hash in the run record.
-3. Execute the paper workflow; do not edit the stable skill core during the run.
-4. Maintain the relation graph, literature-impact log, feasibility reviews, gate report, issue log, and decision log.
-5. At the end, run `scripts/ingest_training_project.py` to extract candidate assets.
-6. Run `scripts/build_training_review.py` to produce the run review.
-7. Compare with previous runs: time, gate failures, repeated defects, asset reuse, and leakage.
-8. Human reviewers choose which rule patches and assets become candidates for the next version.
-9. Promote an asset only with `scripts/promote_asset.py --approved-by ...` after validation.
-
-
----
-
-## FILE: `workflows/07_model_relation.md`
-
-# Cross-question relation workflow
-
-1. Fill all question nodes after problem decomposition.
-2. From Q2 onward, classify the relation to the inherited model chain.
-3. List inherited and changed equations, symbols, assumptions, code, and results.
-4. Check whether a claimed extension actually changes the mathematical model.
-5. Record shared-symbol meaning and units.
-6. Update the overall paper route and abstract route.
-7. Run `gates/check_model_relations.py` before drafting downstream questions and before final delivery.
-
-
----
-
-## FILE: `workflows/08_literature_impact.md`
-
-# Literature impact workflow
-
-1. Add and verify the source in `work/source_registry.csv`.
-2. Decide whether it is model-relevant.
-3. Record its impact in `work/literature_impact_log.yaml`.
-4. If the impact changes parameters, assumptions, equations, or model structure, list all dependent artifacts and result IDs.
-5. Apply stale propagation with `scripts/apply_literature_impact.py --project <project> --source-id <S-id>`.
-6. Revise the model, rerun code, regenerate figures, and update the abstract.
-7. After recomputation, resolve with `scripts/resolve_literature_impact.py` and explicit revalidation confirmation.
-8. Run `gates/check_literature_impacts.py` before result freezing and final delivery.
-
-
----
-
-## FILE: `workflows/09_feasibility.md`
-
-# Model feasibility workflow
-
-1. Create at least one candidate model for each question.
-2. Review mechanism, data, identifiability, implementation, validation, and writing cost.
-3. Record blockers, risks, mitigations, expected runtime, and required dependencies.
-4. Select one candidate.
-5. Reject or revise any candidate with an unresolved blocker.
-6. Set `implementation_ready: true` only after the solver and validation route are concrete.
-7. Run `gates/check_feasibility.py` before large-scale coding or final drafting.
-
-
----
-
-## FILE: `workflows/10_asset_learning.md`
-
-# Historical-project and training-asset learning workflow
-
-1. Import a previous project or ZIP with `scripts/ingest_training_project.py`.
-2. Review the generated inventory and candidate list.
-3. Remove problem-specific names, values, symbols, labels, and paths.
-4. Convert reusable parts into parameterized snippets.
-5. Declare dependencies and applicability limits.
-6. Validate each candidate with `scripts/validate_asset.py`.
-7. Reuse it in later training runs and record outcomes.
-8. Promote only after human approval with `scripts/promote_asset.py`.
-
-
----
-
 ## FILE: `rules/A_pde_inverse.md`
 
 # A problem: ODE/PDE and inverse problems
@@ -1616,3 +1038,48 @@ A PDE model summary should contain:
 Numerical solution must state grid, time step, discretization, boundary implementation, solver tolerance, and convergence/stability checks. Mature numerical methods are acceptable; novelty is not a substitute for correctness.
 
 Inverse results require sensitivity/identifiability analysis. Do not report a point estimate for a parameter that is not stably identifiable.
+
+
+---
+
+## FILE: `rules/B_optimization.md`
+
+# B problem: optimization
+
+Use a specific optimization model name. Present:
+
+1. decision variables and domains;
+2. objective function with physical meaning;
+3. constraints grouped by mechanism/resource/time/geometry;
+4. complete model summary.
+
+Select the objective according to the task. For public-service location, mean distance may be appropriate; for emergency service, minimizing the maximum distance may be necessary. State the consequence of the chosen objective.
+
+If using an intelligent optimizer:
+
+- justify why exact/convex/standard solvers are insufficient or unsuitable;
+- encode constraints explicitly rather than relying only on penalties when repair/projection is possible;
+- give problem-bound pseudocode;
+- record population, iterations, bounds, random seeds, stopping rule, and repeated-run statistics;
+- include convergence and sensitivity analyses;
+- compare with at least one meaningful baseline when claiming improvement.
+
+
+---
+
+## FILE: `rules/C_statistics.md`
+
+# C problem: data and statistics
+
+Start by identifying data semantics, not by applying a standard cleaning pipeline.
+
+- Compositional data whose components sum to one are dependent and require appropriate transformations.
+- In anomaly/health detection, deleting anomalous observations can remove the target signal.
+- Missing-value treatment depends on mechanism and variable type; deletion is not the default.
+- Standardization, transformation, encoding, discretization, and class balancing require a model-specific reason.
+
+Use AHP cautiously in CUMCM. DEA requires a meaningful input-output structure. Entropy weighting, TOPSIS, variance-maximizing methods, regression, classification, clustering, dimensionality reduction, and time-series models must match the data structure.
+
+Machine learning is not forbidden, but sample size, interpretability, leakage, validation, and mechanism fit must be checked. Do not use LSTM without a genuine sequence structure or Prophet without the corresponding seasonal/holiday mechanism.
+
+Report statistical metrics appropriate to the task and explain their relation to the question, not only their numerical values.

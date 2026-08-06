@@ -1,7 +1,7 @@
 {
   "gate": "compile_abstract",
   "status": "PASS",
-  "tex": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\paper\\abstract_check.tex",
-  "out_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\abstract",
+  "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\abstract_check.tex",
+  "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract",
   "issues": []
 }

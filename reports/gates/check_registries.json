@@ -3,15 +3,15 @@
   "meta": {
     "result_registry.csv": {
       "columns": 13,
-      "rows": 9
+      "rows": 11
     },
     "symbol_registry.csv": {
       "columns": 5,
-      "rows": 13
+      "rows": 0
     },
     "source_registry.csv": {
       "columns": 10,
-      "rows": 7
+      "rows": 11
     }
   },
   "status": "PASS",

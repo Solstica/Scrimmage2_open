@@ -1,14 +1,8 @@
 {
   "gate": "full_render",
-  "pdf": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\full\\paper_template.pdf",
-  "page_count": 14,
-  "warnings": [
-    {
-      "code": "W_PAGE_COUNT",
-      "severity": "SHOULD",
-      "message": "Full paper renders as 14 pages; teacher baseline is approximately 20 pages (15-25 preferred)."
-    }
-  ],
+  "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\full\\paper_template.pdf",
+  "page_count": 15,
+  "warnings": [],
   "status": "PASS",
   "issues": []
 }

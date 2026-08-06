@@ -1,33 +1,36 @@
 version: 3.4.0-rc1
-status: AUTHOR_REVISED_PENDING_RENDER
 overview:
-  research_problem: 红外干涉光谱反演SiC与Si外延层厚度
-  overall_route: PAPER_A Sellmeier-Drude-Fresnel双光束与Airy多光束路线
+  research_problem: 研究红外干涉光谱反演碳化硅与硅外延层厚度的问题
+  overall_route: 以复Fresnel正算子贯通双角度联合反演与Neumann/Airy多光束判别
 questions:
 - question_id: Q1
-  central_sentence: 建立Sellmeier-Drude-Fresnel双光束模型
-  preliminary_work: 统一单位_相位_有效质量和带符号Fresnel方向
-  model: 表面反射束与第一束内部反射束复振幅叠加
-  algorithm: 解析推导与五项程序物理门禁
-  result: 五项物理门禁全部通过
-  result_ids: [R-A-Q1-GATE]
-  analysis: 界面相变不重复计数_高阶光束交由问题三检验
+  central_sentence: 针对问题一，建立复色散双光束Fresnel测厚模型
+  preliminary_work: 统一复介电函数、被动平方根分支、s/p偏振和微米到厘米缩放
+  model: 由复Snell关系和两界面Fresnel系数叠加表面束与第一束内部反射
+  algorithm: 采用解析推导、极限情形和合成光谱直接恢复进行求解检验
+  result: 合成厚度绝对误差为 0.00046 μm
+  result_ids: [R-Q1-SYNTHETIC]
+  analysis: 零厚度退化和Neumann极限均通过，四联检查最大复数误差为1.25×10^-14
 - question_id: Q2
-  central_sentence: 在弱吸收波段分别反演两个角度后取平均
-  preliminary_work: 选择2500至3300波数带_百分数转小数
-  model: PAPER_A单角度Sellmeier-Drude-Fresnel反演
-  algorithm: 两阶段有界多初值最小二乘
-  result: 10度7.8566微米_15度7.6230微米_平均7.7398微米
-  result_ids: [R-A-Q2-D10, R-A-Q2-D15, R-A-Q2-DAVG]
-  analysis: 两角度R2均大于0.95_相对差异3.02%
+  central_sentence: 针对问题二，建立双角度共享参数复反射率联合反演
+  preliminary_work: 审查共同边界异常点并由波段比较选择2000至3900波数带
+  model: 同片双角度共享厚度与材料参数，各角度标定通过仿射剖面消元
+  algorithm: 采用三种子差分进化粗搜、鲁棒最小二乘精修、SVD和移动块Bootstrap
+  result: SiC外延层厚度为 7.3840 μm；块Bootstrap的2.5%—97.5%分位范围为 7.3747—7.3943 μm
+  result_ids: [R-Q2-D, R-Q2-BOOT]
+  analysis: 折射率尺度与厚度相关系数0.9996，故另报告7.2381至7.5359微米的系统范围
 - question_id: Q3
-  central_sentence: 使用硅双振子-Drude复折射率和Airy多光束模型
-  preliminary_work: 固定背景参数_检查传播衰减_计算第三束光强比
-  model: 每角度仅拟合四参数后取厚度平均并回溯SiC
-  algorithm: 确定性多初值有界最小二乘
-  result: 10度3.2480微米_15度3.1875微米_平均3.2178微米_SiC保留7.7398微米
-  result_ids: [R-A-Q3-SI-DAVG, R-A-Q3-SIC-RHO, R-A-Q3-SIC-D]
-  analysis: 与PAPER_A相差5.85%且已人工接受_不释放弱可辨识背景参数贴值
-keywords: [外延层厚度反演, Sellmeier-Drude模型, Fresnel双光束干涉, Airy多光束模型, 有界最小二乘]
-author_revised: true
-fact_gate: PASS_PENDING_RENDER
+  central_sentence: 针对问题三，建立物理条件—复公比—Neumann/Airy多光束模型
+  preliminary_work: 统一往返场因子与强度保持率口径并规定同波段同损失的公平比较
+  model: 用有限阶Neumann级数连接双光束截断与Airy无穷阶极限
+  algorithm: 逐阶联合重反演并以复公比、误差、AIC和阶数收敛决定回溯
+  result: SiC多光束厚度修正仅为 0.000088 μm；Si外延层厚度为 3.3960 μm；多光束使RMSE降低 70.47%
+  result_ids: [R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-REDUCTION]
+  analysis: Si六束后收敛且波段结果为3.3949至3.4030微米，SiC高阶影响低于统计误差
+innovation:
+- 以统一复公比和嵌套模型比较裁决两篇参考论文对SiC多光束修正的冲突
+- 将统计误差与折射率材料常数造成的系统误差分层报告
+keywords:
+  research_problem: [外延层厚度反演]
+  specific_models: [复Fresnel联合反演, Neumann--Airy多光束模型]
+  algorithms: [差分进化, 移动块Bootstrap]
