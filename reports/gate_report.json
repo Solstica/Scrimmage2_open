@@ -1,7 +1,7 @@
 {
-  "scope": "question",
-  "overall_status": "FAIL",
-  "automated_pass": false,
+  "scope": "full",
+  "overall_status": "PASS",
+  "automated_pass": true,
   "automated_gates": [
     {
       "gate": "toolchain",
@@ -11,7 +11,7 @@
     },
     {
       "gate": "encoding",
-      "checked_files": 171,
+      "checked_files": 130,
       "status": "PASS",
       "issues": []
     },
@@ -30,7 +30,7 @@
       "meta": {
         "result_registry.csv": {
           "columns": 13,
-          "rows": 12
+          "rows": 11
         },
         "symbol_registry.csv": {
           "columns": 5,
@@ -60,40 +60,143 @@
       "issues": []
     },
     {
+      "gate": "literature_impacts",
+      "status": "PASS",
+      "source_registry_sha256": "67d339cc8b8cf638eca4e396459620c3ba949abc558746c03a2cadb08440d076",
+      "issues": []
+    },
+    {
       "gate": "structure",
-      "status": "FAIL",
-      "issues": [
-        {
-          "code": "E_VALIDATION_MISSING",
-          "severity": "MUST",
-          "message": "Q3 missing required validation: sensitivity"
-        },
-        {
-          "code": "E_VALIDATION_MISSING",
-          "severity": "MUST",
-          "message": "Q3 missing required validation: stability"
-        }
-      ]
+      "status": "PASS",
+      "issues": []
     },
     {
       "gate": "latex_source",
       "checked_files": 17,
-      "status": "FAIL",
-      "issues": [
-        {
-          "code": "E_GATE_FAILED",
-          "severity": "MUST",
-          "message": "Unnumbered display math in paper\\sections\\Q3.tex"
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "gate": "full_paper",
+      "reference_count": 10,
+      "english_reference_count": 7,
+      "figure_count": 14,
+      "question_count": 3,
+      "warnings": [],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "gate": "compile_front",
+      "status": "PASS",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\front_matter_check.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\front",
+      "issues": []
+    },
+    {
+      "gate": "front_render",
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\front\\front_matter_check.pdf",
+      "page_count": 2,
+      "max_pages": 2,
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "gate": "compile_full",
+      "status": "PASS",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\paper_template.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\full",
+      "issues": []
+    },
+    {
+      "gate": "full_render",
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\full\\paper_template.pdf",
+      "page_count": 15,
+      "warnings": [],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "gate": "abstract_source",
+      "stage": "all",
+      "status": "PASS",
+      "meta": {
+        "slots": {
+          "questions": 3,
+          "keywords": 5
         },
-        {
-          "code": "E_GATE_FAILED",
-          "severity": "MUST",
-          "message": "Equation lacks punctuation in paper\\sections\\Q3.tex"
+        "drafts": {
+          "additive_chars": 641,
+          "compressed_chars": 566
+        },
+        "tex": {
+          "questions": 3,
+          "format": "tagged-v2",
+          "warnings": []
         }
-      ]
+      },
+      "issues": []
+    },
+    {
+      "gate": "compile_abstract",
+      "status": "PASS",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\abstract_check.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract",
+      "issues": []
+    },
+    {
+      "gate": "abstract_render",
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract\\abstract_check.pdf",
+      "page_count": 1,
+      "measured_lines": {
+        "intro": 2,
+        "Q1": 4,
+        "Q2": 4,
+        "Q3": 4,
+        "innovation": 2
+      },
+      "locations": {
+        "intro": {
+          "first_line": 3,
+          "last_line": 4,
+          "pages": [
+            1
+          ]
+        },
+        "Q1": {
+          "first_line": 5,
+          "last_line": 8,
+          "pages": [
+            1
+          ]
+        },
+        "Q2": {
+          "first_line": 9,
+          "last_line": 12,
+          "pages": [
+            1
+          ]
+        },
+        "Q3": {
+          "first_line": 13,
+          "last_line": 16,
+          "pages": [
+            1
+          ]
+        },
+        "innovation": {
+          "first_line": 17,
+          "last_line": 18,
+          "pages": [
+            1
+          ]
+        }
+      },
+      "status": "PASS",
+      "issues": []
     }
   ],
-  "manual_review_file": "C:\\Users\\admin\\Desktop\\science\\forkdev\\Scrimmage2_open\\reports\\manual_review.yaml",
+  "manual_review_file": "C:\\Users\\admin\\Documents\\Scrimmage2\\reports\\manual_review.yaml",
   "manual_checks": {
     "every_question_answered": true,
     "model_mechanism_correct": true,
@@ -111,5 +214,5 @@
     "chinese_style_natural": true
   },
   "manual_review_pass": true,
-  "final_delivery_allowed": false
+  "final_delivery_allowed": true
 }

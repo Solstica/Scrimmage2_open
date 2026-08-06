@@ -1,6 +1,15 @@
 \subsection{问题三的描述与光谱特征}
 问题三要求讨论多光束干涉对测厚精度的影响，给出硅外延层厚度，并回溯检验问题二的SiC结果。硅在中红外波段具有明显吸收，不能沿用问题二的实折射率近似。本文以PAPER\_A为唯一主体：使用双振子--Drude复折射率和Airy无限多光束模型，对$10^\circ$、$15^\circ$数据分别拟合后取平均。第三束光强比用于解释高阶光束量级，不再作为双光束与Airy之间的条件选择器。
 
+图\ref{fig:q3-multibeam-schematic}标出第三束及后续反射光的形成路径，用于解释Airy分母中的往返公比。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.88\textwidth]{\ProjectRoot/modules/40_q3/figures/q3_multibeam_interference_schematic.png}
+\caption{空气--硅外延层--衬底结构中的多光束干涉光路。}
+\label{fig:q3-multibeam-schematic}
+\end{figure}
+
 \subsection{硅双振子--Drude复折射率}
 令$\lambda=10^4/\sigma$，硅的晶格介电函数为
 \begin{equation}
@@ -56,6 +65,17 @@ E_3^{(u)}=t_{12}^{(u)}r_{23}^{(u)}r_{21}^{(u)}r_{23}^{(u)}t_{21}^{(u)}P^2E_0.
 
 \textbf{模型汇总：} 输入附件3、4；由双振子--Drude模型计算硅复折射率，检验传播衰减支路，使用Airy反射率分别拟合两个角度并取平均；再读取问题二新结果，按式\eqref{eq:q3-third-ratio}检查SiC高阶光束是否可忽略。
 
+图\ref{fig:q3-algorithm}把“四参数Airy反演”和“SiC回溯”分成先后两步；伪代码明确禁止在拟合阶段释放振子背景量。
+
+\begin{figure}[!htbp]
+\centering
+\input{\ProjectRoot/modules/40_q3/figures/q3_algorithm_flow.tex}
+\caption{问题三固定背景四参数Airy反演与回溯流程。}
+\label{fig:q3-algorithm}
+\end{figure}
+
+\lstinputlisting[caption={问题三反演伪代码}]{\ProjectRoot/modules/40_q3/paper/q3_pseudocode.txt}
+
 \subsection{硅重算结果与范文差异}
 严格固定背景参数后，两个角度的Airy厚度分别为
 \begin{equation}
@@ -67,30 +87,41 @@ d_{15^\circ}^{\mathrm{Si}}=3.1875\,\mu\mathrm m,
 \boxed{d_{\mathrm{Si}}=3.2178\,\mu\mathrm m}.
 \label{eq:q3-si-paper-a-result}
 \end{equation}
-两角度RMSE分别为$1.8738$和$3.3554$个反射率百分点。该均值较PAPER\_A报告的$3.040\,\mu\mathrm m$高$5.85\%$，略超数值复现门槛，因此当前登记为待复核而非冻结结果。检查显示波段、单位、反射率缩放、参数边界和传播衰减均正确；主要差异是本文按既定口径固定了振子参数与有效质量，而范文附录的最终阶段实际重新释放这些量。为避免以增加不可辨识参数强行贴合范文，本文保留重算结果并明确披露差异。
+两角度RMSE分别为$1.8738$和$3.3554$个反射率百分点。该均值较PAPER\_A报告的$3.040\,\mu\mathrm m$高$5.85\%$。波段、单位、反射率缩放、参数边界和传播衰减检查均通过；差异来自参数口径：本文固定振子参数与有效质量，只拟合$d$、$n_3$、$N$和$\Gamma_e$，而范文附录的最终阶段重新释放了部分背景量。本文不以增加弱可辨识参数换取数值贴合，故将$3.2178\,\mu\mathrm m$冻结为诚实重算结果，并把$5.85\%$差异一并报告。
 
-\begin{figure}[H]
+图\ref{fig:q3-si-airy-fit}回答Airy模型能否复现实测硅光谱；图\ref{fig:q3-si-validation}分别回答第三束光是否达到工程显著性以及重算值与范文报告值相差多少。
+
+\begin{figure}[!htbp]
 \centering
 \begin{minipage}{.49\textwidth}\centering
-\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_10deg_paper_a_fit.png}
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/q3_si_10deg_paper_a_fit.png}
 \end{minipage}
 \begin{minipage}{.49\textwidth}\centering
-\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_15deg_paper_a_fit.png}
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/q3_si_15deg_paper_a_fit.png}
 \end{minipage}
 \caption{硅两个入射角的PAPER\_A Airy独立拟合及残差。}
 \label{fig:q3-si-airy-fit}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \begin{minipage}{.49\textwidth}\centering
-\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_paper_a_third_beam_ratio.png}
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/q3_si_paper_a_third_beam_ratio.png}
 \end{minipage}
 \begin{minipage}{.49\textwidth}\centering
-\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_paper_a_thickness_comparison.png}
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/q3_si_paper_a_thickness_comparison.png}
 \end{minipage}
 \caption{硅第三束光强比与重算厚度对照。}
 \label{fig:q3-si-validation}
+\end{figure}
+
+图\ref{fig:q3-double-airy}直接比较同一组冻结参数下Airy与双光束反射率，并把Airy残差放在相同波数轴上；它说明高阶反射改变了多少理论谱形，而不另行制造一组厚度结果。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.76\textwidth]{\ProjectRoot/modules/40_q3/figures/q3_si_double_airy_comparison.png}
+\caption{硅双光束与Airy理论反射率差异及Airy残差。}
+\label{fig:q3-double-airy}
 \end{figure}
 
 \subsection{SiC回溯检验}
@@ -100,12 +131,16 @@ d_{15^\circ}^{\mathrm{Si}}=3.1875\,\mu\mathrm m,
 \label{eq:q3-sic-paper-a-result}
 \end{equation}
 
-\begin{figure}[H]
+图\ref{fig:q3-sic-backcheck}把两个角度的第三束光强比与工程阈值放在同一纵轴上，用于裁决问题二厚度是否需要回溯修正。
+
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.72\textwidth]{../modules/40_q3/figures/q3_sic_paper_a_backcheck.png}
+\includegraphics[width=.72\textwidth]{\ProjectRoot/modules/40_q3/figures/q3_sic_paper_a_backcheck.png}
 \caption{SiC第三束光强比及$0.1\%$工程阈值。}
 \label{fig:q3-sic-backcheck}
 \end{figure}
 
 \subsection{可靠性与局限性}
 多初值解在同一干涉级次收敛，传播因子最大模小于1，且SiC回溯形成Q1--Q2--Q3闭环。但硅的碰撞率或载流子浓度在部分角度达到边界，说明附属参数可辨识性不足；$0.1\%$为工程阈值，题目未提供光源相干长度和界面粗糙度。本文仅解释厚度与高阶光束量级，不把边界处的载流子参数作为材料测量结论。
+
+\FloatBarrier

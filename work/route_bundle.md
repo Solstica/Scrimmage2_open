@@ -1,8 +1,8 @@
 # Route execution bundle
 
-- route: `question_unit`
-- domain: `A`
-- task_zh: 修正并重算2025年A题（原资料目录25B）问题三模型、代码、结果、正文与跨问接口
+- route: `audit`
+- domain: `mixed`
+- task_zh: 审查并规范化全仓库文件位置，拆分Q1/Q2混合资产，编写队友AI协作规范
 
 > This file is generated from the exact mandatory source files. Read this bundle before writing. Do not rely on filenames alone.
 
@@ -606,6 +606,93 @@ Never convert `DISPLAY_ONLY` or award status into a hard rule. Source details ar
 
 ---
 
+## FILE: `rules/title_abstract_keywords.md`
+
+# Title, abstract, and keywords
+
+## Title
+
+Build the long title from `research problem + model + algorithm`. Then shorten in this order: remove algorithm first, remove model second, never remove the research problem. Prefer no more than about 20 Chinese characters when possible. Avoid formulas, chemical formulas, subscripts, unexplained abbreviations, slogans, and literary decoration.
+
+The 2025 A exemplar shows that `research problem + algorithms` is acceptable when the model is omitted for length. This is an approved option, not a mandatory pattern.
+
+## Abstract workflow contract
+
+The final abstract is forbidden until these files exist:
+
+- `work/abstract_slots.yaml`;
+- `work/abstract_additive_zh.md`;
+- `work/abstract_compressed_zh.md`;
+- `build/abstract_check.pdf`;
+- a passing abstract gate report.
+
+Each question slot contains:
+
+1. `central_sentence` - what this question solves and the final model name;
+2. `preliminary_work` - essential data/mechanism preparation only;
+3. `model` - mathematical model, without detailed derivation;
+4. `algorithm` - solver or numerical method;
+5. `result` - concrete answer to the question;
+6. `analysis` - one quantitative credibility or interpretation statement.
+
+Write all six slots before prose compression. The additive draft may be long. The compressed paragraph may merge slots, but it must still contain all six functions.
+
+## Abstract source restrictions
+
+- No display or inline formula delimiters.
+- No variable names that require the notation table.
+- No figures, tables, citations, reference numbers, footnotes, or URLs.
+- No strict confidence-interval language unless the body provides the corresponding statistical construction.
+- Do not explain why each intermediate step is used. State what was done and what was obtained.
+- Use normal Chinese prose for numbers and units, e.g. “厚度为 7.40±0.03 μm”.
+
+## Render limits
+
+Under the baseline template:
+
+- overview: <= 3 lines; exemplar baseline 2;
+- each question paragraph: 4-6 lines; hard maximum 6;
+- innovation paragraph: 0-2 points and normally <= 2 lines;
+- abstract plus keywords: exactly one page maximum.
+
+## Keywords
+
+Use 3-6 items in the order research problem -> specific model -> algorithm. The research object/problem must appear. Reject generic model terms including “优化模型”, “预测模型”, “评价模型”, “数学模型”, and “机器学习模型” unless modified by a specific mechanism or structure.
+
+
+---
+
+## FILE: `rules/front_matter.md`
+
+# Front matter
+
+The combined rendered length of problem restatement, notation, and assumptions is preferably about 1.5 pages and must not exceed 2 pages under the baseline template.
+
+## Problem restatement
+
+- Use Arabic section numbering.
+- Do not copy the problem statement.
+- Express the background briefly, then convert the requested tasks into mathematical objects, inputs, outputs, and constraints.
+- A background image is optional and must be directly relevant and substantially reworked or composed by the team.
+- An Our Work diagram is optional. When used, it must reveal the paper's task or method structure.
+
+## Notation
+
+- Define every symbol at first use even if a notation table exists.
+- Use conventional symbols: time t/T, speed v, length l/L, radius r/R, mass m, and so on.
+- Use a color three-line table with a unit column when space permits.
+- A notation table may be removed if it consumes space without improving readability.
+
+## Assumptions
+
+- Use 3-6 assumptions.
+- Cover every simplification that changes the model's domain, geometry, dynamics, boundary conditions, independence, or measurement error.
+- Give a short reason for each assumption whenever possible. The exemplar's unreasoned assumptions were tolerated, not praised.
+- Do not repeat facts already given by the problem as assumptions.
+
+
+---
+
 ## FILE: `rules/question_structure.md`
 
 # Per-question writing unit
@@ -753,138 +840,84 @@ Variables, vectors, and matrices are italic; units, operators, chemical elements
 
 ---
 
-## FILE: `workflows/02_question_unit.md`
+## FILE: `rules/literature.md`
 
-# Closed question-unit workflow
+# Literature research and use
 
-For question Qk:
+A literature note must record material/problem system, method, observed result, contribution, limitation, and relation to the current question. Do not use “research shows” without identifying the study type and result.
 
-1. **Plan**: fill `work/questions/Qk/question_plan.yaml`.
-2. **Relation**: update `work/model_relation_graph.yaml`; state what is inherited, added, removed, or replaced.
-3. **Feasibility**: complete `work/questions/Qk/feasibility_review.yaml` and select an implementable candidate.
-4. **Literature impact**: review new model-relevant sources before locking assumptions or equations.
-5. **Analysis**: write a short object-task-difficulty-route paragraph and design the question flowchart.
-6. **Preliminary work**: move preprocessing, mechanism preparation, coordinate definitions, and long derivations here.
-7. **Model**: give a specific model title, definitions, model equations/objective/constraints, and `model_summary`.
-8. **Solution**: document solver rationale, short principle, problem-bound steps, color flowchart, pseudocode, parameter settings, and code path.
-9. **Results**: register outputs and map them to question requirements.
-10. **Validation**: update `work/validation_plan.yaml`. Perform the question's own or consolidated sensitivity analysis as applicable, plus model-type-specific checks.
-11. **Freeze**: mark validated results `FROZEN` in the result registry.
-12. **Write**: generate Chinese section prose and LaTeX.
-13. **Interface**: save `work/questions/Qk/interface.yaml`.
-14. **Gate**: run project gates with `--scope question --question Qk`.
+Search recent high-quality sources first, then follow their references for classical methods. Read the original source before stating details. Register every source in `work/source_registry.csv` with purpose and intended citation location.
 
-Do not begin the next question while a MUST gate for Qk fails.
-
-
-## Method applicability declaration
-
-Before writing the solution section, set `solution_mode` and `algorithm.required` in `question_plan.yaml`. Pure derivation/direct-calculation questions use a derivation artifact instead of placeholder flowcharts, pseudocode, and code. Other modes require the complete algorithm bundle.
+Literature is used to define mechanisms, parameter ranges, method choice, comparison baselines, or validation criteria. It is not used to decorate the introduction.
 
 
 ---
 
-## FILE: `examples/exemplar/section_naming_and_structure.md`
+## FILE: `rules/end_matter.md`
 
-# 范文章节命名与结构标注
+# Model evaluation, references, and appendix
 
-## 1. 老师明确认可的命名方式
+## Model evaluation
 
-每问一级标题统一采用“问题X模型的建立与求解”。每问内部先写“问题X的描述与分析”，随后直接写具体模型名称。优化问题不使用空泛的“模型的建立”，而写为：
+Use four parts:
 
-- 单无人机单烟幕弹遮蔽优化模型；
-- 单无人机多烟幕弹遮蔽优化模型；
-- 多无人机多烟幕弹遮蔽优化模型；
-- 多导弹多无人机遮蔽优化模型。
+1. concise paper summary;
+2. strengths, tied to actual modeling or solution choices;
+3. limitations, specific about what may be wrong or outside the model's scope;
+4. improvement or outlook, preferably a concrete method for the unresolved issue.
 
-具体模型名称应体现对象、规模或任务，不能只写“优化模型”“预测模型”“评价模型”。
+Strengths should be more numerous and longer than limitations. Do not conceal important limitations, but do not write a self-rejection section.
 
-## 2. 计算型问题的推荐结构
+## References
 
-```text
-问题X模型的建立与求解
-  问题X的描述与分析
-  [问题X流程图]
-  具体计算模型
-    子模型/机制1
-    子模型/机制2
-    判定或状态模型
-    输出量计算模型
-    模型汇总
-  模型求解和结果分析
-    离散化或算法准备
-    求解步骤
-    求解结果
-    必要的误差/灵敏度/稳定性分析
-```
+Use at least 10 references and at least 3 English references. Favor recent two-to-three-year high-quality sources while retaining necessary classical sources. Every entry must be cited in the text, and every citation must appear in the list. Use a consistent standard format; DOI and URL are normally omitted from the final list under the course convention.
 
-问题一的“模型汇总”受到老师明确强调。模型汇总应集中给出输入、关键状态方程、判定条件和输出量，不把模型散落在数页推导中。
+## Appendix
 
-## 3. 优化型问题的推荐结构
-
-```text
-问题X模型的建立与求解
-  问题X的描述与分析
-  [问题X流程图]
-  具体优化模型名称
-    决策变量
-    目标函数
-    约束条件
-    模型汇总
-  XX算法求解XX模型
-    选择理由
-    原理简述
-    与本题模型结合的步骤
-    流程图
-    伪代码
-  结果分析
-  灵敏度分析
-  收敛性分析（智能优化必需）
-```
-
-老师将“模型汇总”判定为高权重内容：缺少汇总会被视为模型没有完整建立。目标函数的长推导应移入“预备工作”，模型段只保留最终主体、符号解释和必要约束。
-
-## 4. 本范文可保留但不应照抄的地方
-
-- 将算法步骤写成三线表：视觉简洁，可作为一种呈现形式；但不能误称为伪代码，也不能替代流程图和真正伪代码。
-- 三维轨迹图：信息完整但可读性一般，应补充二维投影、局部放大或时间编码。
-- 模型评价只写优缺点：老师明确指出应补全文小结和改进/展望。
-- “优化模型”作为关键词：范围过大，应替换为具体模型名。
+Include complete runnable programs, code list/table, environment and dependency information, and the AI-use report. Program outputs must match the body. Main results may not be hidden only in the appendix.
 
 
 ---
 
-## FILE: `examples/exemplar/flowchart_and_result_visuals.md`
+## FILE: `workflows/05_final_audit.md`
 
-# 范文流程图与结果图组织方式
+# Final teacher audit
 
-## 1. 五幅逐问流程图的共同结构
+Audit in this order:
 
-问题一、二、三、四、五分别在PDF第4、11、17、24、29页给出流程图。共同布局为：
+1. Every question is answered and results match the task.
+2. Every question has analysis, preliminary work, specific model, algorithm/solution, results, result analysis, and model summary.
+3. Optimization models have variables, objective, constraints, and summary.
+4. Algorithms have rationale, problem binding, flowchart, pseudocode, and code.
+5. Required sensitivity/error/convergence/stability checks exist.
+6. Abstract is consistent with body and passes rendered limits.
+7. Front matter <= 2 pages.
+8. Important results are concentrated, bolded, and explained.
+9. Figures/tables/formulas satisfy format rules.
+10. Evaluation, references, code appendix, and AI-use report are complete.
+11. No stale result or unresolved TODO remains in a final section.
+12. Run `gates/run_all.py` and complete manual review fields.
 
-1. 横向排列3-4个阶段；
-2. 顶部使用浅黄色箭头形标题标明阶段；
-3. 每个阶段用虚线框限定边界；
-4. 框内用圆角矩形、椭圆和箭头表示输入、模型、算法和输出；
-5. 不同阶段使用浅红、浅蓝、浅绿等低饱和背景色；
-6. 图题统一置于图下。
 
-问题一采用“基础参数与运动分析—核心数学模型构建—算法应用求解—结果输出”；问题二采用“优化目标与决策变量定义—约束条件构建—算法求解—结果输出”。后续问题按变量规模和模型扩展调整模块名称。
+---
 
-## 2. 老师评价对应的使用规则
+## FILE: `gates/manual_review.md`
 
-- 每问先写一段短的“描述与分析”，再放流程图；流程图不能替代文字分析。
-- 流程图属于该问内容导航，框内应出现本题变量、模型和输出，不得套用通用“初始化—迭代—输出”模板。
-- 算法章节还应另设算法流程图。范文只有逐问建模流程图，没有算法专用流程图，因此老师将其列为缺点。
-- 流程图的主要作用是压缩结构信息，不应把完整公式或长句塞入图中。
+# Manual review fields
 
-## 3. 结果图的组织
+Automated gates cannot establish physical correctness or genuine visual quality. Record these fields in `reports/manual_review.yaml`:
 
-范文对三维运动轨迹采用“3D图+xy/xz/yz投影图”的组合，并在图后逐图解释。该方式适合空间轨迹问题，但新版Skill应增加可读性判断：
+- Every question requirement is answered.
+- Model mechanism and assumptions are physically/mathematically plausible.
+- Parameter sources and units are correct.
+- Figures are readable at normal PDF zoom and colors remain distinguishable.
+- Flowcharts correspond to the written method.
+- Pseudocode corresponds to the implementation.
+- Literature claims were checked against original sources.
+- Chinese prose reads as an author revision, without promotional or generic AI wording.
+- Frozen values are identical across code output, tables, figures, body, abstract, and conclusion.
 
-- 三维图若遮挡严重、尺度差异大或无法判断时间关系，必须补二维投影、局部放大或时间颜色编码；
-- 每幅图后写明图中对象、观察到的现象和该现象对结论的作用；
-- 结果图与灵敏度图、收敛曲线分开，不用一幅图承担多个检验任务。
+A reviewer must set each item to `true` before final delivery.
 
 
 ---
@@ -920,6 +953,38 @@ Requirements:
 
 ---
 
+## FILE: `rules/literature_impact.md`
+
+# Literature impact and model rollback rules
+
+Literature is allowed to revise or invalidate the current model. New sources must not be appended only to the bibliography when they alter mechanism, assumptions, parameter ranges, equations, or validation.
+
+Impact levels:
+
+- `no_impact`: reviewed, no change;
+- `citation_only`: supports an existing statement;
+- `parameter_update`: changes a value or range;
+- `assumption_change`: changes a modeling assumption;
+- `equation_change`: changes a governing relation;
+- `model_revision`: changes model structure;
+- `model_replacement`: invalidates the current model.
+
+For every model-relevant source, record an entry or a reviewed-no-impact decision in `work/literature_impact_log.yaml`.
+
+When impact is `parameter_update` or higher:
+
+1. list affected questions and artifacts;
+2. list dependent result IDs;
+3. mark dependent results, figures, abstract slots, and conclusions `STALE` until recomputed;
+4. record the adopted action and reason;
+5. rerun the affected validation;
+6. resolve the entry before freezing the paper.
+
+A source that contradicts a key assumption cannot be ignored because the old result is convenient.
+
+
+---
+
 ## FILE: `rules/feasibility.md`
 
 # Model complexity and feasibility review
@@ -949,36 +1014,6 @@ The selected candidate must be `ACCEPT` or a fully mitigated `RISK`, must contai
 
 ---
 
-## FILE: `workflows/07_model_relation.md`
-
-# Cross-question relation workflow
-
-1. Fill all question nodes after problem decomposition.
-2. From Q2 onward, classify the relation to the inherited model chain.
-3. List inherited and changed equations, symbols, assumptions, code, and results.
-4. Check whether a claimed extension actually changes the mathematical model.
-5. Record shared-symbol meaning and units.
-6. Update the overall paper route and abstract route.
-7. Run `gates/check_model_relations.py` before drafting downstream questions and before final delivery.
-
-
----
-
-## FILE: `workflows/09_feasibility.md`
-
-# Model feasibility workflow
-
-1. Create at least one candidate model for each question.
-2. Review mechanism, data, identifiability, implementation, validation, and writing cost.
-3. Record blockers, risks, mitigations, expected runtime, and required dependencies.
-4. Select one candidate.
-5. Reject or revise any candidate with an unresolved blocker.
-6. Set `implementation_ready: true` only after the solver and validation route are concrete.
-7. Run `gates/check_feasibility.py` before large-scale coding or final drafting.
-
-
----
-
 ## FILE: `rules/A_pde_inverse.md`
 
 # A problem: ODE/PDE and inverse problems
@@ -1003,3 +1038,48 @@ A PDE model summary should contain:
 Numerical solution must state grid, time step, discretization, boundary implementation, solver tolerance, and convergence/stability checks. Mature numerical methods are acceptable; novelty is not a substitute for correctness.
 
 Inverse results require sensitivity/identifiability analysis. Do not report a point estimate for a parameter that is not stably identifiable.
+
+
+---
+
+## FILE: `rules/B_optimization.md`
+
+# B problem: optimization
+
+Use a specific optimization model name. Present:
+
+1. decision variables and domains;
+2. objective function with physical meaning;
+3. constraints grouped by mechanism/resource/time/geometry;
+4. complete model summary.
+
+Select the objective according to the task. For public-service location, mean distance may be appropriate; for emergency service, minimizing the maximum distance may be necessary. State the consequence of the chosen objective.
+
+If using an intelligent optimizer:
+
+- justify why exact/convex/standard solvers are insufficient or unsuitable;
+- encode constraints explicitly rather than relying only on penalties when repair/projection is possible;
+- give problem-bound pseudocode;
+- record population, iterations, bounds, random seeds, stopping rule, and repeated-run statistics;
+- include convergence and sensitivity analyses;
+- compare with at least one meaningful baseline when claiming improvement.
+
+
+---
+
+## FILE: `rules/C_statistics.md`
+
+# C problem: data and statistics
+
+Start by identifying data semantics, not by applying a standard cleaning pipeline.
+
+- Compositional data whose components sum to one are dependent and require appropriate transformations.
+- In anomaly/health detection, deleting anomalous observations can remove the target signal.
+- Missing-value treatment depends on mechanism and variable type; deletion is not the default.
+- Standardization, transformation, encoding, discretization, and class balancing require a model-specific reason.
+
+Use AHP cautiously in CUMCM. DEA requires a meaningful input-output structure. Entropy weighting, TOPSIS, variance-maximizing methods, regression, classification, clustering, dimensionality reduction, and time-series models must match the data structure.
+
+Machine learning is not forbidden, but sample size, interpretability, leakage, validation, and mechanism fit must be checked. Do not use LSTM without a genuine sequence structure or Prophet without the corresponding seasonal/holiday mechanism.
+
+Report statistical metrics appropriate to the task and explain their relation to the question, not only their numerical values.

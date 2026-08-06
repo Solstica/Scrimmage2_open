@@ -1,6 +1,6 @@
 # Scrimmage2 · run_02 真题解析
 
-2025 年全国大学生数学建模竞赛 A 题（AB 题交换后的正式口径）的模块化复现与完整解析。历史原始资料目录仍保留 `prob25B` 名称，仅作为路径兼容标识。仓库按论文板块划分编辑边界；`paper/` 只承担整合与国赛模板，正文、图表和板块代码归属 `modules/`。
+2025 年全国大学生数学建模竞赛 B 题的模块化复现与完整解析。仓库按论文板块划分编辑边界；`paper/` 只承担整合与国赛模板，正文、图表和板块代码归属 `modules/`。
 
 ## 目录职责
 
@@ -27,9 +27,6 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 & 'C:\Users\admin\miniconda3\shell\condabin\conda-hook.ps1'
 conda activate phasefield
 python -m scripts.run_analysis --data-dir ..\CUCCM2026\raw\prob25B --project .
-python modules\40_q3\code\solve_q3.py --data-dir ..\CUCCM2026\raw\prob25B --project .
-python modules\40_q3\code\export_q3_results.py --project .
-python scripts\verify_q3.py --project .
 python -m unittest -v scripts.test_physics
 python -m scripts.verify_results --project .
 python -m scripts.make_all_figures

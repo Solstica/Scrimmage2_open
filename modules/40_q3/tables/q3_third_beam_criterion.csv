@@ -1,5 +1,0 @@
-﻿material,angle_deg,band_cm-1,third_beam_ratio_max_percent,threshold_percent,decision
-Si,10.0,"[1500.0, 3500.0]",0.0029197278522713195,0.1,double
-Si,15.0,"[1500.0, 3500.0]",0.0002858078897902539,0.1,double
-SiC,10.0,"[2500.0, 3300.0]",1.0320426153228776e-07,0.1,retain_q2_double_beam
-SiC,15.0,"[2500.0, 3300.0]",1.0324797231206274e-07,0.1,retain_q2_double_beam

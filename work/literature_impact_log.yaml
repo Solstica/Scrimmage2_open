@@ -83,13 +83,3 @@ entries:
   affected_questions: [Q1, Q3]
   impact_zh: 支持复Fresnel边界系数与多层干涉场叠加
   action: ADOPT
-- source_id: Q3-FIX-20260806
-  impact_level: model_revision
-  affected_questions: [Q3]
-  affected_artifacts: [modules/40_q3/code/solve_q3.py, modules/40_q3/paper/q3.tex, work/questions/Q3/question_plan.yaml, work/result_registry.csv]
-  dependent_result_ids: [R-Q3-SIC-RHO, R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO]
-  impact_zh: 审查发现旧实现的判据波段、条件分支、SiC结果接口和模型文字相互冲突，且旧Si载流子参数命中边界；撤销全部旧Q3冻结结果并按第三束光强判据路线重算
-  action: ADOPT_WITH_CORRECTION
-  decision: {status: RESOLVED, note_zh: 已在Si完整1500至3500cm-1波段重算，最大第三束光强比0.002919728%并实际选择双光束；SiC读取R-Q2-D=7.384039um}
-  revalidation_completed: true
-  rollback_zh: 若Si载流子参数仍不可辨识，则只冻结厚度、判据和回溯结论，不解释N与Gamma_e

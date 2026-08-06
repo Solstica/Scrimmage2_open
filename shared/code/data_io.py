@@ -1,4 +1,4 @@
-"""Official 2025 A-problem spectral loader (historical folder: prob25B)."""
+"""Official 2025B spectral data loader and deterministic preprocessing."""
 from __future__ import annotations
 
 from dataclasses import dataclass

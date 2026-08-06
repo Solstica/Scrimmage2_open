@@ -27,7 +27,7 @@ sources:
     path: C:\Users\admin\Documents\CUCCM2026\raw\base25B\2025年A题国一邱杰.pdf
     sha256: 69CF0090EFC688330261503277493FED60AF9658C9EBA8D962E34B098063DCDC
     bytes: 4399954
-    note: 按2025年AB题交换后的正式口径登记为A题；历史目录base25B仅作路径兼容；来源编号仍为PAPER_A
+    note: 文件名标为A题，但正文标题、三问与附件对象均核验为2025B题；按内容登记为PAPER_A
   - source_id: PAPER_B
     path: C:\Users\admin\Documents\CUCCM2026\raw\base25B\2025年B题国一路子涵.pdf
     sha256: 82646AFADD2793C26F56EF2D06D13DC898DBE13C59E276D6CF739777D49A3732

@@ -1,19 +1,19 @@
 version: '1.0'
 question_id: Q3
-selected_candidate_id: Q3-CONDITIONAL
+selected_candidate_id: Q3-MAIN
 candidates:
-- candidate_id: Q3-CONDITIONAL
-  model_name_zh: 第三束光强判据驱动的双光束—Airy条件反演模型
-  decision: ACCEPT
-  decision_reason_zh: 该路线与赛题判别任务直接对应，且删除了无判据支持的Neumann阶数和AIC；Si载流子参数可能不可辨识，须将厚度结论与材料参数解释分离
+- candidate_id: Q3-MAIN
+  model_name_zh: 物理条件—复公比—Neumann/Airy多光束联合模型
+  decision: RISK
+  decision_reason_zh: 用户已确认唯一主模型；统一复公比口径可裁决两篇论文冲突并以有限阶收敛提供复现证据
   dimensions:
-    data: {status: PASS, note_zh: 附件3和附件4覆盖1500至3500cm-1且双角度来自同片样品}
-    mechanism: {status: PASS, note_zh: 第三束由首束内部反射再乘一次往返场因子得到，阈值直接控制模型分支}
-    identifiability: {status: PASS, note_zh: 厚度在近优多启动内稳定且角度与联合验证通过；N与Gamma_e命中边界，已从可解释结果中剔除}
-    implementation: {status: PASS, dependencies: [numpy, scipy, pandas, matplotlib, openpyxl], expected_runtime_zh: phasefield环境下分钟级, note_zh: 两种模型和三种拟合口径均采用确定性多启动}
-    validation: {status: PASS, note_zh: 第三束阈值敏感性、单角度一致性、联合拟合偏差、参数边界和Jacobian条件数均有明确出口}
-    writing: {status: PASS, expected_pages: 4, note_zh: 可形成判据—选择—反演—回溯—局限的六段闭环}
+    data: {status: PASS, note_zh: 四个附件网格一致，支持同波段公平比较}
+    mechanism: {status: PASS, note_zh: Airy闭式与Neumann有限阶等价}
+    identifiability: {status: RISK, note_zh: 材料参数和多光束谱形强耦合，以同参数、同波段、同损失函数的嵌套模型比较缓解}
+    implementation: {status: PASS, dependencies: [numpy, scipy], expected_runtime_zh: 多种子分钟到小时级, note_zh: 需控制搜索规模}
+    validation: {status: PASS, note_zh: 已确定rho直接输出、阶数收敛、公平模型比较、合成判别与波段敏感性路线}
+    writing: {status: PASS, expected_pages: 6, note_zh: 可形成必要条件_算法_结果_回溯闭环}
   implementation_ready: true
   blockers: []
-  risks: [载流子参数边界命中, 双角度厚度差异, 实折射角近似产生系统误差]
-  mitigations: [只冻结通过诊断的厚度与判据, 联合拟合作交叉验证, 与复法向波矢口径作敏感性对照]
+  risks: [q口径混乱, A阈值无标定, 波段不公平, 强非线性]
+  mitigations: [统一rho定义, 同目标函数比较, 多种子, 阶数收敛]

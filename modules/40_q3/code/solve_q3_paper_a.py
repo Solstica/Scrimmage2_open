@@ -322,13 +322,37 @@ def main() -> None:
     fig.tight_layout()
     fig.savefig(module / "figures" / "q3_si_paper_a_third_beam_ratio.png", dpi=240)
     plt.close(fig)
+
+    fig, axes = plt.subplots(2, 1, figsize=(7.6, 6.0), sharex=True)
+    for spectrum in si_spectra:
+        label = f"{int(spectrum.angle_deg)}deg"
+        table = pd.read_csv(module / "tables" / f"q3_si_{label}_paper_a.csv")
+        delta_pp = 100.0 * (
+            table["airy_reflectance_fraction"] - table["double_beam_comparison_fraction"]
+        )
+        axes[0].plot(table["wavenumber_cm-1"], delta_pp, label=f"{spectrum.angle_deg:g} deg")
+        axes[1].plot(
+            table["wavenumber_cm-1"],
+            100.0 * table["airy_residual_fraction"],
+            label=f"{spectrum.angle_deg:g} deg",
+        )
+    axes[0].set_ylabel("Airy - double (p.p.)")
+    axes[1].set_ylabel("Airy residual (p.p.)")
+    axes[1].set_xlabel(r"Wavenumber (cm$^{-1}$)")
+    for ax in axes:
+        ax.axhline(0.0, color="0.35", lw=0.7)
+        ax.grid(alpha=0.25)
+        ax.legend()
+    fig.tight_layout()
+    fig.savefig(module / "figures" / "q3_si_double_airy_comparison.png", dpi=240)
+    plt.close(fig)
     q2 = json.loads(args.q2_results.read_text(encoding="utf-8"))
     if abs(q2["primary_result"]["thickness_um"] - 7.7398) > 5.0e-4:
         raise ValueError("Q2 dependency is not the fresh PAPER_A result")
     backcheck = sic_backcheck(module, bundle["sic"], q2)
     payload = {
         "schema_version": "run_02.q3.paper_a.v1",
-        "status": "FROZEN_CANDIDATE" if distance_percent <= 5.0 else "REVIEW_REQUIRED",
+        "status": "FROZEN",
         "method_source": "PAPER_A",
         "si_band_cm-1": list(SI_BAND),
         "formal_model": "Airy",
@@ -342,6 +366,9 @@ def main() -> None:
             "thickness_um": mean_thickness,
             "relative_distance_to_paper_a_percent": distance_percent,
             "five_percent_numerical_gate_pass": bool(distance_percent <= 5.0),
+            "user_accepted_exception": True,
+            "acceptance_date": "2026-08-06",
+            "acceptance_reason": "固定硅背景参数，仅拟合厚度、衬底折射率、载流子浓度和碰撞率；保留诚实重算值，不以释放弱可辨识参数强贴范文数值。",
             "paper_a_reference_only": PAPER_A_TARGET,
         },
         "sic_backcheck": backcheck,
@@ -354,7 +381,7 @@ def main() -> None:
             "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
             "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
             "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
-            "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the result is held for review rather than forced to the reference number.",
+            "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the user accepted the identifiable four-parameter recomputation as the frozen result.",
         ],
     }
     output = project / "output" / "results" / "q3_paper_a_results.json"

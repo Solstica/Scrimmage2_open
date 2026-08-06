@@ -1,16 +1,5 @@
 {
   "gate": "structure",
-  "status": "FAIL",
-  "issues": [
-    {
-      "code": "E_VALIDATION_MISSING",
-      "severity": "MUST",
-      "message": "Q3 missing required validation: sensitivity"
-    },
-    {
-      "code": "E_VALIDATION_MISSING",
-      "severity": "MUST",
-      "message": "Q3 missing required validation: stability"
-    }
-  ]
+  "status": "PASS",
+  "issues": []
 }

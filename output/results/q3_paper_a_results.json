@@ -1,6 +1,6 @@
 {
   "schema_version": "run_02.q3.paper_a.v1",
-  "status": "REVIEW_REQUIRED",
+  "status": "FROZEN",
   "method_source": "PAPER_A",
   "si_band_cm-1": [
     1500.0,
@@ -127,6 +127,9 @@
     "thickness_um": 3.217758548031541,
     "relative_distance_to_paper_a_percent": 5.847320658932266,
     "five_percent_numerical_gate_pass": false,
+    "user_accepted_exception": true,
+    "acceptance_date": "2026-08-06",
+    "acceptance_reason": "固定硅背景参数，仅拟合厚度、衬底折射率、载流子浓度和碰撞率；保留诚实重算值，不以释放弱可辨识参数强贴范文数值。",
     "paper_a_reference_only": {
       "10deg_um": 3.143,
       "15deg_um": 2.937,
@@ -143,7 +146,7 @@
     "retain_q2_result": true
   },
   "q2_dependency": {
-    "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-q2-paper-a\\output\\results\\q2_paper_a_results.json",
+    "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\output\\results\\q2_paper_a_results.json",
     "sha256": "ee625fd4e5cef323cc687caa6bfd754f1112c537a874c6d1bc42fd3491514571"
   },
   "inputs": [
@@ -162,6 +165,6 @@
     "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
     "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
     "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
-    "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the result is held for review rather than forced to the reference number."
+    "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the user accepted the identifiable four-parameter recomputation as the frozen result."
   ]
 }
