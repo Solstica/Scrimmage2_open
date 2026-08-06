@@ -1,88 +1,436 @@
-\subsection{问题三的描述与分析}
-两篇国一等奖论文对 SiC 是否需要多光束修正给出相反结论\cite{paperA,paperB}。仅凭条纹不对称度或“高阶光存在”不能裁决该冲突。本文把问题一的双光束截断推广为有限阶 Neumann 级数和 Airy 极限，在相同波段、参数、损失函数与标定结构下比较各阶模型；若 SiC 的厚度修正小于统计误差，则保留问题二结果，否则触发 STALE 并重算。
+% modules/40_q3/paper/q3.tex
+\section{问题三模型的建立与求解}
 
-\subsection{多光束形成条件与复公比}
-对偏振态 $u$，第一束内部反射场为
-\begin{equation}
-B^{(u)}=t_{01}^{(u)}t_{10}^{(u)}r_{12}^{(u)}e^{2\mathrm{i}\beta},
-\end{equation}
-每增加一次往返，场乘以
-\begin{equation}
-g^{(u)}=r_{10}^{(u)}r_{12}^{(u)}e^{2\mathrm{i}\beta},\qquad
-\rho^{(u)}=|g^{(u)}|^2.
-\label{eq:loop}
-\end{equation}
-可观测多光束干涉需要同时满足：光源相干长度覆盖相关光程差；界面平整且近平行；吸收和界面损耗后 $|g|$ 未降至噪声以下；并且 $|g|<1$ 以保证无穷级数收敛。前两项由实验条件控制，后两项可由复 Fresnel 模型和拟合残差直接量化。
+\subsection{问题描述与分析}
 
-\subsection{物理条件—复公比—Neumann/Airy多光束模型}
-保留 $M$ 束内部反射时，反射场为
-\begin{equation}
-r_{(M)}^{(u)}=r_{01}^{(u)}+B^{(u)}\sum_{m=0}^{M-1}(g^{(u)})^m
-=r_{01}^{(u)}+B^{(u)}\frac{1-(g^{(u)})^M}{1-g^{(u)}}.
-\label{eq:neumann}
-\end{equation}
-令 $M\to\infty$ 得 Airy 闭式
-\begin{equation}
-r_{(\infty)}^{(u)}=r_{01}^{(u)}+\frac{B^{(u)}}{1-g^{(u)}}.
-\label{eq:airy}
-\end{equation}
-其中 $M=1$ 正好退化为问题一双光束模型。各阶均按式\eqref{eq:runpol}形成非偏振反射率，并调用问题二相同的双角度联合目标函数。
+问题一只考虑两束反射光：空气—外延层界面的直接反射光和经外延层—衬底界面一次反射后透射回空气的光束。然而，实际测量中，光波可在外延层上下界面之间发生多次往返，形成$E_1,E_2,E_3,\ldots$多束相干反射光。若第三束及后续光束仍具有可观测强度，双光束模型将遗漏高阶反射贡献，可能改变干涉条纹的峰谷形状和反演厚度。
 
-\textbf{模型汇总：} 输入问题一界面系数与四个附件；由式\eqref{eq:loop}输出往返场因子和强度保持率，再按式\eqref{eq:neumann}计算 $M=1,2,3,4,6$，最后以式\eqref{eq:airy}给出极限。只有当高阶模型在公平比较中显著降低误差、阶数收敛且厚度变化超过已有误差尺度时，才修正双光束厚度。
+附件3、4的硅光谱具有以下特征：在$500\sim1500\ \mathrm{cm^{-1}}$范围出现宽峰、尖谷；条纹间距随波数发生变化；条纹可见度随波数快速下降；10$^\circ$和15$^\circ$光谱具有相同的整体演化规律。这些特征表明有必要检验多光束效应。
 
-\subsection{Neumann有限阶延拓—Airy联合重反演算法}
-\begin{figure}[H]\centering
-\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_algorithm_flow.pdf}
-\caption{问题三的模型升级与回溯流程}\label{fig:q3flow}
+问题三依次完成：形成条件分析$\to$第三束光强比判据$\to$Airy多光束模型$\to$硅厚度求解$\to$SiC回溯检验。模型流程如图\ref{fig:q3_flow}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\fbox{\parbox{10cm}{\centering 形成条件 $\to$ 第三束光强比 $\to$ Airy多光束模型 $\to$ 硅厚度求解 $\to$ SiC回溯检验}}
+	\caption{问题三算法流程图}
+	\label{fig:q3_flow}
 \end{figure}
 
-\begin{lstlisting}[caption={问题三有限阶延拓伪代码}]
-INPUT Q1 interface coefficients and the two-angle spectra
-FIT the order-1 model under the common objective
-COMPUTE complex loop factor and intensity retention rho
-FOR M in {2, 3, 4, 6}:
-    evaluate the finite Neumann field
-    jointly re-estimate shared physical parameters
-FIT the Airy limit with the same band and loss
-COMPARE thickness, RMSE, AIC and successive-order differences
-IF correction exceeds existing uncertainty and convergence holds:
-    mark inherited thickness STALE and replace it
-ELSE:
-    retain the order-1 thickness
-\end{lstlisting}
+\subsection{硅的复介电函数与复折射率}
 
-\subsection{SiC的多光束回溯检验}
-SiC 在主波段内的最大往返场因子仅 $0.00442$，最大往返强度保持率为 $1.95\times10^{-5}$。Airy 厚度为 $7.3841268\,\mu\mathrm{m}$，相对双光束仅增加
+\subsubsection{背景介电函数}
+
+硅的晶格和束缚电子响应采用双振子表达：
 \begin{equation}
-\Delta d_{\mathrm{SiC}}=0.0000876\,\mu\mathrm{m},
+	\widetilde{\varepsilon}_{\mathrm L}(\lambda) = \varepsilon_\infty + \sum_{j=1}^{2} \frac{A_j\lambda^2}{(\lambda^2-\lambda_j^2)+i\Gamma_j\lambda},
+	\label{eq:si_bg_eps}
 \end{equation}
-约为问题二 Bootstrap 标准差的 $1.9\%$。RMSE 仅由 $0.119397$ 降至 $0.119295$ 个反射率百分点，模型复杂化没有产生实质收益。
+其中$\varepsilon_\infty$为高频介电常数，$A_j$为第$j$个振子强度，$\lambda_j$为特征波长，$\Gamma_j$为振子阻尼参数。本问中$\varepsilon_\infty, A_j, \lambda_j, \Gamma_j$全部固定为材料文献登记值，不参加优化。
 
-\begin{figure}[H]\centering
-\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_sic_model_comparison.png}
-\caption{SiC 双光束与 Airy 模型的同口径比较}\label{fig:q3sic}
-\end{figure}
-图\ref{fig:q3sic}中两条预测曲线几乎重合；二阶以后厚度变化已低于 $2\times10^{-7}\,\mu\mathrm{m}$。因此本文支持“SiC 不需多光束修正”的结论，问题二结果保持 FROZEN，不触发 STALE 传播。
+\subsubsection{Drude自由载流子修正}
 
-\subsection{Si外延层厚度的多光束反演}
-Si 使用 $750$--$1800\,\mathrm{cm}^{-1}$ 主波段，背景折射率采用 Li 的293 K数据插值\cite{li1980}。其最大往返场因子为0.3557，最大强度保持率为0.1265，高阶束不能忽略。Airy 双角度联合反演得到
+等离子体频率满足以下关系。记$N_{\mathrm m}=10^6N$，则
 \begin{equation}
-\boxed{d_{\mathrm{Si}}=3.3960\,\mu\mathrm{m}}.
+	\omega_p^2 = \frac{N_{\mathrm m}e^2}{\varepsilon_0 m^*}.
 \end{equation}
-双光束模型 RMSE 为4.3052个反射率百分点，Airy 模型为1.2715个反射率百分点，\textbf{相对降低70.47\%}，$R^2$ 从0.9420提高到0.9949。
+自由载流子介电响应写为
+\begin{equation}
+	\widetilde{\varepsilon}_{\mathrm D}(\omega) = -\frac{\omega_p^2}{\omega^2 - i\Gamma_e\omega},
+	\label{eq:drude_si}
+\end{equation}
+其中$N$为载流子浓度，$m^*$为固定的载流子有效质量，$\Gamma_e$为自由载流子碰撞频率，$\lambda_{\mathrm m}=10^{-6}\lambda$，$\omega=2\pi c/\lambda_{\mathrm m}$。
 
-\begin{figure}[H]\centering
-\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_si_model_comparison.png}
-\caption{Si 双光束与 Airy 多光束拟合比较}\label{fig:q3si}
-\end{figure}
-图\ref{fig:q3si}显示双光束模型对峰谷形状存在系统偏差，而 Airy 模型同时改善两个角度，说明提升来自共享物理结构而非单角度过拟合。
+总复介电函数为
+\begin{equation}
+	\widetilde{\varepsilon}_2(\lambda) = \widetilde{\varepsilon}_{\mathrm L}(\lambda) + \widetilde{\varepsilon}_{\mathrm D}(\lambda).
+	\label{eq:total_eps_si}
+\end{equation}
+复折射率满足
+\begin{equation}
+	\widetilde n_2^2 = \widetilde{\varepsilon}_2.
+\end{equation}
+全文采用传播因子$e^{-i\widetilde\Phi}$，因此选择被动介质分支
+\begin{equation}
+	\widetilde n_2 = n_2 - i\kappa_2,\qquad n_2>0,\quad \kappa_2\ge0.
+	\label{eq:complex_n}
+\end{equation}
+程序中从两个复平方根中选取满足$\operatorname{Re}\widetilde n_2>0$、$\operatorname{Im}\widetilde n_2\le0$的分支。
 
-\subsection{收敛性、波段敏感性与结果分析}
-有限阶结果见图\ref{fig:q3conv}。厚度由 $M=1$ 的 $3.4072\,\mu\mathrm{m}$ 依次收敛，$M=6$ 与 Airy 极限只差 $5.2\times10^{-6}\,\mu\mathrm{m}$，RMSE 差 $3.90\times10^{-4}$ 个百分点。三个随机种子的 Airy 厚度极差小于 $8\times10^{-10}\,\mu\mathrm{m}$。
+\subsection{折射角与Fresnel系数}
 
-\begin{figure}[H]\centering
-\begin{subfigure}{.55\textwidth}\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_si_order_convergence.png}\caption{有限阶收敛}\end{subfigure}
-\begin{subfigure}{.43\textwidth}\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_si_band_sensitivity.png}\caption{拟合波段敏感性}\end{subfigure}
-\caption{Si 多光束结果的收敛性与敏感性}\label{fig:q3conv}
-\end{figure}
-四个邻近波段给出的 Si 厚度为 $3.3949$--$3.4030\,\mu\mathrm{m}$，主解位于范围内部。由此，多光束对 Si 的必要性同时得到复公比、误差降幅、双角度一致改善、有限阶收敛和波段扰动五类证据；对 SiC 则五类证据均指向保留双光束结果。
+\subsubsection{折射角}
+
+采用复折射率实部计算折射角。设空气侧入射角为$i$，外延层折射角为$\gamma$，衬底折射角为$\eta$，则
+\begin{equation}
+	n_1\sin i = \operatorname{Re}(\widetilde n_2)\sin\gamma,
+\end{equation}
+因此
+\begin{equation}
+	\gamma = \arcsin\left[\frac{n_1\sin i}{\operatorname{Re}(\widetilde n_2)}\right],
+	\qquad
+	\eta = \arcsin\left(\frac{n_1\sin i}{n_3}\right),
+\end{equation}
+其中$n_1=1.0003$。
+
+\subsubsection{Fresnel系数}
+
+折射角使用实数角度，界面Fresnel系数代入复折射率。对于$s$偏振：
+\begin{equation}
+	r_{ij}^{(s)} = \frac{\widetilde n_i\cos\theta_i - \widetilde n_j\cos\theta_j}{\widetilde n_i\cos\theta_i + \widetilde n_j\cos\theta_j},\qquad
+	t_{ij}^{(s)} = \frac{2\widetilde n_i\cos\theta_i}{\widetilde n_i\cos\theta_i + \widetilde n_j\cos\theta_j}.
+\end{equation}
+对于$p$偏振：
+\begin{equation}
+	r_{ij}^{(p)} = \frac{\widetilde n_j\cos\theta_i - \widetilde n_i\cos\theta_j}{\widetilde n_j\cos\theta_i + \widetilde n_i\cos\theta_j},\qquad
+	t_{ij}^{(p)} = \frac{2\widetilde n_i\cos\theta_i}{\widetilde n_j\cos\theta_i + \widetilde n_i\cos\theta_j}.
+\end{equation}
+其中$\widetilde n_1=n_1$，$\widetilde n_2=n_2-i\kappa_2$，$\widetilde n_3=n_3$。
+
+\subsection{复传播因子}
+
+两束相邻内部反射光之间相差一次外延层往返传播。复相位为
+\begin{equation}
+	\widetilde\Phi = 4\pi\times10^{-4}\,\sigma d\, \widetilde n_2\cos\gamma,
+	\label{eq:complex_phase}
+\end{equation}
+其中$\sigma$的单位为$\mathrm{cm^{-1}}$，$d$的单位为$\mu\mathrm{m}$。定义一次往返传播因子：
+\begin{equation}
+	P = e^{-i\widetilde\Phi}.
+	\label{eq:P_factor}
+\end{equation}
+由于$\widetilde n_2=n_2-i\kappa_2$，可得
+\begin{equation}
+	P = e^{-iK n_2}\, e^{-K\kappa_2},
+\end{equation}
+因此传播衰减已经包含在$P$中，程序不得再额外乘入$e^{-\alpha L}$。同时需检查$0<|P(\sigma)|\le1$在整个拟合波段内成立。
+
+\subsection{多光束干涉的形成条件}
+
+多光束干涉的形成需同时满足以下四项条件：
+
+\begin{enumerate}[leftmargin=2em,itemsep=0.3ex]
+	\item \textbf{界面反射条件}：空气—外延层界面及外延层—衬底界面应具有非零反射率，即$|r_{12}^{(u)}|>0$且$|r_{23}^{(u)}|>0$。下界面反射越强，返回上界面的后续光束越明显。
+	
+	\item \textbf{吸收条件}：后续光束经历更多传播距离。若$|P|\ll1$，则第三束及其后的光束因吸收而迅速衰减。$|P|$越接近1，多光束效应越显著。
+	
+	\item \textbf{相干条件}：若有效参与干涉的最高往返次数为$M$，光源相干长度应满足
+	\begin{equation}
+		L_c \gtrsim 2M n_2 d\cos\gamma.
+	\end{equation}
+	附件未提供$L_c$，依据清晰连续的干涉条纹判断基本相干条件得到满足。
+	
+	\item \textbf{几何条件}：上下界面应近似平行、平整，且光斑范围内厚度起伏较小。否则各位置的相位差会相互平均，使条纹展宽或消失。
+\end{enumerate}
+
+上述四项说明多光束能够形成。多光束对测量是否具有显著影响，再由第三束光强比判断。
+
+\subsection{第三束光强比判据}
+
+\subsubsection{前三束反射光}
+
+对于偏振态$u\in\{s,p\}$，第一束直接反射光为
+\begin{equation}
+	E_1^{(u)} = r_{12}^{(u)}E_0.
+\end{equation}
+第二束光经过上界面透射、下界面反射和上界面反向透射：
+\begin{equation}
+	E_2^{(u)} = t_{12}^{(u)} r_{23}^{(u)} t_{21}^{(u)} P E_0.
+\end{equation}
+第三束光在第二束基础上多经历一次上界面内部反射、下界面反射和一次完整往返：
+\begin{equation}
+	E_3^{(u)} = t_{12}^{(u)} r_{23}^{(u)} r_{21}^{(u)} r_{23}^{(u)} t_{21}^{(u)} P^2 E_0.
+	\label{eq:E3}
+\end{equation}
+
+\subsubsection{非偏振光强比}
+
+对于非偏振入射光，定义第三束相对于第一束的光强比为
+\begin{equation}
+	\eta_3(\sigma,i) = \frac{|E_3^{(s)}|^2 + |E_3^{(p)}|^2}{|E_1^{(s)}|^2 + |E_1^{(p)}|^2}.
+	\label{eq:eta3}
+\end{equation}
+在拟合波段$\mathcal B$内取
+\begin{equation}
+	\eta_{3,\max}(i) = \max_{\sigma\in\mathcal B} \eta_3(\sigma,i).
+\end{equation}
+本文取$0.1\%$作为高阶反射可忽略的工程阈值：
+\begin{equation}
+	\begin{cases}
+		\eta_{3,\max}<0.1\%, & \text{高阶反射可忽略};\\
+		\eta_{3,\max}\ge0.1\%, & \text{需要采用多光束模型}.
+	\end{cases}
+	\label{eq:eta3_threshold}
+\end{equation}
+$0.1\%$属于工程经验阈值。代码直接通过完整的$E_1$和$E_3$计算，不手工化简第三束光强比。
+
+\subsubsection{判据的闭环计算}
+
+第三束光强比依赖厚度和光学参数，按以下顺序求解：
+
+\begin{enumerate}[leftmargin=2em]
+	\item 由条纹间距或双光束拟合得到初始参数；
+	\item 计算初始$\eta_{3,\max}^{(0)}$；
+	\item 若$\eta_{3,\max}^{(0)}\ge0.1\%$，则启用Airy多光束模型；
+	\item 使用多光束最优参数重新计算$\eta_{3,\max}^{(1)}$；
+	\item 检查初始与最终判定是否一致。
+\end{enumerate}
+
+\subsection{Airy多光束反射模型}
+
+\subsubsection{相邻高阶光束递推}
+
+第二束之后，每增加一次内部往返，光场振幅乘以
+\begin{equation}
+	q_u = r_{21}^{(u)} r_{23}^{(u)} P.
+	\label{eq:q_factor}
+\end{equation}
+因此
+\begin{equation}
+	E_3^{(u)} = E_2^{(u)}q_u,\qquad
+	E_4^{(u)} = E_2^{(u)}q_u^2,\qquad
+	E_{m+2}^{(u)} = E_2^{(u)}q_u^m,\quad m=0,1,2,\ldots
+\end{equation}
+$|q_u|<1$只表示无穷几何级数收敛，不作为多光束显著性的判据。程序需检查整个拟合波段内$|q_u(\sigma)|<1$。
+
+\subsubsection{无穷级数求和}
+
+总反射场为
+\begin{equation}
+	E_r^{(u)} = E_1^{(u)} + E_2^{(u)}\left(1+q_u+q_u^2+\cdots\right).
+\end{equation}
+当$|q_u|<1$时，
+\begin{equation}
+	1+q_u+q_u^2+\cdots = \frac{1}{1-q_u}.
+\end{equation}
+于是总振幅反射系数为
+\begin{equation}
+	\rho_{\mathrm{multi}}^{(u)} = r_{12}^{(u)} + \frac{t_{12}^{(u)} t_{21}^{(u)} r_{23}^{(u)} P}{1 - r_{21}^{(u)} r_{23}^{(u)} P}.
+	\label{eq:rho_multi}
+\end{equation}
+偏振反射率为
+\begin{equation}
+	R_{\mathrm{multi}}^{(u)} = |\rho_{\mathrm{multi}}^{(u)}|^2.
+\end{equation}
+非偏振理论反射率为
+\begin{equation}
+	R_{\mathrm{multi}} = \frac{R_{\mathrm{multi}}^{(s)} + R_{\mathrm{multi}}^{(p)}}{2}.
+	\label{eq:R_multi}
+\end{equation}
+正文保留这一未化简形式，避免不同Fresnel符号约定引起分母正负号混淆。
+
+\subsection{双光束模型对照}
+
+为评价多光束对测厚结果的影响，保留问题一的双光束模型作为对照：
+\begin{equation}
+	\rho_{\mathrm{double}}^{(u)} = r_{12}^{(u)} + t_{12}^{(u)} t_{21}^{(u)} r_{23}^{(u)} P.
+	\label{eq:rho_double}
+\end{equation}
+非偏振双光束反射率为
+\begin{equation}
+	R_{\mathrm{double}} = \frac{|\rho_{\mathrm{double}}^{(s)}|^2 + |\rho_{\mathrm{double}}^{(p)}|^2}{2}.
+\end{equation}
+双光束与多光束模型使用完全相同的复介电函数、Fresnel系数、数据波段、待估参数、参数边界、初值集合和目标函数，两者唯一差异为是否包含第二束之后的高阶反射。
+
+\subsection{硅厚度反演模型}
+
+\subsubsection{数据波段}
+
+附件3、4的低波数宽峰尖谷用于光谱诊断。结合条纹清晰度和吸收强度，选取以下区间作为正式主拟合波段：
+\begin{equation}
+	1500\le\sigma\le3500\ \mathrm{cm^{-1}}.
+	\label{eq:si_band}
+\end{equation}
+处理步骤为：
+
+\begin{enumerate}[leftmargin=2em]
+	\item 删除首个零反射率异常点；
+	\item 将百分数反射率除以100；
+	\item 截取主拟合波段；
+	\item 使用原始反射率拟合；
+	\item 不进行Hilbert变换、相位解包裹或经验基线扣除。
+\end{enumerate}
+
+\subsubsection{待估参数}
+
+背景介电参数和有效质量固定，只拟合
+\begin{equation}
+	\boldsymbol\theta_{\mathrm{Si}} = (d, n_3, N, \Gamma_e).
+	\label{eq:theta_si}
+\end{equation}
+为了保证参数为正，程序中可实际优化$(d, n_3, \log_{10}N, \log_{10}\Gamma_e)$，论文仍报告物理量$N$和$\Gamma_e$。其中$d$为硅外延层厚度，$n_3$为常数衬底折射率，$N$为外延层载流子浓度，$\Gamma_e$为自由载流子碰撞频率。
+
+\subsubsection{10$^\circ$单角度拟合}
+
+多光束目标函数为
+\begin{equation}
+	J_{10}^{\mathrm{multi}}(\boldsymbol\theta) = \sum_k \left[R_{10,k}^{\mathrm{obs}} - R_{\mathrm{multi}}(\sigma_k,10^\circ;\boldsymbol\theta)\right]^2.
+\end{equation}
+求得$\widehat{\boldsymbol\theta}_{10}^{\mathrm{multi}}$，$d_{10}^{\mathrm{Si}}$。相同参数条件下，双光束对照目标函数为
+\begin{equation}
+	J_{10}^{\mathrm{double}}(\boldsymbol\theta) = \sum_k \left[R_{10,k}^{\mathrm{obs}} - R_{\mathrm{double}}(\sigma_k,10^\circ;\boldsymbol\theta)\right]^2.
+\end{equation}
+
+\subsubsection{15$^\circ$单角度拟合}
+
+多光束目标函数为
+\begin{equation}
+	J_{15}^{\mathrm{multi}}(\boldsymbol\theta) = \sum_k \left[R_{15,k}^{\mathrm{obs}} - R_{\mathrm{multi}}(\sigma_k,15^\circ;\boldsymbol\theta)\right]^2.
+\end{equation}
+求得$\widehat{\boldsymbol\theta}_{15}^{\mathrm{multi}}$，$d_{15}^{\mathrm{Si}}$。同时计算对应的双光束对照结果。
+
+\subsubsection{多初值求解}
+
+厚度目标函数具有多个局部盆地，因此对$d, n_3, N, \Gamma_e$设置物理边界，并使用多组初值启动有界非线性最小二乘：
+\begin{equation}
+	\widehat{\boldsymbol\theta}^{(\ell)} = \arg\min_{\boldsymbol\theta\in\Omega} J(\boldsymbol\theta),\qquad \ell=1,\ldots,L.
+\end{equation}
+选取满足求解成功、$|P|\le1$、$|q_u|<1$、参数位于物理边界内且残差平方和最小的结果。本问不再释放$\varepsilon_\infty, A_j, \lambda_j, \Gamma_j$。
+
+\subsubsection{硅厚度主结果}
+
+对10$^\circ$、15$^\circ$分别拟合，并取两个单角度厚度的算术平均作为主结果：
+\begin{equation}
+	d_{\mathrm{Si}} = \frac{d_{10}^{\mathrm{Si}} + d_{15}^{\mathrm{Si}}}{2}.
+	\label{eq:d_si_main}
+\end{equation}
+角度间相对差异为
+\begin{equation}
+	\eta_d^{\mathrm{Si}} = \frac{|d_{10}^{\mathrm{Si}} - d_{15}^{\mathrm{Si}}|}{d_{\mathrm{Si}}}\times100\%.
+\end{equation}
+双角度共享参数拟合只用于验证：
+\begin{equation}
+	J_{\mathrm{joint}}^{\mathrm{multi}} = J_{10}^{\mathrm{multi}} + J_{15}^{\mathrm{multi}}.
+\end{equation}
+联合厚度不替代两个单角度厚度的平均值。
+
+\subsection{多光束对厚度精度的影响}
+
+对每个角度分别计算$d_{\mathrm{double}}$和$d_{\mathrm{multi}}$。厚度修正量为
+\begin{equation}
+	\Delta d = d_{\mathrm{multi}} - d_{\mathrm{double}}.
+	\label{eq:Delta_d}
+\end{equation}
+相对厚度影响为
+\begin{equation}
+	\varepsilon_d = \frac{|\Delta d|}{d_{\mathrm{multi}}}\times100\%.
+	\label{eq:eps_d}
+\end{equation}
+拟合误差改善率为
+\begin{equation}
+	\eta_{\mathrm{RMSE}} = \frac{\mathrm{RMSE}_{\mathrm{double}} - \mathrm{RMSE}_{\mathrm{multi}}}{\mathrm{RMSE}_{\mathrm{double}}}\times100\%.
+	\label{eq:eta_RMSE}
+\end{equation}
+
+三项指标的功能分别为：$\eta_3$决定是否启用多光束模型；$\Delta d$量化高阶反射引起的厚度偏差；$\eta_{\mathrm{RMSE}}$评价Airy模型对光谱拟合的改善。
+
+\subsection{SiC的回溯检验}
+
+问题二当前得到：
+\begin{equation}
+	d_{\mathrm{SiC}} = 7.384039\ \mu\mathrm{m}.
+\end{equation}
+联合验证厚度与主结果一致。
+
+\subsubsection{第三束光强比}
+
+分别使用问题二中10$^\circ$和15$^\circ$的拟合参数，在$2500\le\sigma\le3300\ \mathrm{cm^{-1}}$计算
+\begin{equation}
+	\eta_{3,\max,10}^{\mathrm{SiC}},\qquad \eta_{3,\max,15}^{\mathrm{SiC}}.
+\end{equation}
+
+\subsubsection{回溯规则}
+
+若两个角度均满足
+\begin{equation}
+	\eta_{3,\max}^{\mathrm{SiC}} < 0.1\%,
+\end{equation}
+则保留问题二结果：
+\begin{equation}
+	d_{\mathrm{SiC}} = 7.384039\ \mu\mathrm{m}.
+\end{equation}
+若任一角度满足$\eta_{3,\max}^{\mathrm{SiC}}\ge0.1\%$，则使用Airy模型重新拟合附件1、2，得到修正厚度。
+
+\subsection{可靠性分析}
+
+硅厚度反演的可靠性从以下七个方面检验：
+
+\begin{enumerate}[leftmargin=2em]
+	\item \textbf{拟合优度}：分别报告RMSE、MAE、$R^2$。MAPE在谷底反射率接近零时容易失真，只作辅助指标。
+	
+	\item \textbf{残差结构}：绘制双光束和多光束残差，检查是否仍存在与条纹同周期的振荡、峰顶和谷底是否出现系统偏差、波段两端是否持续偏离。
+	
+	\item \textbf{双角度一致性}：比较$d_{10}^{\mathrm{Si}}$、$d_{15}^{\mathrm{Si}}$、$d_{\mathrm{joint}}^{\mathrm{Si}}$。
+	
+	\item \textbf{多初值稳定性}：比较不同初值所得厚度是否落入相同盆地。
+	
+	\item \textbf{参数边界}：检查$n_3$、$N$、$\Gamma_e$是否达到边界。若达到边界，仅将其视为构成复折射率的辅助参数，不解释为高精度材料常数。
+	
+	\item \textbf{物理约束检查}：在整个拟合波段验证
+	\begin{equation}
+		0<|P|\le1,\qquad |q_s|<1,\qquad |q_p|<1.
+	\end{equation}
+	
+	\item \textbf{波段敏感性}：主波段为$1500\sim3500\ \mathrm{cm^{-1}}$，补充比较$1500\sim3000\ \mathrm{cm^{-1}}$的厚度结果，检查高波数低可见度区域是否显著影响厚度。
+\end{enumerate}
+
+\subsection{算法流程}
+
+\begin{algorithm}[htbp]
+	\caption{问题三：硅外延层多光束干涉厚度反演}
+	\label{alg:q3}
+	\begin{algorithmic}[1]
+		\REQUIRE 附件3、4硅光谱，固定硅背景介电参数，10$^\circ$和15$^\circ$入射角
+		\ENSURE 硅厚度主结果$d_{\mathrm{Si}}$、多光束影响评估、SiC回溯结论
+		\STATE 删除首个零反射率异常点；
+		\STATE 绘制全谱和低波数峰谷图；
+		\STATE 截取$1500\sim3500\ \mathrm{cm^{-1}}$主拟合波段；
+		\STATE 固定$\varepsilon_\infty, A_j, \lambda_j, \Gamma_j$和$m^*$；
+		\STATE 根据$N, \Gamma_e$计算复介电函数和复折射率；
+		\STATE 用折射率实部计算折射角；
+		\STATE 用复折射率计算$s$、$p$偏振Fresnel系数；
+		\STATE 计算传播因子$P$，检查$|P|\le1$；
+		\STATE 由双光束拟合获得初始$d, n_3, N, \Gamma_e$；
+		\STATE 计算第三束光强比$\eta_3$；
+		\IF{$\eta_3\ge0.1\%$}
+		\STATE 建立Airy多光束反射率；
+		\ENDIF
+		\STATE 对10$^\circ$、15$^\circ$分别进行多初值有界最小二乘；
+		\STATE 取两个单角度厚度平均作为硅厚度$d_{\mathrm{Si}}$；
+		\STATE 进行双角度联合拟合作一致性验证；
+		\STATE 比较双光束和多光束的厚度及RMSE；
+		\STATE 使用问题二SiC参数计算$\eta_3$，判断是否修正SiC厚度。
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{问题三模型汇总}
+
+综合式\eqref{eq:si_bg_eps}—\eqref{eq:R_multi}，问题三的多光束干涉测厚模型可统一表示为：
+\rowcolors{1}{white}{white}
+\begin{equation}
+	\begin{cases}
+		\widetilde{\varepsilon}_2 = \widetilde{\varepsilon}_{\mathrm L} - \dfrac{\omega_p^2}{\omega^2 - i\Gamma_e\omega},\\[3mm]
+		\omega_p^2 = \dfrac{Ne^2}{\varepsilon_0 m^*},\\[3mm]
+		\widetilde n_2^2 = \widetilde{\varepsilon}_2,\qquad \widetilde n_2 = n_2 - i\kappa_2,\\[2mm]
+		\sin\gamma = \dfrac{n_1\sin i}{\operatorname{Re}\widetilde n_2},\\[3mm]
+		P = e^{-i4\pi10^{-4}\sigma d\,\widetilde n_2\cos\gamma},\\[2mm]
+		E_1^{(u)} = r_{12}^{(u)}E_0,\\[1mm]
+		E_2^{(u)} = t_{12}^{(u)} r_{23}^{(u)} t_{21}^{(u)} P E_0,\\[1mm]
+		E_3^{(u)} = t_{12}^{(u)} r_{23}^{(u)} r_{21}^{(u)} r_{23}^{(u)} t_{21}^{(u)} P^2 E_0,\\[2mm]
+		\eta_3 = \dfrac{|E_3^{(s)}|^2 + |E_3^{(p)}|^2}{|E_1^{(s)}|^2 + |E_1^{(p)}|^2},\\[4mm]
+		q_u = r_{21}^{(u)} r_{23}^{(u)} P,\\[2mm]
+		\rho_{\mathrm{multi}}^{(u)} = r_{12}^{(u)} + \dfrac{t_{12}^{(u)} t_{21}^{(u)} r_{23}^{(u)} P}{1 - r_{21}^{(u)} r_{23}^{(u)} P},\\[4mm]
+		R_{\mathrm{multi}} = \dfrac{|\rho_{\mathrm{multi}}^{(s)}|^2 + |\rho_{\mathrm{multi}}^{(p)}|^2}{2},\\[4mm]
+		\widehat{\boldsymbol\theta} = \arg\min_{\boldsymbol\theta} \sum_k \left[R_k^{\mathrm{obs}} - R_{\mathrm{multi}}(\sigma_k,i;\boldsymbol\theta)\right]^2,\\[3mm]
+		\boldsymbol\theta = (d, n_3, N, \Gamma_e).
+	\end{cases}
+	\label{eq:q3_model}
+\end{equation}
+\rowcolors{2}{gray!8}{white}
+
+判定规则为
+\begin{equation}
+	\eta_{3,\max}<0.1\% \Rightarrow \text{双光束近似成立},
+\end{equation}
+\begin{equation}
+	\eta_{3,\max}\ge0.1\% \Rightarrow \text{采用Airy多光束模型}.
+\end{equation}
