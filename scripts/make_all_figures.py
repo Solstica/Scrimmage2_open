@@ -35,7 +35,7 @@ def main() -> None:
     for directory in (SHARED_FIG, Q1_FIG, Q2_FIG, Q3_FIG):
         directory.mkdir(parents=True, exist_ok=True)
     flow(SHARED_FIG / "overall_route.pdf", "Unified route for the three questions", ["Complex Fresnel\nforward model", "Shared double-angle\ninversion", "Loop-factor\ndiagnosis", "Neumann / Airy\nrollback"])
-    flow(Q1_FIG / "q1_model_flow.pdf", "Q1: PAPER_A double-beam model", ["Sellmeier--Drude\ndispersion", "Real-angle signed\ns/p Fresnel terms", "Surface plus first\ninternal reflection", "Unpolarized\nreflectance"])
+    flow(Q1_FIG / "q1_model_flow.pdf", "Q1: complex double-beam model", ["Dispersion and\npassive branch", "s/p Fresnel\ncoefficients", "Two complex\nreflected beams", "Unpolarized\nreflectance"])
     flow(Q2_FIG / "q2_algorithm_flow.pdf", "Q2: shared-parameter joint inversion", ["Data audit and\nband selection", "Phase-based\ninitial check", "Multi-start global\nsearch", "Robust refinement\nand validation"])
     flow(Q3_FIG / "q3_algorithm_flow.pdf", "Q3: controlled multibeam extension", ["Compute complex\nloop factor", "Fit finite orders\n1,2,3,4,6", "Evaluate Airy\nlimit", "Retain or rollback\nQ2 result"])
 

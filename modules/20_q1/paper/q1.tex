@@ -1,9 +1,11 @@
 \subsection{问题一的描述与分析}
 本问需要在空气、外延层和衬底组成的三层结构中，只保留表面反射光和第一束内部反射光，建立波数、入射角、材料色散与外延层厚度之间的关系。本文以 PAPER\_A 的 Sellmeier--Drude 色散和 Fresnel 双光束模型为主体，固定载流子有效质量，并统一单位、界面系数方向和传播相位。界面反射相变由带符号 Fresnel 系数表示，不再另加固定半波损失。
 
-\begin{figure}[H]
+图\ref{fig:q1-schematic}区分两束反射光的传播路径，用于确定相位差和界面系数的乘积顺序。
+
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.94\textwidth]{../modules/20_q1/figures/q1_interference_schematic.png}
+\includegraphics[width=.94\textwidth]{\ProjectRoot/modules/20_q1/figures/q1_interference_schematic.png}
 \caption{空气--外延层--衬底结构中的双光束干涉光路。}
 \label{fig:q1-schematic}
 \end{figure}
@@ -74,12 +76,16 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol s)
 
 \textbf{模型汇总：} 输入波数$\sigma$、入射角$i$、厚度$d$、载流子浓度$N$、衬底折射率$n_3$和Sellmeier参数；由式\eqref{eq:q1-sellmeier}--\eqref{eq:q1-snell}计算弱吸收折射率与折射角，由式\eqref{eq:q1-fresnel-s}--\eqref{eq:q1-fresnel-p}计算两个界面的带符号Fresnel系数，再由式\eqref{eq:q1-phase}--\eqref{eq:q1-reflectance}得到与实测光谱直接比较的非偏振反射率。本问暂忽略第二次及以上的内部反射，该近似将在问题三中通过第三束反射光强比进行检验。
 
-\begin{figure}[H]
+图\ref{fig:q1-flow}给出从材料色散到理论反射率的计算次序，程序实现按同一顺序组织。
+
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.94\textwidth]{../modules/20_q1/figures/q1_model_flow.pdf}
+\includegraphics[width=.94\textwidth]{\ProjectRoot/modules/20_q1/figures/q1_model_flow.pdf}
 \caption{问题一Sellmeier--Drude--Fresnel双光束模型流程。}
 \label{fig:q1-flow}
 \end{figure}
 
 \subsection{程序一致性检验}
 本问属于解析建模，不单设迭代算法。程序分别检验正入射Fresnel极限、零厚度Airy极限、相位对厚度的线性关系、反射率非负性和$10^{-4}$单位换算。合成光谱恢复仅用于检查公式和程序接口，不作为新的核心模型或官方数据结果。上述检验同时确认：采用带符号Fresnel系数后，程序没有重复加入固定半波损失。
+
+\FloatBarrier
