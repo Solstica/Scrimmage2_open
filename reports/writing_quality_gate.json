@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "checks": {
+    "no_repeated_ai_templates": true,
+    "no_forced_H_in_questions": true,
+    "float_barrier_per_question": true,
+    "shared_preamble_in_previews": true,
+    "figure_registry_required_fields": true,
+    "figure_sources_exist": true,
+    "body_figures_registered": true
+  }
+}
