@@ -1,114 +1,111 @@
-\subsection{问题三的描述与分析}
-问题三要求先判断高阶反射是否达到可观测量级，再确定硅外延层厚度，并回溯检验问题二的碳化硅结果。两篇参考论文对多光束修正给出不同判断\cite{paperA,paperB}，因此不能预先指定 Airy 模型，也不能用有限阶展开或信息准则代替物理判据。本文以第三束内部反射光相对表面反射光的最大强度比为裁决量：判据低于阈值时保留双光束模型，达到阈值时才启用 Airy 模型。
+\subsection{问题三的描述与光谱特征}
+问题三要求讨论多光束干涉对测厚精度的影响，给出硅外延层厚度，并回溯检验问题二的SiC结果。硅在中红外波段具有明显吸收，不能沿用问题二的实折射率近似。本文以PAPER\_A为唯一主体：使用双振子--Drude复折射率和Airy无限多光束模型，对$10^\circ$、$15^\circ$数据分别拟合后取平均。第三束光强比用于解释高阶光束量级，不再作为双光束与Airy之间的条件选择器。
 
-\subsection{实折射角与第三束光强比的预备工作}
-对介质 $j$ 的复折射率 $\widetilde n_j$，按参考路线采用实折射角近似
+\subsection{硅双振子--Drude复折射率}
+令$\lambda=10^4/\sigma$，硅的晶格介电函数为
 \begin{equation}
-\gamma_j=\arcsin\!\left(\frac{n_0\sin\theta_0}{\operatorname{Re}(\widetilde n_j)}\right),\qquad
-q_j=\widetilde n_j\cos\gamma_j .
-\label{eq:q3-real-angle}
+\widetilde\varepsilon_{\mathrm L}(\lambda)=\varepsilon_\infty+
+\sum_{j=1}^{2}\frac{A_j\lambda^2}{\lambda^2-\lambda_j^2+\mathrm i\Gamma_j\lambda},
+\label{eq:q3-si-lattice}
 \end{equation}
-复折射率仍完整进入 Fresnel 导纳，其中 $Y_j^{(s)}=q_j$、$Y_j^{(p)}=\widetilde n_j^2/q_j$，界面振幅反射系数写为
+其中$\varepsilon_\infty=11.68$，$(A_1,A_2)=(0.29972,11.34965)$，$(\lambda_1,\lambda_2)=(10.6683,16.2026)\,\mu\mathrm m$，$(\Gamma_1,\Gamma_2)=(0.092613,0.23572)\,\mu\mathrm m$。自由载流子项为
 \begin{equation}
-r_{ij}^{(u)}=\frac{Y_i^{(u)}-Y_j^{(u)}}{Y_i^{(u)}+Y_j^{(u)}} .
-\label{eq:q3-fresnel}
+\widetilde\varepsilon_{\mathrm D}=-\frac{\omega_p^2}{\omega^2-\mathrm i\Gamma_e\omega},\qquad
+\omega_p^2=\frac{Ne^2}{\varepsilon_0(0.26m_0)},
+\label{eq:q3-si-drude}
 \end{equation}
-外延层单次往返传播因子为
-\begin{equation}
-P=\exp\!\left[-\mathrm{i}4\pi\times10^{-4}\sigma d q_1\right],
-\label{eq:q3-propagation}
-\end{equation}
-式中波数 $\sigma$ 的单位为 $\mathrm{cm}^{-1}$，厚度 $d$ 的单位为 $\mu\mathrm m$，因子 $10^{-4}$ 完成微米到厘米的换算。
+并令$\widetilde n_2^2=\widetilde\varepsilon_{\mathrm L}+\widetilde\varepsilon_{\mathrm D}$。全文采用$\exp(-\mathrm ikz)$约定，选择$\operatorname{Im}\widetilde n_2\le0$的平方根支路，以保证传播衰减。
 
-\subsection{第三束光强判据驱动的双光束—Airy条件反演模型}
-对偏振态 $u\in\{s,p\}$，表面反射束、第一束内部反射光和一次往返场因子分别为
+\subsection{第三束光强比与Airy模型}
+折射角采用PAPER\_A的实角近似
 \begin{equation}
-A_0^{(u)}=r_{01}^{(u)},\quad
-A_1^{(u)}=t_{01}^{(u)}r_{12}^{(u)}t_{10}^{(u)}P,\quad
-g^{(u)}=r_{10}^{(u)}r_{12}^{(u)}P .
-\label{eq:q3-components}
+\gamma=\arcsin\!\left(\frac{n_1\sin i}{\operatorname{Re}\widetilde n_2}\right),
 \end{equation}
-第三束内部反射光为 $A_2^{(u)}=A_1^{(u)}g^{(u)}$。将两种偏振作非相干平均，定义第三束相对表面反射光的强度比
+而完整复折射率仍代入s、p偏振Fresnel系数。外延层一次往返传播因子为
 \begin{equation}
-\eta_3(\sigma)=
-\frac{|A_2^{(s)}|^2+|A_2^{(p)}|^2}
-{|A_0^{(s)}|^2+|A_0^{(p)}|^2} .
-\label{eq:q3-criterion}
+P=\exp\!\left(-\mathrm i4\pi\times10^{-4}\sigma d\widetilde n_2\cos\gamma\right),
+\label{eq:q3-propagation-paper-a}
 \end{equation}
-令 $\eta_{3,\max}$ 为指定波段和两个入射角上的最大值，模型分支为
+程序逐点验证$0<|P|\le1$。对偏振态$u$，前三束反射场写为
 \begin{equation}
-r^{(u)}=\begin{cases}
-A_0^{(u)}+A_1^{(u)}, & 100\eta_{3,\max}<0.1\%,\\[2mm]
-A_0^{(u)}+\dfrac{A_1^{(u)}}{1-g^{(u)}}, & 100\eta_{3,\max}\ge 0.1\%.
-\end{cases}
-\label{eq:q3-branch}
+E_1^{(u)}=r_{12}^{(u)}E_0,\quad
+E_2^{(u)}=t_{12}^{(u)}r_{23}^{(u)}t_{21}^{(u)}PE_0,
 \end{equation}
-硅在 $1500$--$3500\,\mathrm{cm}^{-1}$ 上拟合 $\boldsymbol p=(d,n_3,\log_{10}N,\log_{10}\Gamma_e)$；背景折射率采用 $293\,\mathrm K$ 数据插值，有效质量固定。每个角度分别最小化实测反射率与式\eqref{eq:q3-branch}预测值的平方残差，不引入经验增益或偏置。
+\begin{equation}
+E_3^{(u)}=t_{12}^{(u)}r_{23}^{(u)}r_{21}^{(u)}r_{23}^{(u)}t_{21}^{(u)}P^2E_0.
+\end{equation}
+第三束相对表面反射束的强度比定义为
+\begin{equation}
+\eta_3=\frac{|E_3^{(s)}|^2+|E_3^{(p)}|^2}{|E_1^{(s)}|^2+|E_1^{(p)}|^2},
+\label{eq:q3-third-ratio}
+\end{equation}
+并以$0.1\%$作为工程参照阈值。硅的正式反射振幅始终采用
+\begin{equation}
+\rho_{\mathrm{Airy}}^{(u)}=r_{12}^{(u)}+
+\frac{t_{12}^{(u)}t_{21}^{(u)}r_{23}^{(u)}P}
+{1-r_{21}^{(u)}r_{23}^{(u)}P},
+\end{equation}
+非偏振反射率为$R_{\mathrm{Airy}}=(|\rho_{\mathrm{Airy}}^{(s)}|^2+|\rho_{\mathrm{Airy}}^{(p)}|^2)/2$。
 
-\textbf{模型汇总：} 输入附件3、4和固定材料常数，先以双光束解计算式\eqref{eq:q3-criterion}，再由式\eqref{eq:q3-branch}唯一选择正式模型；两个单角度厚度的算术平均为主结果，双角度共享参数拟合仅用于交叉验证。对碳化硅只读取问题二冻结结果，在 $2500$--$3300\,\mathrm{cm}^{-1}$ 重算判据；未超过阈值时不修改问题二厚度。
+\subsection{硅分角度Airy反演}
+删除附件3、4的共同零值边界点，在$1500$--$3500\,\mathrm{cm}^{-1}$内分别拟合
+\begin{equation}
+\boldsymbol p_k=(d_k,n_{3,k},\log_{10}N_k,\log_{10}\Gamma_{e,k}),
+\end{equation}
+固定式\eqref{eq:q3-si-lattice}的背景参数和有效质量，不引入角度增益、偏置或共享参数联合拟合。每个角度采用确定性多初值有界最小二乘，厚度主结果为两个单角度解的算术平均。
 
-\subsection{多启动有界最小二乘条件反演算法}
-四个参数连续且有界，目标函数非线性但可求数值 Jacobian，故采用确定性多启动有界最小二乘。多启动用于排查局部极值，归一化 Jacobian 奇异值和边界命中用于区分“厚度可估”与“载流子参数可解释”。
+\textbf{模型汇总：} 输入附件3、4；由双振子--Drude模型计算硅复折射率，检验传播衰减支路，使用Airy反射率分别拟合两个角度并取平均；再读取问题二新结果，按式\eqref{eq:q3-third-ratio}检查SiC高阶光束是否可忽略。
+
+\subsection{硅重算结果与范文差异}
+严格固定背景参数后，两个角度的Airy厚度分别为
+\begin{equation}
+d_{10^\circ}^{\mathrm{Si}}=3.2480\,\mu\mathrm m,\qquad
+d_{15^\circ}^{\mathrm{Si}}=3.1875\,\mu\mathrm m,
+\end{equation}
+算术平均为
+\begin{equation}
+\boxed{d_{\mathrm{Si}}=3.2178\,\mu\mathrm m}.
+\label{eq:q3-si-paper-a-result}
+\end{equation}
+两角度RMSE分别为$1.8738$和$3.3554$个反射率百分点。该均值较PAPER\_A报告的$3.040\,\mu\mathrm m$高$5.85\%$，略超数值复现门槛，因此当前登记为待复核而非冻结结果。检查显示波段、单位、反射率缩放、参数边界和传播衰减均正确；主要差异是本文按既定口径固定了振子参数与有效质量，而范文附录的最终阶段实际重新释放这些量。为避免以增加不可辨识参数强行贴合范文，本文保留重算结果并明确披露差异。
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.96\textwidth]{../modules/40_q3/figures/q3_algorithm_flow.pdf}
-\caption{问题三第三束判据与条件反演流程}
-\label{fig:q3flow}
+\begin{minipage}{.49\textwidth}\centering
+\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_10deg_paper_a_fit.png}
+\end{minipage}
+\begin{minipage}{.49\textwidth}\centering
+\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_15deg_paper_a_fit.png}
+\end{minipage}
+\caption{硅两个入射角的PAPER\_A Airy独立拟合及残差。}
+\label{fig:q3-si-airy-fit}
 \end{figure}
-
-\begin{lstlisting}[caption={问题三条件反演伪代码}]
-INPUT spectra at 10 and 15 degrees, Q2 frozen parameters
-FOR each Si angle:
-    fit bounded double-beam parameters from deterministic starts
-    compute max third-beam ratio over 1500--3500 cm^-1
-IF the maximum over both angles is below 0.1 percent:
-    select the double-beam model
-ELSE:
-    refit and select the Airy model
-AVERAGE the two selected-model thickness estimates
-JOINTLY fit both angles only as cross-validation
-CHECK threshold sensitivity, parameter bounds, Jacobian and angle consistency
-RECOMPUTE the SiC criterion from the frozen Q2 result
-OUTPUT only validated thicknesses, criteria and rollback conclusion
-\end{lstlisting}
-
-\subsection{条件反演结果}
-硅在完整波段内的第三束最大光强比分别为 $0.002920\%$ 和 $0.000286\%$，均低于 $0.1\%$，故正式模型为双光束模型。两个角度的厚度分别为 $3.252973\,\mu\mathrm m$ 与 $3.364517\,\mu\mathrm m$，主结果为
-\begin{equation}
-\boxed{d_{\mathrm{Si}}=3.308745\,\mu\mathrm m}.
-\label{eq:q3-si-result}
-\end{equation}
-对应 RMSE 分别为 $1.8472$ 和 $2.6199$ 个反射率百分点。相同条件下 Airy 模型的 RMSE 分别为 $1.8676$ 和 $2.6247$ 个百分点，未改善拟合，与第三束判据的裁决一致。
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.94\textwidth]{../modules/40_q3/figures/q3_si_model_comparison.png}
-\caption{硅双光束主模型与 Airy 对照模型的同口径拟合}
-\label{fig:q3-si-comparison}
+\begin{minipage}{.49\textwidth}\centering
+\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_paper_a_third_beam_ratio.png}
+\end{minipage}
+\begin{minipage}{.49\textwidth}\centering
+\includegraphics[width=\linewidth]{../modules/40_q3/figures/q3_si_paper_a_thickness_comparison.png}
+\end{minipage}
+\caption{硅第三束光强比与重算厚度对照。}
+\label{fig:q3-si-validation}
 \end{figure}
 
-碳化硅两个角度的第三束最大光强比均约为 $1.03\times10^{-7}\%$，远低于阈值，因此不触发问题二结果的 STALE 传播，保留
+\subsection{SiC回溯检验}
+从问题二新结果文件读取$d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m$，并使用两个角度各自的Sellmeier--Drude拟合参数，在$2500$--$3300\,\mathrm{cm}^{-1}$计算第三束光强比。最大值分别为$4.85\times10^{-7}\%$和$4.66\times10^{-7}\%$，远小于$0.1\%$，故高阶光束可忽略，保留
 \begin{equation}
-\boxed{d_{\mathrm{SiC}}=7.384039\,\mu\mathrm m}.
-\label{eq:q3-sic-result}
+\boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
+\label{eq:q3-sic-paper-a-result}
 \end{equation}
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}{.48\textwidth}
-\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_third_beam_criterion.png}
-\caption{第三束光强判据}
-\end{subfigure}
-\begin{subfigure}{.48\textwidth}
-\includegraphics[width=\textwidth]{../modules/40_q3/figures/q3_thickness_consistency.png}
-\caption{厚度一致性验证}
-\end{subfigure}
-\caption{问题三的模型裁决与厚度交叉验证}
-\label{fig:q3-validation}
+\includegraphics[width=.72\textwidth]{../modules/40_q3/figures/q3_sic_paper_a_backcheck.png}
+\caption{SiC第三束光强比及$0.1\%$工程阈值。}
+\label{fig:q3-sic-backcheck}
 \end{figure}
 
-\subsection{结果分析与适用边界}
-将阈值从 $0.05\%$ 扰动至 $0.20\%$ 时，模型选择始终为双光束。两角度厚度的相对差为 $3.371\%$；联合拟合厚度为 $3.383942\,\mu\mathrm m$，与单角度均值相差 $2.273\%$，均低于预设的 $5\%$ 一致性界限。将实折射角近似替换为复法向波矢并重新拟合时，厚度均值仅变化 $9.41\times10^{-7}\%$；式\eqref{eq:q3-propagation}的公式—代码—单位—缩放检查最大误差为 $1.73\times10^{-15}$。
-
-需要指出，$10^\circ$ 解的碰撞波数命中下界，$15^\circ$ 及联合解的载流子浓度和碰撞波数同时命中边界，其 Jacobian 列范数也显示这两个量的信息不足。因此本文只把厚度、第三束判据和 SiC 回溯结论登记为物理结果，不对 $N$ 与 $\Gamma_e$ 作材料参数解释。该限制避免了用不可辨识的附属参数夸大模型结论。
+\subsection{可靠性与局限性}
+多初值解在同一干涉级次收敛，传播因子最大模小于1，且SiC回溯形成Q1--Q2--Q3闭环。但硅的碰撞率或载流子浓度在部分角度达到边界，说明附属参数可辨识性不足；$0.1\%$为工程阈值，题目未提供光源相干长度和界面粗糙度。本文仅解释厚度与高阶光束量级，不把边界处的载流子参数作为材料测量结论。

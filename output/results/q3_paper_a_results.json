@@ -1,0 +1,167 @@
+{
+  "schema_version": "run_02.q3.paper_a.v1",
+  "status": "REVIEW_REQUIRED",
+  "method_source": "PAPER_A",
+  "si_band_cm-1": [
+    1500.0,
+    3500.0
+  ],
+  "formal_model": "Airy",
+  "fixed_material_parameters": {
+    "epsilon_inf": 11.68,
+    "oscillators": [
+      [
+        0.29972,
+        10.6683,
+        0.092613
+      ],
+      [
+        11.34965,
+        16.2026,
+        0.23572
+      ]
+    ],
+    "effective_mass_ratio": 0.26
+  },
+  "si_angle_results": [
+    {
+      "parameters": {
+        "thickness_um": 3.2479974169771597,
+        "substrate_index": 3.5542048057506905,
+        "log10_carrier_cm3": 18.239836988003578,
+        "log10_collision_s-1": 11.000000000000002
+      },
+      "metrics": {
+        "rmse_fraction": 0.018738296801541668,
+        "rmse_percentage_point": 1.8738296801541667,
+        "mae_percentage_point": 1.2138321885790664,
+        "r2": 0.631197442911704
+      },
+      "success": true,
+      "boundary_hits": [
+        "log10_collision_s-1"
+      ],
+      "multistart": [
+        {
+          "thickness_um": 3.2479974169771597,
+          "rmse_percentage_point": 1.8738296801541667
+        },
+        {
+          "thickness_um": 3.247997410031283,
+          "rmse_percentage_point": 1.8738296801546928
+        },
+        {
+          "thickness_um": 3.247997403847276,
+          "rmse_percentage_point": 1.8738296801551775
+        },
+        {
+          "thickness_um": 3.224263193419453,
+          "rmse_percentage_point": 1.8997958614626727
+        },
+        {
+          "thickness_um": 3.22426319129294,
+          "rmse_percentage_point": 1.8997958614626755
+        },
+        {
+          "thickness_um": 2.5148222147648993,
+          "rmse_percentage_point": 3.2888687737793054
+        }
+      ],
+      "third_beam_ratio_max_percent": 0.0030087735502311135,
+      "propagation_max_abs": 0.9978111749829667,
+      "figure": "modules/40_q3/figures/q3_si_10deg_paper_a_fit.png",
+      "table": "modules/40_q3/tables/q3_si_10deg_paper_a.csv"
+    },
+    {
+      "parameters": {
+        "thickness_um": 3.1875196790859226,
+        "substrate_index": 3.6509251664470566,
+        "log10_carrier_cm3": 12.000000000000002,
+        "log10_collision_s-1": 14.999999999999998
+      },
+      "metrics": {
+        "rmse_fraction": 0.03355382352363203,
+        "rmse_percentage_point": 3.355382352363203,
+        "mae_percentage_point": 2.619640787635807,
+        "r2": 0.0787516711439038
+      },
+      "success": true,
+      "boundary_hits": [
+        "log10_carrier_cm3",
+        "log10_collision_s-1"
+      ],
+      "multistart": [
+        {
+          "thickness_um": 3.1875196790859226,
+          "rmse_percentage_point": 3.355382352363203
+        },
+        {
+          "thickness_um": 3.1875196664324177,
+          "rmse_percentage_point": 3.3553823523633475
+        },
+        {
+          "thickness_um": 3.187519635158778,
+          "rmse_percentage_point": 3.3553823523638218
+        },
+        {
+          "thickness_um": 3.1875198489980643,
+          "rmse_percentage_point": 3.355382352363958
+        },
+        {
+          "thickness_um": 3.18751980756346,
+          "rmse_percentage_point": 3.3553823899854214
+        },
+        {
+          "thickness_um": 3.3538757174353004,
+          "rmse_percentage_point": 5.066709886477223
+        }
+      ],
+      "third_beam_ratio_max_percent": 0.003882447605144373,
+      "propagation_max_abs": 0.9978754090355733,
+      "figure": "modules/40_q3/figures/q3_si_15deg_paper_a_fit.png",
+      "table": "modules/40_q3/tables/q3_si_15deg_paper_a.csv"
+    }
+  ],
+  "si_primary_result": {
+    "rule": "arithmetic_mean_of_independent_10deg_and_15deg_Airy_fits",
+    "thickness_um": 3.217758548031541,
+    "relative_distance_to_paper_a_percent": 5.847320658932266,
+    "five_percent_numerical_gate_pass": false,
+    "paper_a_reference_only": {
+      "10deg_um": 3.143,
+      "15deg_um": 2.937,
+      "average_um": 3.04
+    }
+  },
+  "sic_backcheck": {
+    "q2_thickness_um": 7.739796617935274,
+    "max_ratio_percent_by_angle": [
+      4.850598863972146e-07,
+      4.660344394195662e-07
+    ],
+    "threshold_percent": 0.1,
+    "retain_q2_result": true
+  },
+  "q2_dependency": {
+    "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-q2-paper-a\\output\\results\\q2_paper_a_results.json",
+    "sha256": "7a60f4f38b1c1982af38604b172bd34e11e6a65c6f0a4c8e91b2333217683f7d"
+  },
+  "inputs": [
+    {
+      "source": "附件3.xlsx",
+      "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\raw\\prob25B\\附件3.xlsx",
+      "sha256": "79e9f66a00409f1d1130d9f4f3d76b4d5e5a1ccd3ac2d24dc0af8ecc583d0ec8"
+    },
+    {
+      "source": "附件4.xlsx",
+      "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\raw\\prob25B\\附件4.xlsx",
+      "sha256": "9cf1400404c4560958da06685beb8c2e1e4df5918a6e13863663a54440ba12e3"
+    }
+  ],
+  "disclosures": [
+    "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
+    "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
+    "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
+    "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the result is held for review rather than forced to the reference number."
+  ]
+}
