@@ -13,6 +13,7 @@
 
 ```powershell
 conda run -n phasefield python scripts/test_physics.py
+conda run -n phasefield python scripts/validate_q1_paper_a.py
 ```
 
 测试范围为正入射 Fresnel 极限、零厚度 Airy 极限、相位单位换算、厚度响应以及反射率和第三束光强比的有限非负性。有限阶 Neumann 展开不属于当前 PAPER_A 路线。
