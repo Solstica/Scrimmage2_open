@@ -1,52 +1,44 @@
-task_zh: 审查并规范化全仓库文件位置，拆分Q1/Q2混合资产，编写队友AI协作规范
-route: audit
-domain: mixed
+task_zh: 修正并重算2025年A题（原资料目录25B）问题三模型、代码、结果、正文与跨问接口
+route: question_unit
+domain: A
 required_files:
 - SKILL.md
 - control/task_router.yaml
 - rules/source_priority.md
 - rules/teacher_principles.md
-- rules/title_abstract_keywords.md
-- rules/front_matter.md
 - rules/question_structure.md
 - rules/model_general.md
 - rules/algorithm.md
 - rules/results_validation.md
 - rules/visuals_format.md
-- rules/literature.md
-- rules/end_matter.md
-- workflows/05_final_audit.md
-- gates/manual_review.md
+- workflows/02_question_unit.md
+- examples/exemplar/section_naming_and_structure.md
+- examples/exemplar/flowchart_and_result_visuals.md
 - rules/model_relation.md
-- rules/literature_impact.md
 - rules/feasibility.md
+- workflows/07_model_relation.md
+- workflows/09_feasibility.md
 - rules/A_pde_inverse.md
-- rules/B_optimization.md
-- rules/C_statistics.md
 file_sha256:
   SKILL.md: ce68b5d306f18bd01b6bb159e345fcf6976838553c99767f82eb5b79c28930ec
   control/task_router.yaml: b201e91ebde5df360b3013499e275270ad5bf383302d5a81c63de0bf46586c2b
   rules/source_priority.md: e11abfce2c7a9886edac3b09eb64a3078d3bad7df9be47b584c2882d669282b9
   rules/teacher_principles.md: 1e975f797d436cdc0044e56fd80835cc8c2429915363e0445c07ccf5e0a5ed2c
-  rules/title_abstract_keywords.md: 9f6c3cc90d23fcf78cdd119750018fae43e3970b944b0b1ae8707da91bad8294
-  rules/front_matter.md: b2964a652f03e5c9fac09a6476dab84a08280ad52767d368c63a97f94545787d
   rules/question_structure.md: 39bba9c367f01f0367ee569c9ef7eb92808f3bd4c20cffbd35994beff3f711da
   rules/model_general.md: 45bf280242b7125dc2ff685d69bdf1e5d7942dfb4c059c4b98eb157442b9be29
   rules/algorithm.md: a94f7250c5f4a345b5dd51d4be7e4be4085d53a29d365cec9d00d783a411c367
   rules/results_validation.md: 9bdfee7e3e58997e540c2d288f6f68c6d720523ff726d7d1c04b86205a648843
   rules/visuals_format.md: dddc6f5c614df095a0b1acf75b46e062c9d1077fbe6fdd023aa18547be697e22
-  rules/literature.md: 531c45ebfc5f874cebe80b8a93efa697b1d242ca4bc3256c75c371b105f5d617
-  rules/end_matter.md: efa248a1808126e568cd6f7f3c6a75ea5fdb7a4d1281d530dedffebb7adf5112
-  workflows/05_final_audit.md: b7130882967605d073e17b51bd85f0777987d6bbe9b6db1e791a9797f2a114bb
-  gates/manual_review.md: ae0d549cc64f35c0c3befa12ef6b512bb441281768abc14d2d6bea7a76b059a4
+  workflows/02_question_unit.md: 5990c8ed2dce6a3700623c5f7233d1ece3b5172cba23c36d06fcf36943578624
+  examples/exemplar/section_naming_and_structure.md: d051791f59fd74333f18ed72d67543ba22177a0fb9d9daae939f2c531023bf98
+  examples/exemplar/flowchart_and_result_visuals.md: f360d1652f1838264e04a71c13028c19ba3bcf82cf5304e82e5ee88d2d7372f1
   rules/model_relation.md: 054813a6b9b4aa611333d012d2f90d364d143fbe28eae1b950bc07a917a3c8b1
-  rules/literature_impact.md: a74fccdc8b23c5636ad65b1f0b44dade3ad5f4fd63ef833e7a9af3c5bc576642
   rules/feasibility.md: cce84b6a930c84e4d2b35f98c3366fe5e46e5c1ffbafc75a82cb8e92f3dee987
+  workflows/07_model_relation.md: 8ea6e07a966039cd4f9a7e1307c760bc21efc6913f2b44e9ac4eeb97e02b4af5
+  workflows/09_feasibility.md: 80dc1cf0226f5ca7c18052a82094381536dc3d851ee01b68ba813f642bd8840f
   rules/A_pde_inverse.md: 1d75f4f260a0e7f774cb23ac27fb3dd0e1d107b87bcd139aa23edd42518cc912
-  rules/B_optimization.md: d9c97b9154e32fa25481ff594c016cb7dff53ade60fc466a230ede7a4ba80aea
-  rules/C_statistics.md: bdba39b2604583d216699762d64aed038c24e90f1073a38e56c9b7781c9dbecc
 bundle_path: work/route_bundle.md
-bundle_sha256: 0f8c6a0f5b70d198ca3fff3015f26bec371828af96114f15f6b075c1578445a3
+bundle_sha256: 548f6a8389ee53999a716a82b00185022692ea5ddc9946c9dd55d4da9a5abbb8
 missing_files: []
-timestamp: '2026-08-06T06:34:40.869378+00:00'
+timestamp: '2026-08-06T09:00:32.076890+00:00'
 status: COMPLETE

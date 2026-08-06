@@ -20,17 +20,17 @@ questions:
   result_ids: [R-Q2-D, R-Q2-BOOT]
   analysis: 折射率尺度与厚度相关系数0.9996，故另报告7.2381至7.5359微米的系统范围
 - question_id: Q3
-  central_sentence: 针对问题三，建立物理条件—复公比—Neumann/Airy多光束模型
-  preliminary_work: 统一往返场因子与强度保持率口径并规定同波段同损失的公平比较
-  model: 用有限阶Neumann级数连接双光束截断与Airy无穷阶极限
-  algorithm: 逐阶联合重反演并以复公比、误差、AIC和阶数收敛决定回溯
-  result: SiC多光束厚度修正仅为 0.000088 μm；Si外延层厚度为 3.3960 μm；多光束使RMSE降低 70.47%
+  central_sentence: 针对问题三，建立第三束光强判据驱动的双光束—Airy条件反演模型
+  preliminary_work: 统一实折射角近似、第三束光强比口径和问题二冻结结果接口
+  model: 在完整指定波段计算第三束相对表面反射光强比，以0.1%阈值唯一选择双光束或Airy模型
+  algorithm: 采用确定性多启动有界最小二乘分别反演两角度厚度，并以双角度联合拟合、边界和Jacobian诊断验证
+  result: Si最大第三束光强比为0.00292%，故采用双光束模型，Si外延层厚度为3.3087 μm；SiC保留问题二厚度7.3840 μm
   result_ids: [R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-REDUCTION]
-  analysis: Si六束后收敛且波段结果为3.3949至3.4030微米，SiC高阶影响低于统计误差
+  analysis: 两角度厚度相对差为3.37%，联合验证相差2.27%；载流子浓度和碰撞参数不可辨识，故不作材料解释
 innovation:
-- 以统一复公比和嵌套模型比较裁决两篇参考论文对SiC多光束修正的冲突
+- 以第三束光强比条件分支裁决两篇参考论文对多光束修正的冲突
 - 将统计误差与折射率材料常数造成的系统误差分层报告
 keywords:
   research_problem: [外延层厚度反演]
-  specific_models: [复Fresnel联合反演, Neumann--Airy多光束模型]
+  specific_models: [复Fresnel联合反演, 第三束光强条件反演模型]
   algorithms: [差分进化, 移动块Bootstrap]

@@ -1,15 +1,15 @@
 question_id: Q3
-task_zh: 给出多光束干涉条件，求Si外延层厚度，并判断SiC结果是否需要修正
-inputs: [Q1界面系数, Q2参数与残差, 附件1至4]
-outputs: [往返强度保持率, 有限阶收敛, Si厚度, SiC回溯结论]
-constraints: [往返场级数收敛, 同波段同参数同损失函数公平比较, 双角度共享物理参数]
-key_object: 薄膜内高阶往返反射场
-key_difficulty: 区分高阶反射在数学上存在与对厚度反演有实质影响
-route_zh: 用复往返因子量化必要性，以Neumann有限阶连接双光束和Airy极限并重反演
-question_type: inverse
+task_zh: 判定多光束干涉是否成立，求Si外延层厚度，并判断SiC结果是否需要修正
+inputs: [Q1双光束Fresnel界面系数, Q2冻结参数与厚度, 附件1至4]
+outputs: [第三束光强比, 条件选择的唯一主模型, Si厚度, SiC回溯结论]
+constraints: [判据与拟合使用同一光学口径, Si判据覆盖1500至3500cm-1, SiC回溯只读Q2冻结结果, 不解释不可辨识载流子参数]
+key_object: 外延层内第三束反射光对总反射率和厚度反演的影响
+key_difficulty: 将物理判据真正绑定模型选择并区分厚度可估与载流子参数不可辨识
+route_zh: 先计算第三束相对表面反射光强比，以0.1%阈值选择双光束或Airy，再分角度反演并以联合拟合验证
+question_type: inverse_model_selection
 solution_mode: hybrid
-specific_model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
-preliminary_work: [复往返因子定义, 强度口径统一, 嵌套模型比较规则]
+specific_model_name_zh: 第三束光强判据驱动的双光束—Airy条件反演模型
+preliminary_work: [统一实折射角近似, 固定293K硅背景色散, 定义第三束光强比, 对接Q2冻结参数]
 model:
   variables_complete: true
   objective_or_governing_equation_complete: true
@@ -17,18 +17,18 @@ model:
   model_summary_complete: true
 algorithm:
   required: true
-  name: Neumann有限阶延拓—Airy联合重反演算法
+  name: 多启动有界最小二乘条件反演算法
   exemption_reason_zh: ''
-  derivation_or_calculation_path: shared/code/optics.py
+  derivation_or_calculation_path: modules/40_q3/code/solve_q3.py
   rationale_complete: true
   principle_short: true
   problem_bound_steps_complete: true
   flowchart_path: modules/40_q3/figures/q3_algorithm_flow.pdf
   pseudocode_path: modules/40_q3/paper/q3.tex
-  code_path: scripts/run_analysis.py
-results: [R-Q3-SIC-RHO, R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO]
-validation_required: {sensitivity: true, error: true, convergence: true, stability: true, identifiability: false}
-validation_completed: [sensitivity, error, convergence, stability, nested_model_comparison, finite_order_convergence, three_seed_agreement, band_sensitivity, direct_loop_metric, identifiability]
+  code_path: modules/40_q3/code/solve_q3.py
+results: [R-Q3-SIC-RHO, R-Q3-SIC-DELTA, R-Q3-SI-D, R-Q3-SI-RMSE, R-Q3-SI-REDUCTION, R-Q3-SI-RHO, R-Q3-SI-JOINT]
+validation_required: {sensitivity: true, error: true, convergence: false, stability: true, identifiability: true}
+validation_completed: [threshold_sensitivity, error, multistart_stability, angle_consistency, joint_validation, identifiability, refraction_convention_sensitivity, formula_code_unit_scaling]
 status: COMPLETE
 result_analysis_complete: true
 parameterized_model: true

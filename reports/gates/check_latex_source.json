@@ -1,6 +1,17 @@
 {
   "gate": "latex_source",
   "checked_files": 17,
-  "status": "PASS",
-  "issues": []
+  "status": "FAIL",
+  "issues": [
+    {
+      "code": "E_GATE_FAILED",
+      "severity": "MUST",
+      "message": "Unnumbered display math in paper\\sections\\Q3.tex"
+    },
+    {
+      "code": "E_GATE_FAILED",
+      "severity": "MUST",
+      "message": "Equation lacks punctuation in paper\\sections\\Q3.tex"
+    }
+  ]
 }

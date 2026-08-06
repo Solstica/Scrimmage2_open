@@ -16,11 +16,11 @@ nodes:
     outputs: [SiC厚度候选, 参数可辨识性, 残差与不确定性]
     assumptions: [同片共享厚度与材料参数, 角度已知, 波段模型适配]
   Q3:
-    model_name_zh: 物理条件—复公比—Neumann/Airy多光束模型
-    question_type: model_selection_and_inverse_problem
-    inputs: [Q1界面系数, Q2残差与候选参数, 附件1至4]
-    outputs: [多光束显著性, Si厚度候选, SiC是否修正]
-    assumptions: [高阶场级数收敛, 同片双角度共享参数]
+    model_name_zh: 第三束光强判据驱动的双光束—Airy条件反演模型
+    question_type: inverse_model_selection
+    inputs: [Q1双光束Fresnel界面系数, Q2冻结参数与厚度, 附件1至4]
+    outputs: [第三束光强比, 条件选择的唯一主模型, Si厚度, SiC回溯结论]
+    assumptions: [界面平行且光谱相干, 实折射角近似, 同片双角度厚度一致]
 edges:
 - from: Q1
   to: Q2
@@ -44,19 +44,19 @@ edges:
     equations: [双光束复反射率正算子, 双角度共享参数目标函数]
     assumptions: [同片共享厚度与材料参数, 非偏振平均]
     code_modules: [shared/code/optics.py, shared/code/inversion.py]
-    result_ids: [R-Q2-THICKNESS]
+    result_ids: [R-Q2-D]
   changed:
-    added: [往返复公比, Neumann有限阶场, Airy无穷阶极限, 附件3和附件4]
-    modified: [双光束截断改为可控阶数并执行嵌套模型比较]
-    removed: []
-  reason_zh: Q3以Q2残差和界面参数诊断高阶反射；若模型升级成立，Q2厚度必须标记STALE并重新反演
+    added: [第三束相对表面反射光强比, 0.1%条件分支, Airy无穷多束闭式, 附件3和附件4]
+    modified: [折射角由复折射率实部计算, Si按角度独立反演后取均值, 联合反演降为验证]
+    removed: [Neumann有限阶比较, AIC选择, 角度经验增益和偏置]
+  reason_zh: Q3先用第三束光强比判定双光束近似是否足够；SiC只回溯验证R-Q2-D，只有判据超过阈值才触发Q2结果STALE和重新反演
 shared_symbols:
 - {symbol: sigma, meaning_zh: 真空波数, unit: cm^-1}
 - {symbol: d, meaning_zh: 外延层厚度, unit: um}
 - {symbol: theta_0, meaning_zh: 空气侧入射角, unit: degree}
 - {symbol: n_tilde, meaning_zh: 复折射率, unit: '1'}
 - {symbol: r_ij, meaning_zh: 介质i到j界面复振幅反射系数, unit: '1'}
-- {symbol: rho, meaning_zh: 内部往返场因子模长的平方, unit: '1'}
+- {symbol: eta_3, meaning_zh: 第三束内部反射光与表面反射光的强度比, unit: '1'}
 review:
   all_questions_connected_or_independent: true
   no_unexplained_redefinition: true
