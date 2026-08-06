@@ -1,21 +1,36 @@
-本文共用符号见表\ref{tab:notation}，其余局部参数在首次出现处定义。
-\begin{table}[H]
-\centering
-\caption{主要符号及单位}\label{tab:notation}
-\rowcolors{2}{CumcmLightBlue!45}{white}
-\begin{tabular}{clc}
-\toprule
-符号 & 含义 & 单位\\
-\midrule
-$\sigma$ & 真空波数 & $\mathrm{cm}^{-1}$\\
-$d$ & 外延层厚度 & $\mu\mathrm{m}$\\
-$\theta_0$ & 空气侧入射角 & $(^\circ)$\\
-$\tilde n_j$ & 第 $j$ 层复折射率 & 1\\
-$q_j$ & 第 $j$ 层法向归一化复波矢 & 1\\
-$r_{ij},t_{ij}$ & 界面复振幅反射、透射系数 & 1\\
-$g$ & 外延层内一次往返的复场因子 & 1\\
-$\rho=|g|^2$ & 往返强度保持率 & 1\\
-$R$ & 非偏振反射率 & \% 或 1\\
-\bottomrule
-\end{tabular}
+% modules/11_notation/paper/notation.tex
+\section{符号说明}
+
+\begin{table}[htbp]
+	\centering
+	\caption{主要符号定义}
+	\label{tab:symbols}
+	\renewcommand{\arraystretch}{1.3}
+	\normalsize
+	\begin{tabularx}{0.97\textwidth}{>{\centering\arraybackslash}p{3.8cm}>{\centering\arraybackslash}X}
+		\toprule
+		\rowcolor{cyan!20}\bfseries
+		\textbf{符号} & \textbf{含义} \\
+		\midrule
+		$d$ & 外延层厚度，单位$\mu\mathrm{m}$ \\
+		$n_1,n_2,n_3$ & 空气、外延层和衬底的折射率 \\
+		$i,\gamma,\eta$ & 空气侧入射角、外延层内折射角和衬底内折射角 \\
+		$\lambda,\sigma$ & 真空波长($\mu\mathrm{m}$)与波数($\mathrm{cm^{-1}}$)，满足$\lambda=10^4/\sigma$ \\
+		$N$ & 外延层载流子浓度，单位$\mathrm{cm^{-3}}$ \\
+		$m^*$ & 载流子有效质量 \\
+		$\omega_p$ & 等离子体频率 \\
+		$\Gamma$ & 载流子碰撞频率 \\
+		$\widetilde n_2,\kappa_2$ & 复折射率及其消光系数 \\
+		$\widetilde\varepsilon_2$ & 外延层复介电函数 \\
+		$\Gamma_e$ & 自由载流子碰撞频率 \\
+		$P,q_u,\eta_3$ & 往返传播因子、内部反射公比和第三束光强比 \\
+		$A,B_j,C_j$ & Sellmeier色散参数 \\
+		$r_{ij}^{(u)},t_{ij}^{(u)}$ & 介质$i\to j$的Fresnel振幅反射与透射系数，$u\in\{s,p\}$ \\
+		$\delta,\Phi$ & 两束反射光的光程差与相位差 \\
+		$\rho_u,R_u,R_{\mathrm{th}}$ & 总振幅反射系数、偏振反射率及非偏振理论反射率 \\
+		$\boldsymbol\theta$ & 待估物理参数向量，具体形式随材料模型确定 \\
+		$R_{\mathrm{obs}}$ & 实测反射率（百分数转为小数） \\
+		$J(\boldsymbol\theta)$ & 模型参数对应的残差平方和目标函数 \\
+		\bottomrule
+	\end{tabularx}
 \end{table}
