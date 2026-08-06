@@ -1,0 +1,13 @@
+\begin{tikzpicture}[node distance=4mm and 7mm,>=Latex,
+box/.style={draw=CumcmBlue,rounded corners,fill=CumcmLightBlue,align=center,minimum width=29mm,minimum height=7mm,font=\small},
+arrow/.style={->,thick,CumcmBlue}]
+\node[box] (load) {读取附件3、4\\校验Q2结果哈希};
+\node[box,right=of load] (fixed) {固定双振子背景\\仅拟合四个参数};
+\node[box,right=of fixed] (fit) {每角度多初值\\Airy有界拟合};
+\node[box,below=of fit] (average) {两角度厚度平均\\冻结3.2178};
+\node[box,left=of average] (back) {计算第三束光强比\\回溯SiC是否修正};
+\draw[arrow] (load)--(fixed);
+\draw[arrow] (fixed)--(fit);
+\draw[arrow] (fit)--(average);
+\draw[arrow] (average)--(back);
+\end{tikzpicture}
