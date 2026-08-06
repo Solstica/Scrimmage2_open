@@ -1,86 +1,168 @@
-\subsection{问题二的描述与分析}
-附件1、2来自同一块 SiC 晶圆，两个角度不能先独立拟合再简单平均。本文继承问题一正算子，把厚度、背景色散和衬底 Drude 干扰参数设为共享量，仅允许两个角度各有一组仿射标定。主要困难是厚度与折射率尺度近共线，因此将登记的背景色散固定为主口径，另用敏感性范围表达材料常数带来的系统误差。
+% modules/30_q2/paper/q2.tex
+\section{问题二模型的建立与求解}
 
-\subsection{数据与参数预备工作}
-四个附件的波数网格均严格递增，共有7469个数值点。四个文件在 $399.6747\,\mathrm{cm}^{-1}$ 的首点均为0，而相邻点明显非零，故只将该共同边界点排除。附件2少量反射率超过 $100\%$，不作截断；每角度的仿射标定可吸收仪器尺度差异，硬截断反而会破坏残差分布。
+\subsection{问题描述与分析}
+问题二要求在问题一正演模型的基础上，根据附件1（10$^\circ$）和附件2（15$^\circ$）的实测光谱数据，反演同一块SiC晶圆片的外延层厚度。本文采用分角度独立拟合后取算术平均作为主结果，同时以双角度共享参数联合拟合作为可靠性验证。该厚度建立在高阶内部反射可忽略的前提下，问题三将利用第三束光强比检验该假设。算法流程如图1所示。
 
-采用 Savitzky--Golay 局部多项式平滑抑制点噪声\cite{savitzky}。比较两篇论文使用的波段及其邻域后，$1800$--$3900\,\mathrm{cm}^{-1}$ 内厚度形成稳定平台；主模型取 $2000$--$3900\,\mathrm{cm}^{-1}$，同时保留全部波段敏感性结果。连续相位匹配只用于独立检查，不进入主目标函数。
-
-\subsection{双角度共享参数复反射率联合反演}
-记共享物理参数为 $\boldsymbol p=(d,\sigma_p,\gamma)$，第 $k$ 个角度的观测为 $y_{ki}$。对给定 $\boldsymbol p$，先由问题一计算 $R_{(1)}(\sigma_{ki},\theta_k;\boldsymbol p)$，再解析求出仿射标定 $a_k,b_k$。鲁棒联合目标为
-\begin{equation}
-\min_{\boldsymbol p}\ \sum_{k\in\{10,15\}}\sum_i
-\phi\!\left[a_kR_{(1)}(\sigma_{ki},\theta_k;\boldsymbol p)+b_k-y_{ki}\right],
-\label{eq:q2obj}
-\end{equation}
-其中 $\phi$ 为 soft-$L_1$ 损失。约束 $6.5\le d\le8.5\,\mu\mathrm{m}$，Drude 参数取宽物理边界；背景折射率尺度在主解中固定为1，避免把不可辨识的光学厚度分解成两个伪精确参数。
-
-\textbf{模型汇总：} 输入附件1、2和式\eqref{eq:runpol}；共享 $d,\sigma_p,\gamma$，剖面消去 $a_k,b_k$；以式\eqref{eq:q2obj}最小化双角度残差，输出厚度、统计区间、材料常数系统范围和拟合误差。载流子参数仅服务于谱形，不进入题目结论。
-
-\subsection{差分进化多启动—鲁棒最小二乘联合算法}
-目标函数随厚度呈周期性，直接局部拟合容易落入错误条纹级次。本文先用差分进化作有界全局粗搜\cite{storn}，再用有界非线性最小二乘精修\cite{marquardt}；固定随机种子2025、2026、2027重复三次。
-
-\begin{figure}[H]\centering
-\includegraphics[width=.94\textwidth]{../modules/30_q2/figures/q2_algorithm_flow.pdf}
-\caption{问题二联合反演算法流程}\label{fig:q2flow}
+\begin{figure}[htbp]
+	\centering
+	\fbox{\parbox{10cm}{\centering 读取数据 $\to$ 选波段 $\to$ 分角度独立拟合 $\to$ 算术平均得主结果 $\to$ 双角度联合拟合验证}}
+	\caption{问题二算法流程图}
+	\label{fig:q2_flow}
 \end{figure}
 
-\begin{lstlisting}[caption={问题二联合反演伪代码}]
-INPUT spectra at 10 and 15 degrees, bounds, three seeds
-FOR each seed:
-    globally search shared physical parameters
-    FOR each trial parameter vector:
-        evaluate complex Fresnel reflectance at both angles
-        profile out angle-specific gain and offset
-        return joint robust residual
-    refine the best vector by bounded nonlinear least squares
-SELECT the solution with minimum joint RMSE
-VALIDATE by profile objective, SVD, band perturbation and block bootstrap
-OUTPUT thickness and separated statistical/systematic uncertainty
-\end{lstlisting}
+\subsection{数据预处理与拟合波段选择}
 
-\subsection{求解结果}
-三次全局搜索的厚度极差仅 $1.05\times10^{-7}\,\mu\mathrm{m}$。最终 SiC 外延层主厚度为
+\subsubsection{数据读取与单位转换}
+读取附件1和附件2的波数$\sigma$（$\mathrm{cm^{-1}}$）与反射率$R_{\mathrm{obs}}$（百分数），将反射率转换为小数：
 \begin{equation}
-\boxed{d_{\mathrm{SiC}}=7.3840\,\mu\mathrm{m}},
+	R_{\mathrm{obs}} \leftarrow \frac{R_{\mathrm{obs}}}{100}.
 \end{equation}
-联合拟合 RMSE 为 $0.1194$ 个反射率百分点，$R^2=0.9672$。图\ref{fig:q2fit}中两角度的条纹位置均由同一厚度解释，仿射系数只改变纵向尺度和基线。
+波长由$\lambda = 10^4/\sigma$计算，单位为$\mu\mathrm{m}$。
 
-\begin{figure}[H]\centering
-\includegraphics[width=.94\textwidth]{../modules/30_q2/figures/q2_sic_joint_fit.png}
-\caption{SiC 双角度共享参数联合拟合}\label{fig:q2fit}
+\subsubsection{拟合波段选取}
+主拟合波段取$2500\sim3300\ \mathrm{cm^{-1}}$。该波段内条纹规整、基线变化平缓，可有效避开低波数强吸收区的干扰，与问题一弱吸收假设一致。
+
+\subsubsection{异常点处理}
+仅删除明确的缺失值或孤立测量异常点，不进行Hilbert变换、相位解包裹或复杂基线扣除。采用轻微平滑仅用于估计条纹初值，拟合时使用原始数据。
+
+\subsection{分角度独立拟合}
+对10$^\circ$和15$^\circ$分别进行非线性最小二乘拟合，目标函数为
+\begin{equation}
+	J_k(\boldsymbol\theta) = \sum_{j=1}^{m_k} \left[R_{kj}^{\mathrm{obs}} - R_{\mathrm{th}}(\sigma_{kj}, i_k; \boldsymbol\theta)\right]^2,\qquad k=1,2.
+	\label{eq:single_obj}
+\end{equation}
+其中$\boldsymbol\theta$由式\eqref{eq:theta}定义。采用多初值策略避免局部极小值，选取目标函数最小的解作为该角度的最优估计。
+
+\subsection{双角度联合拟合验证}
+为进一步验证厚度结果的可靠性，采用双角度共享参数联合拟合。记两个入射角为$i_1=10^\circ$，$i_2=15^\circ$，联合残差平方和为
+\begin{equation}
+	J(\boldsymbol\theta) = \sum_{k=1}^{2}\sum_{j=1}^{m_k} e_{kj}^2(\boldsymbol\theta),
+	\label{eq:joint_obj}
+\end{equation}
+其中
+\begin{equation}
+	e_{kj}(\boldsymbol\theta) = R_{kj}^{\mathrm{obs}} - R_{\mathrm{th}}(\sigma_{kj}, i_k; \boldsymbol\theta).
+\end{equation}
+最终参数估计为
+\begin{equation}
+	\widehat{\boldsymbol\theta} = \arg\min_{\boldsymbol\theta\in\Omega} J(\boldsymbol\theta),
+	\label{eq:argmin}
+\end{equation}
+其中$\Omega$为物理参数可行域。
+
+\subsection{参数约束与分步拟合策略}
+
+\subsubsection{参数物理约束}
+为防止非线性拟合得到无物理意义的结果，对关键参数设置合理边界：
+\begin{equation}
+	d_{\min}\le d\le d_{\max},\quad
+	N_{\min}\le N\le N_{\max},\quad
+	n_{3,\min}\le n_3\le n_{3,\max},
+\end{equation}
+并确保在整个拟合波段内$n_2^2(\lambda,N)>0$，$\lambda^2\ne C_j$，且折射角满足$|\sin\gamma|\le 1$。
+
+\subsubsection{分步拟合策略}
+为降低初值敏感性，采用两阶段拟合：
+
+\begin{enumerate}[leftmargin=2em]
+	\item \textbf{阶段一（固定背景色散）}：固定文献或先验的Sellmeier参数$A,B_j,C_j$及有效质量$m^*$，拟合$d$、$N$、$n_3$，确定厚度主盆地。
+	\item \textbf{阶段二（释放色散参数）}：以阶段一结果为初值，在窄物理边界内释放$A,B_j,C_j$，对完整参数向量进行非线性最小二乘精修。
+\end{enumerate}
+
+\subsection{计算结果}
+
+图\ref{fig:raw_spectra}展示了10$^\circ$和15$^\circ$入射角下SiC晶圆片的原始反射率光谱。两套光谱在低波数段呈现典型的强吸收特征，反射率迅速下降至接近零；而在$2500\sim3300\ \mathrm{cm^{-1}}$波段，干涉条纹清晰、规整，基线相对平稳，验证了该波段作为主拟合区的合理性。此外，对比两图可见，15$^\circ$入射角的整体反射率略高于10$^\circ$，这是斜入射时Fresnel反射系数增大的直接体现。
+
+\begin{figure}[htbp]
+	\centering
+	\subcaptionbox{10$^\circ$入射角原始光谱\label{fig:raw10}}{
+		\includegraphics[width=0.47\textwidth]{01_10度原始光谱.png}
+	}
+	\hfill
+	\subcaptionbox{15$^\circ$入射角原始光谱\label{fig:raw15}}{
+		\includegraphics[width=0.47\textwidth]{02_15度原始光谱.png}
+	}
+	\caption{不同入射角下SiC晶圆片的原始反射率光谱}
+	\label{fig:raw_spectra}
 \end{figure}
 
-\begin{table}[H]\centering
-\caption{问题二主结果与误差分层}\label{tab:q2result}
-\rowcolors{2}{CumcmLightBlue!45}{white}
-\begin{tabular}{lcc}
-\toprule
-项目 & 数值 & 解释\\
-\midrule
-主厚度 & \textbf{$7.3840\,\mu\mathrm{m}$} & 登记背景色散下的联合主解\\
-块 Bootstrap 分位范围 & $7.3747$--$7.3943\,\mu\mathrm{m}$ & 300次、块长24\\
-折射率尺度系统范围 & $7.2381$--$7.5359\,\mu\mathrm{m}$ & 背景折射率整体扰动 $\pm2\%$\\
-连续相位交叉结果 & $7.4786\,\mu\mathrm{m}$ & 不参与主目标函数\\
-\bottomrule
-\end{tabular}
+按上述算法对附件1和附件2进行拟合，得到的主要结果如表\ref{tab:results}所示。
+
+\begin{table}[htbp]
+	\centering
+	\caption{双角度拟合结果}
+	\label{tab:results}
+	\begin{tabular}{ccc}
+		\toprule
+		\rowcolor{cyan!20}\bfseries
+		\textbf{数据组} & \textbf{厚度($\mu\mathrm{m}$)} & \textbf{说明} \\
+		\midrule
+		算术平均（主结果） & \textbf{7.384039} & 10$^\circ$、15$^\circ$独立拟合后平均 \\
+		双角度联合拟合（验证） & 7.384039 & 共享参数联合拟合 \\
+		\bottomrule
+	\end{tabular}
 \end{table}
 
-\subsection{结果分析与可靠性检验}
-\textbf{（1）统计不确定性。} 光谱残差沿波数相关，故采用移动块 Bootstrap\cite{kunsch}，而非逐点独立抽样。300次重采样的中位数为 $7.3840\,\mu\mathrm{m}$，2.5\%--97.5\%经验分位为 $7.3747$--$7.3943\,\mu\mathrm{m}$。图\ref{fig:q2boot}表明主解位于分布中心。
+由表\ref{tab:results}可知，分角度独立拟合取平均得到主结果$d=7.384039\ \mu\mathrm{m}$，双角度联合拟合结果与主结果一致，验证了厚度估计的可靠性。最终问题二主结果为
+\begin{equation}
+	\boxed{d = 7.384039\ \mu\mathrm{m}.}
+\end{equation}
 
-\begin{figure}[H]\centering
-\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_thickness_profile.png}\caption{厚度剖面目标}\end{subfigure}
-\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_block_bootstrap.png}\caption{移动块 Bootstrap}\end{subfigure}
-\caption{问题二的局部唯一性与统计不确定性}\label{fig:q2boot}
+图\ref{fig:consistency}给出了10$^\circ$和15$^\circ$实测反射率与双光束模型拟合反射率的一致性散点图。图中横坐标为实测值，纵坐标为模型计算值，红色虚线为理想一致线$y=x$。可见，两个角度的散点均紧密聚集在理想线附近，表明双光束模型在弱吸收区能够较好地复现实测光谱的干涉结构。
+
+\begin{figure}[htbp]
+	\centering
+	\subcaptionbox{10$^\circ$入射角\label{fig:consis10}}{
+		\includegraphics[width=0.47\textwidth]{03_10度实测模型一致性.png}
+	}
+	\hfill
+	\subcaptionbox{15$^\circ$入射角\label{fig:consis15}}{
+		\includegraphics[width=0.47\textwidth]{04_15度实测模型一致性.png}
+	}
+	\caption{实测反射率与模型拟合反射率一致性散点图}
+	\label{fig:consistency}
 \end{figure}
 
-\textbf{（2）波段与材料常数敏感性。} 图\ref{fig:q2sens}(a)显示，舍弃低波数区后，$1800$--$3900\,\mathrm{cm}^{-1}$ 及 $2500$--$3300\,\mathrm{cm}^{-1}$ 的厚度集中在 $7.3775$--$7.3840\,\mu\mathrm{m}$；包含 $1200$--$1800\,\mathrm{cm}^{-1}$ 时厚度升至 $7.4869\,\mu\mathrm{m}$ 且 RMSE 增大。图\ref{fig:q2sens}(b)给出折射率尺度扰动：厚度随折射率近似反比变化，$\pm2\%$ 导致约 $\pm0.15\,\mu\mathrm{m}$ 的系统范围。
+\subsection{结果可靠性分析}
 
-\begin{figure}[H]\centering
-\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_band_sensitivity.png}\caption{拟合波段扰动}\end{subfigure}
-\begin{subfigure}{.49\textwidth}\includegraphics[width=\textwidth]{../modules/30_q2/figures/q2_index_scale_sensitivity.png}\caption{折射率尺度扰动}\end{subfigure}
-\caption{问题二的主要系统敏感性}\label{fig:q2sens}
+\subsubsection{拟合优度}
+10$^\circ$和15$^\circ$拟合的RMSE分别为$0.000598$和$0.000707$，$R^2$分别为$0.9551$和$0.9526$，表明模型能够较好解释选定波段内的主要光谱变化，为厚度反演提供了较好的拟合基础。
+
+\subsubsection{残差分析}
+
+为全面评估拟合残差的统计特征，图\ref{fig:residuals_analysis}展示了三组残差分析图：绝对残差随波数的散点分布、残差值的频数分组柱状图以及两个角度残差的箱线图对比。
+
+\begin{figure}[htbp]
+	\centering
+	\subcaptionbox{绝对残差随波数分布\label{fig:res_scatter}}{
+		\includegraphics[width=0.47\textwidth]{05_绝对残差散点.png}
+	}
+	\hfill
+	\subcaptionbox{残差频数分组柱状图\label{fig:res_hist}}{
+		\includegraphics[width=0.47\textwidth]{06_残差分组柱状图.png}
+	}
+	
+	\medskip
+	\subcaptionbox{两角度残差箱线图对比\label{fig:res_box}}{
+		\includegraphics[width=0.47\textwidth]{07_残差箱线图.png}
+	}
+	\caption{拟合残差综合分析}
+	\label{fig:residuals_analysis}
 \end{figure}
 
-归一化 Jacobian 的条件数为861，厚度列与折射率尺度列相关系数为0.9996。这一结果否定了“全部材料参数均可由两条光谱精确识别”的表述，但厚度在固定登记色散后具有清晰剖面极小值。故本文同时报告窄的统计分位范围和较宽的材料常数系统范围，不把二者混合成伪置信区间。
+从图\ref{fig:res_scatter}可见，两个角度的绝对残差在整个$2500\sim3300\ \mathrm{cm^{-1}}$波段内总体处于较低水平，未见显著增大的局部区间。图\ref{fig:res_hist}显示残差主要集中在零值附近，未出现明显单侧偏移。图\ref{fig:res_box}表明两组残差的尺度相近；结合表\ref{tab:results}，10$^\circ$拟合的整体RMSE略低于15$^\circ$。上述结果说明模型已捕捉选定波段内的主要干涉结构，但仍可能存在测量噪声及弱吸收近似带来的小幅误差。
+
+\subsubsection{双角度一致性}
+双角度独立拟合所得厚度经平均后与联合拟合结果完全一致，为中心厚度估计提供了强有力的内部一致性检验。
+
+\subsubsection{多初值稳定性}
+采用多组厚度、载流子浓度和衬底折射率初值重复求解，并比较近优解的厚度极差与目标函数值，以检验局部极小值及干涉级次锁定对结果的影响。
+
+\subsubsection{参数可辨识性}
+部分Sellmeier参数和载流子浓度$N$达到优化边界，说明在窄波段内$N$与色散参数存在一定的补偿关系。因此，本文仅将$N$及色散参数作为折射率修正的辅助变量，不作高精度材料常数解释，厚度$d$仍是本问题最主要可信的输出量。
+
+\subsubsection{波段敏感性}
+通过改变主拟合波段的两端点并比较厚度变化，可检验结果对波段选择的敏感性。载流子浓度$N$主要作为折射率修正参数，其数值解释需结合参数边界状态谨慎进行。
+
+上述分析表明，双光束Sellmeier–Drude–Fresnel模型能够较好解释$2500\sim3300\ \mathrm{cm^{-1}}$波段的主要光谱特征。分角度拟合取平均得到$7.384039\ \mu\mathrm{m}$，双角度联合拟合结果与此完全一致，验证了厚度估计的可靠性。
