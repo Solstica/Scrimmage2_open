@@ -1,14 +1,1 @@
 symbol,definition_zh,unit,first_location,status
-sigma,真空波数,cm^-1,Q1,FROZEN
-lambda,真空波长,um,Q1,FROZEN
-d,外延层厚度,um,Q1,FROZEN
-n_i,第i层折射率,1,Q1,FROZEN
-tilde_n,复折射率,1,Q3,FROZEN
-gamma,外延层实折射角,rad,Q1,FROZEN
-r_ij,介质i到j带符号Fresnel振幅反射系数,1,Q1,FROZEN
-t_ij,介质i到j带符号Fresnel振幅透射系数,1,Q1,FROZEN
-P,外延层一次往返传播因子,1,Q3,FROZEN
-eta_3,第三束相对表面束强度比,1,Q3,FROZEN
-Gamma_e,自由载流子碰撞率,s^-1,Q3,FROZEN
-N,载流子浓度,cm^-3,Q1,FROZEN
-m_star,载流子有效质量,kg,Q1,FROZEN

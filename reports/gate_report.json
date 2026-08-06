@@ -11,7 +11,7 @@
     },
     {
       "gate": "encoding",
-      "checked_files": 189,
+      "checked_files": 130,
       "status": "PASS",
       "issues": []
     },
@@ -30,15 +30,15 @@
       "meta": {
         "result_registry.csv": {
           "columns": 13,
-          "rows": 9
+          "rows": 11
         },
         "symbol_registry.csv": {
           "columns": 5,
-          "rows": 13
+          "rows": 0
         },
         "source_registry.csv": {
           "columns": 10,
-          "rows": 7
+          "rows": 11
         }
       },
       "status": "PASS",
@@ -62,7 +62,7 @@
     {
       "gate": "literature_impacts",
       "status": "PASS",
-      "source_registry_sha256": "12b7a0f8a0c0aca20fb29fabfb189eb080e30b33fb59bed978a7d203ff93515c",
+      "source_registry_sha256": "67d339cc8b8cf638eca4e396459620c3ba949abc558746c03a2cadb08440d076",
       "issues": []
     },
     {
@@ -72,7 +72,7 @@
     },
     {
       "gate": "latex_source",
-      "checked_files": 26,
+      "checked_files": 17,
       "status": "PASS",
       "issues": []
     },
@@ -80,28 +80,22 @@
       "gate": "full_paper",
       "reference_count": 10,
       "english_reference_count": 7,
-      "figure_count": 11,
+      "figure_count": 14,
       "question_count": 3,
-      "warnings": [
-        {
-          "code": "W_TITLE_LONG",
-          "severity": "SHOULD",
-          "message": "Title length is 21, above the preferred 20 characters"
-        }
-      ],
+      "warnings": [],
       "status": "PASS",
       "issues": []
     },
     {
       "gate": "compile_front",
       "status": "PASS",
-      "tex": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\paper\\front_matter_check.tex",
-      "out_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\front",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\front_matter_check.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\front",
       "issues": []
     },
     {
       "gate": "front_render",
-      "pdf": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\front\\front_matter_check.pdf",
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\front\\front_matter_check.pdf",
       "page_count": 2,
       "max_pages": 2,
       "status": "PASS",
@@ -110,21 +104,15 @@
     {
       "gate": "compile_full",
       "status": "PASS",
-      "tex": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\paper\\paper_template.tex",
-      "out_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\full",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\paper_template.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\full",
       "issues": []
     },
     {
       "gate": "full_render",
-      "pdf": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\full\\paper_template.pdf",
-      "page_count": 14,
-      "warnings": [
-        {
-          "code": "W_PAGE_COUNT",
-          "severity": "SHOULD",
-          "message": "Full paper renders as 14 pages; teacher baseline is approximately 20 pages (15-25 preferred)."
-        }
-      ],
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\full\\paper_template.pdf",
+      "page_count": 15,
+      "warnings": [],
       "status": "PASS",
       "issues": []
     },
@@ -152,44 +140,52 @@
     {
       "gate": "compile_abstract",
       "status": "PASS",
-      "tex": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\paper\\abstract_check.tex",
-      "out_dir": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\abstract",
+      "tex": "C:\\Users\\admin\\Documents\\Scrimmage2\\paper\\abstract_check.tex",
+      "out_dir": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract",
       "issues": []
     },
     {
       "gate": "abstract_render",
-      "pdf": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\abstract\\abstract_check.pdf",
+      "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract\\abstract_check.pdf",
       "page_count": 1,
       "measured_lines": {
-        "intro": 3,
+        "intro": 2,
         "Q1": 4,
         "Q2": 4,
-        "Q3": 5
+        "Q3": 4,
+        "innovation": 2
       },
       "locations": {
         "intro": {
           "first_line": 3,
-          "last_line": 5,
+          "last_line": 4,
           "pages": [
             1
           ]
         },
         "Q1": {
-          "first_line": 6,
-          "last_line": 9,
+          "first_line": 5,
+          "last_line": 8,
           "pages": [
             1
           ]
         },
         "Q2": {
-          "first_line": 10,
-          "last_line": 13,
+          "first_line": 9,
+          "last_line": 12,
           "pages": [
             1
           ]
         },
         "Q3": {
-          "first_line": 14,
+          "first_line": 13,
+          "last_line": 16,
+          "pages": [
+            1
+          ]
+        },
+        "innovation": {
+          "first_line": 17,
           "last_line": 18,
           "pages": [
             1
@@ -200,7 +196,7 @@
       "issues": []
     }
   ],
-  "manual_review_file": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\reports\\manual_review.yaml",
+  "manual_review_file": "C:\\Users\\admin\\Documents\\Scrimmage2\\reports\\manual_review.yaml",
   "manual_checks": {
     "every_question_answered": true,
     "model_mechanism_correct": true,

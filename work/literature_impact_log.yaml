@@ -2,7 +2,7 @@ version: '1.0'
 status: COMPLETE
 review_scope:
   all_model_relevant_sources_checked: true
-  source_registry_sha256: 12b7a0f8a0c0aca20fb29fabfb189eb080e30b33fb59bed978a7d203ff93515c
+  source_registry_sha256: 67d339cc8b8cf638eca4e396459620c3ba949abc558746c03a2cadb08440d076
 reviewed_no_impact_source_ids: []
 entries:
 - source_id: PAPER_A

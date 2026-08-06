@@ -1,37 +1,45 @@
 {
   "gate": "abstract_render",
-  "pdf": "C:\\Users\\admin\\Documents\\CUCCM2026\\worktrees\\run02-paper-a-integration\\build\\abstract\\abstract_check.pdf",
+  "pdf": "C:\\Users\\admin\\Documents\\Scrimmage2\\build\\abstract\\abstract_check.pdf",
   "page_count": 1,
   "measured_lines": {
-    "intro": 3,
+    "intro": 2,
     "Q1": 4,
     "Q2": 4,
-    "Q3": 5
+    "Q3": 4,
+    "innovation": 2
   },
   "locations": {
     "intro": {
       "first_line": 3,
-      "last_line": 5,
+      "last_line": 4,
       "pages": [
         1
       ]
     },
     "Q1": {
-      "first_line": 6,
-      "last_line": 9,
+      "first_line": 5,
+      "last_line": 8,
       "pages": [
         1
       ]
     },
     "Q2": {
-      "first_line": 10,
-      "last_line": 13,
+      "first_line": 9,
+      "last_line": 12,
       "pages": [
         1
       ]
     },
     "Q3": {
-      "first_line": 14,
+      "first_line": 13,
+      "last_line": 16,
+      "pages": [
+        1
+      ]
+    },
+    "innovation": {
+      "first_line": 17,
       "last_line": 18,
       "pages": [
         1

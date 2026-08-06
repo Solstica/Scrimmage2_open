@@ -1,68 +1,44 @@
 from __future__ import annotations
 
-import sys
+import math
 import unittest
-from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from shared.code.materials import sic_weak_absorption_index
-from shared.code.optics import (
-    airy_reflectance_paper_a,
-    double_beam_reflectance_paper_a,
-    fresnel_coefficients_real_angle,
-    third_beam_ratio_paper_a,
-)
+from shared.code.materials import drude_substrate_permittivity, sic_background_index
+from shared.code.optics import layer_amplitudes, passive_sqrt, reflected_amplitude, unpolarized_reflectance
 
 
 class PhysicsTests(unittest.TestCase):
-    def test_paper_a_normal_incidence_fresnel_limit(self):
-        r, t, angle = fresnel_coefficients_real_angle(1.0, 2.0, 0.0, "s")
-        self.assertAlmostEqual(float(np.real(r)), -1.0 / 3.0, places=12)
-        self.assertAlmostEqual(float(np.real(t)), 2.0 / 3.0, places=12)
-        self.assertAlmostEqual(float(angle), 0.0, places=12)
+    def test_passive_root(self):
+        roots = passive_sqrt(np.array([4 + 1j, 4 - 1j]))
+        self.assertTrue(np.all(np.imag(roots) >= 0))
 
-    def test_paper_a_zero_thickness_airy_limit(self):
-        sigma = np.linspace(2500.0, 3300.0, 50)
-        film = np.full_like(sigma, 2.5)
-        reflected = airy_reflectance_paper_a(sigma, 0.0, 0.0, film, 3.2, air_index=1.0)
-        direct = abs((1.0 - 3.2) / (1.0 + 3.2)) ** 2
-        self.assertLess(float(np.max(np.abs(reflected - direct))), 1.0e-12)
-
-    def test_paper_a_phase_is_linear_in_thickness(self):
-        sigma = np.array([2800.0])
-        film = np.array([2.6])
-        # The difference between two thicknesses must equal the signed Fresnel
-        # hand calculation; no extra pi phase is inserted by the implementation.
-        r1 = double_beam_reflectance_paper_a(sigma, 10.0, 7.0, film, 3.1)
-        r2 = double_beam_reflectance_paper_a(sigma, 10.0, 7.5, film, 3.1)
-        self.assertTrue(np.isfinite(r1[0]) and np.isfinite(r2[0]))
-        self.assertGreater(abs(float(r2[0] - r1[0])), 1.0e-8)
-
-    def test_paper_a_um_to_cm_phase_period(self):
+    def test_um_to_cm_phase_period(self):
         sigma = np.array([1000.0, 1500.0])
-        film = np.full(2, 2.0)
-        d_um = 10.0
-        phase_difference = 4.0 * np.pi * (sigma[1] - sigma[0]) * d_um * 1.0e-4 * film[0]
-        expected = np.exp(-1j * phase_difference)
-        observed = np.exp(-1j * 4.0 * np.pi * sigma[1] * d_um * 1.0e-4 * film[1]) / np.exp(
-            -1j * 4.0 * np.pi * sigma[0] * d_um * 1.0e-4 * film[0]
-        )
-        self.assertAlmostEqual(abs(observed - expected), 0.0, places=11)
+        n1 = np.full(2, 2.0 + 0j)
+        eps2 = np.full(2, 9.0 + 0j)
+        parts = layer_amplitudes(sigma, 0.0, 10.0, n1, eps2)
+        loop_ratio = parts["s"]["loop"][1] / parts["s"]["loop"][0]
+        expected = np.exp(4j * np.pi * (1500.0 - 1000.0) * 10.0e-4 * 2.0)
+        self.assertAlmostEqual(abs(loop_ratio - expected), 0.0, places=11)
 
-    def test_paper_a_reflectance_and_ratio_are_finite(self):
-        sigma = np.linspace(2500.0, 3300.0, 100)
-        film = sic_weak_absorption_index(sigma, carrier_density_cm3=1.0e16)
-        reflected = double_beam_reflectance_paper_a(sigma, 15.0, 7.7, film, 2.6)
-        ratio = third_beam_ratio_paper_a(sigma, 15.0, 7.7, film, 2.6)
-        self.assertTrue(np.all(np.isfinite(reflected)))
-        self.assertTrue(np.all(reflected >= 0.0))
-        self.assertTrue(np.all(np.isfinite(ratio)))
-        self.assertTrue(np.all(ratio >= 0.0))
+    def test_neumann_convergence(self):
+        sigma = np.linspace(1200.0, 3000.0, 300)
+        n1 = sic_background_index(sigma)
+        eps2 = drude_substrate_permittivity("sic", sigma, 1200.0, 500.0)
+        parts = layer_amplitudes(sigma, 10.0, 7.4, n1, eps2)
+        finite = reflected_amplitude(parts["s"], 20)
+        airy = reflected_amplitude(parts["s"], math.inf)
+        self.assertLess(float(np.max(np.abs(finite - airy))), 1e-10)
+
+    def test_no_artificial_halfwave_offset(self):
+        sigma = np.linspace(1200.0, 3000.0, 100)
+        n1 = np.full(100, 2.6 + 0j)
+        eps2 = np.full(100, 3.2**2 + 0j)
+        r = unpolarized_reflectance(sigma, 0.0, 0.0, n1, eps2, math.inf)
+        direct = abs((1.0 - 3.2) / (1.0 + 3.2)) ** 2
+        self.assertLess(float(np.max(np.abs(r - direct))), 1e-12)
 
 
 if __name__ == "__main__":

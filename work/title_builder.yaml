@@ -1,8 +1,8 @@
-research_problem_zh: 外延层厚度测量
-specific_model_zh: Sellmeier-Drude-Fresnel与Airy多光束模型
-algorithm_zh: 分角度有界最小二乘
-long_title: 基于Sellmeier-Drude-Fresnel与Airy模型的外延层厚度测量
-remove_algorithm_candidate: 基于Fresnel干涉反演的外延层厚度测量
-remove_model_candidate: 外延层厚度的红外干涉测量
-final_title: 基于Fresnel干涉反演的外延层厚度测量
-status: FROZEN
+research_problem_zh: 外延层测厚
+specific_model_zh: 复Fresnel联合反演与Neumann--Airy多光束模型
+algorithm_zh: 差分进化与鲁棒最小二乘
+long_title: 基于复Fresnel联合反演与Neumann--Airy多光束模型的外延层厚度红外光谱研究
+remove_algorithm_candidate: 基于复Fresnel联合反演与多光束模型的外延层测厚
+remove_model_candidate: 外延层厚度的红外光谱反演
+final_title: 基于复Fresnel反演的外延层测厚
+character_count: 18
