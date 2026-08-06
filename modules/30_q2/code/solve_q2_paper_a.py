@@ -231,7 +231,7 @@ def main() -> None:
     ]).to_csv(module / "tables" / "q2_paper_a_summary.csv", index=False, encoding="utf-8-sig")
     payload = {
         "schema_version": "run_02.q2.paper_a.v1",
-        "status": "FROZEN_CANDIDATE",
+        "status": "FROZEN" if all(row["metrics"]["r2"] > 0.95 for row in angle_results) else "REVIEW_REQUIRED",
         "method_source": "PAPER_A",
         "fit_band_cm-1": list(FIT_RANGE),
         "fixed_effective_mass_ratio": 0.28,

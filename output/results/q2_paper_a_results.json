@@ -1,6 +1,6 @@
 {
   "schema_version": "run_02.q2.paper_a.v1",
-  "status": "FROZEN_CANDIDATE",
+  "status": "FROZEN",
   "method_source": "PAPER_A",
   "fit_band_cm-1": [
     2500.0,
