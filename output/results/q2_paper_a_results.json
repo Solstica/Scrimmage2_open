@@ -1,0 +1,96 @@
+{
+  "schema_version": "run_02.q2.paper_a.v1",
+  "status": "FROZEN_CANDIDATE",
+  "method_source": "PAPER_A",
+  "fit_band_cm-1": [
+    2500.0,
+    3300.0
+  ],
+  "fixed_effective_mass_ratio": 0.28,
+  "angle_results": [
+    {
+      "angle_deg": 10.0,
+      "thickness_um": 7.856635820616846,
+      "log10_carrier_cm3": 14.000014921162228,
+      "carrier_density_cm3": 100003435783593.22,
+      "substrate_index": 2.503968022344578,
+      "sellmeier_parameters": {
+        "sellmeier_A": 1.0499999999999998,
+        "sellmeier_B1": 0.2107875,
+        "sellmeier_B2": 5.278649897806632,
+        "sellmeier_B3": 33.86812700000001,
+        "sellmeier_C1_um2": -12.558172380910712,
+        "sellmeier_C2_um2": 0.0250895,
+        "sellmeier_C3_um2": 1331.659434
+      },
+      "metrics": {
+        "rmse_fraction": 0.0005982024536788831,
+        "mae_fraction": 0.00048355586212398276,
+        "r2": 0.9551268358717021
+      },
+      "boundary_hits": [
+        "log10_carrier_cm3:lower",
+        "sellmeier_A:upper",
+        "sellmeier_B1:upper",
+        "sellmeier_B3:lower",
+        "sellmeier_C2_um2:lower",
+        "sellmeier_C3_um2:upper"
+      ],
+      "fit_table": "modules/30_q2/tables/q2_10deg_paper_a_fit.csv",
+      "figure": "modules/30_q2/figures/q2_10deg_paper_a_fit.png"
+    },
+    {
+      "angle_deg": 15.0,
+      "thickness_um": 7.622957415253701,
+      "log10_carrier_cm3": 14.000000000000002,
+      "carrier_density_cm3": 100000000000000.4,
+      "substrate_index": 2.560464565465987,
+      "sellmeier_parameters": {
+        "sellmeier_A": 0.9500000000009001,
+        "sellmeier_B1": 0.19071250000000003,
+        "sellmeier_B2": 5.665802284300937,
+        "sellmeier_B3": 33.86812700000001,
+        "sellmeier_C1_um2": -12.675851999999999,
+        "sellmeier_C2_um2": 0.027730499999999998,
+        "sellmeier_C3_um2": 1331.659434
+      },
+      "metrics": {
+        "rmse_fraction": 0.0007065215156155059,
+        "mae_fraction": 0.0005612436405017326,
+        "r2": 0.9526452869039295
+      },
+      "boundary_hits": [
+        "log10_carrier_cm3:lower",
+        "sellmeier_A:lower",
+        "sellmeier_B1:lower",
+        "sellmeier_B3:lower",
+        "sellmeier_C1_um2:lower",
+        "sellmeier_C2_um2:upper",
+        "sellmeier_C3_um2:upper"
+      ],
+      "fit_table": "modules/30_q2/tables/q2_15deg_paper_a_fit.csv",
+      "figure": "modules/30_q2/figures/q2_15deg_paper_a_fit.png"
+    }
+  ],
+  "primary_result": {
+    "rule": "arithmetic_mean_of_independent_10deg_and_15deg_fits",
+    "thickness_um": 7.739796617935274,
+    "angle_difference_um": 0.2336784053631451,
+    "half_range_um": 0.11683920268157255
+  },
+  "disclosures": [
+    "The two angles are fitted independently; no shared-parameter joint fit enters the primary result.",
+    "Several nuisance Sellmeier parameters can reach their +/-5% bounds; boundary hits are reported per angle.",
+    "Reflectance is converted from percent to fraction before fitting."
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\raw\\prob25B\\附件1.xlsx",
+      "sha256": "b42f8bdabe7497951284cd044386c3cdf9d349b5e8ef4baaa0336e65ff84c67b"
+    },
+    {
+      "path": "C:\\Users\\admin\\Documents\\CUCCM2026\\raw\\prob25B\\附件2.xlsx",
+      "sha256": "24b3113e80d5ec5458ba4f447df9ed185578481e8b0081bdf0673689505e49d0"
+    }
+  ]
+}
