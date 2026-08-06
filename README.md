@@ -1,6 +1,6 @@
 # Scrimmage2 · run_02 真题解析
 
-2025 年全国大学生数学建模竞赛 B 题的模块化复现与完整解析。仓库按论文板块划分编辑边界；`paper/` 只承担整合与国赛模板，正文、图表和板块代码归属 `modules/`。
+2025 年全国大学生数学建模竞赛 B 题的模块化真题解析。当前唯一核心路线为 PAPER_A 的重新推导与重算：Q1 双光束正演，Q2 两角度独立反演后平均，Q3 硅 Airy 多光束独立反演及 SiC 回溯。PAPER_B 与旧自有融合模型仅保留在审查和归档中。
 
 ## 目录职责
 
@@ -26,13 +26,12 @@ build/       可再生 LaTeX 中间产物，不提交
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 & 'C:\Users\admin\miniconda3\shell\condabin\conda-hook.ps1'
 conda activate phasefield
-python -m scripts.run_analysis --data-dir ..\CUCCM2026\raw\prob25B --project .
-python -m unittest -v scripts.test_physics
-python -m scripts.verify_results --project .
-python -m scripts.make_all_figures
+python scripts/run_analysis.py --data-dir C:\Users\admin\Documents\CUCCM2026\raw\prob25B --project .
+python scripts/test_physics.py
+python modules/40_q3/code/solve_q3_paper_a.py --data-dir C:\Users\admin\Documents\CUCCM2026\raw\prob25B --project . --q2-results output/results/q2_paper_a_results.json
 ```
 
-正式数值结果写入 `output/results/analysis_results.json`；各问图表直接写回对应模块。
+三问结果分别写入 `q1_validation.json`、`q2_paper_a_results.json` 和 `q3_paper_a_results.json`。旧 `analysis_results.json` 已归档，禁止作为活动事实源。
 
 ## LaTeX 构建
 
@@ -42,7 +41,7 @@ python -m scripts.make_all_figures
 powershell -ExecutionPolicy Bypass -File .\scripts\build_paper.ps1
 ```
 
-最终 PDF 写入 `output/pdf/run_02_真题解析.pdf`。`paper/sections/` 和 `paper/abstract_content.tex` 是构建时生成、被 Git 忽略的门禁兼容镜像，不是正文编辑源。
+最终 PDF 仅在三问结果全部冻结后重新生成。当前 Q3 的5%数值门禁未通过，旧 PDF 已归档，摘要和最终 PDF 不得定稿。`paper/sections/` 和 `paper/abstract_content.tex` 是构建时生成、被 Git 忽略的门禁兼容镜像，不是正文编辑源。
 
 ## 编辑规则
 

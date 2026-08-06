@@ -2,9 +2,15 @@
   "gate": "full_paper",
   "reference_count": 10,
   "english_reference_count": 7,
-  "figure_count": 14,
+  "figure_count": 11,
   "question_count": 3,
-  "warnings": [],
+  "warnings": [
+    {
+      "code": "W_TITLE_LONG",
+      "severity": "SHOULD",
+      "message": "Title length is 21, above the preferred 20 characters"
+    }
+  ],
   "status": "PASS",
   "issues": []
 }

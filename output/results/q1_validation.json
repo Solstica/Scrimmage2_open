@@ -1,0 +1,20 @@
+{
+  "schema_version": "run_02.q1.paper_a.v1",
+  "status": "FROZEN",
+  "method_source": "PAPER_A",
+  "fixed_effective_mass_ratio": 0.28,
+  "phase_scale_um_to_cm": 0.0001,
+  "checks": {
+    "normal_incidence_fresnel": true,
+    "zero_thickness_airy": true,
+    "reflectance_finite_nonnegative": true,
+    "third_beam_ratio_finite_nonnegative": true,
+    "unit_scale_um_to_cm": true,
+    "no_extra_halfwave_offset": true
+  },
+  "model_exclusions": [
+    "finite_order_Neumann",
+    "fixed_halfwave_offset",
+    "complex_q_as_formal_route"
+  ]
+}
