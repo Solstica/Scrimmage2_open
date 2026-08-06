@@ -1,10 +1,19 @@
-# Q2 模块
+# 问题二模块
 
-- 正文：`paper/q2.tex`
-- 独有代码：`code/`
-- 论文图：`figures/`
-- 可编辑图源：`figures/editable/`
-- 精确数据表：`tables/`
-- 过程笔记与接口：`work/questions/Q2/`
+正式路线为 PAPER_A 的双角度独立反演：
 
-正式结果以 `work/result_registry.csv` 为准。当前冻结厚度为 `7.384039 μm`；`work/archive/stale_q2_7p7398/` 中的资产不得引用。
+1. 附件1（10°）与附件2（15°）分别拟合；
+2. 拟合波段固定为 2500–3300 cm⁻¹；
+3. 正演模型为问题一 Sellmeier--Drude--Fresnel 双光束模型；
+4. 正式厚度取两个独立结果的算术平均；
+5. 共享参数联合拟合、角度增益和角度偏置均不属于正式结果。
+
+复现命令：
+
+```powershell
+conda run -n phasefield python modules/30_q2/code/solve_q2_paper_a.py `
+  --data-dir C:/Users/admin/Documents/CUCCM2026/raw/prob25B `
+  --project .
+```
+
+冻结候选结果写入 `output/results/q2_paper_a_results.json`；图和可核查 CSV 分别写入本模块的 `figures/` 与 `tables/`。
