@@ -50,3 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_paper.ps1
 - `paper/main.tex`、`paper/paper_template.tex`、参考文献、最终摘要、结果注册表和正式输出由整合者维护。
 - 模型或代码改变后，将依赖结果标为 `STALE`，重新运行验证后才能恢复为 `FROZEN`。
 - 不提交 `build/`、`tmp/`、官方论文 PDF、自有旧模型包或原始对话。
+
+## AI 与队友协作
+
+所有 AI 和自动化协作者在修改仓库前必须阅读 `AI_COLLABORATION_GUIDE.md`。活动结果以 `work/result_registry.csv` 为唯一事实源；`work/archive/` 只用于追溯，禁止被正文、摘要、结论或构建脚本引用。

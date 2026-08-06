@@ -38,6 +38,12 @@ finally {
 }
 
 $builtPdf = Join-Path $buildDir 'paper_template.pdf'
-$finalPdf = Join-Path $outputDir 'run_02_真题解析.pdf'
+# Windows PowerShell 5.1 reads UTF-8 files without a BOM using the active ANSI
+# code page. Build the Chinese delivery name from code points so the script
+# remains encoding-safe in both Windows PowerShell and PowerShell 7.
+$finalPdfName = 'run_02_' + (-join @(
+    [char]0x771F, [char]0x9898, [char]0x89E3, [char]0x6790
+)) + '.pdf'
+$finalPdf = Join-Path $outputDir $finalPdfName
 Copy-Item -LiteralPath $builtPdf -Destination $finalPdf -Force
 Get-FileHash -Algorithm SHA256 -LiteralPath $finalPdf

@@ -35,3 +35,17 @@
 | `paper` | 模板与整合，不承载模块正文 |
 | `work` | 状态与溯源真值 |
 | `output` | 可提交的正式产物 |
+
+## 可编辑图源与归档
+
+- 论文引用的 PNG/PDF/SVG 放入对应问题的 `figures/`。
+- Origin、AGX、Excel 图工程等可编辑源放入对应问题的 `figures/editable/`。
+- 精确结果表放入对应问题的 `tables/`。
+- 被替代或结果口径冲突的材料统一放入 `work/archive/`，活动正文和构建脚本不得引用。
+- 团队任务统一放入 `work/team_tasks/<member>/{todo,done}/`。
+
+## 临时冻结区
+
+`modules/document.*`、`output/results/document.*` 与 `output/图/` 当前由指定队友调整。解除冻结前，其他协作者和 AI 不得移动、改写或删除；后续迁移方案见 `work/document_migration_pending.md`。
+
+完整 AI 协作规则见 `AI_COLLABORATION_GUIDE.md`。

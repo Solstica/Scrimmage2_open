@@ -29,3 +29,11 @@ Record model, solver, preprocessing, approximation, and reporting decisions. Eac
 - 证据：用户明确回复“五个问题全部确认通过，接着做”。
 - 拒绝方案：沿用两篇论文或自有包中的既有数值；继续保留多个并列主模型。
 - 影响：允许从零重写正算与反演代码、运行官方数据、验证后冻结结果；本对话成为当前单一整合任务的文件所有者，但仍不执行 Git 操作。
+
+## 2026-08-06：仓库资产归属与陈旧结果隔离
+
+- 决策：正式模块只保留 `7.384039 μm` 冻结链；`7.7398 μm` 旧代码、工作簿和结果统一迁入 `work/archive/stale_q2_7p7398/`。
+- 证据：`work/result_registry.csv` 与正式 Q2 正文登记 7.384039 μm，队友图表包的 `run_metadata.json` 登记 7.7397966179 μm，二者不可同时作为活动结果。
+- 拒绝方案：仅按文件类型把旧图搬入 `modules/30_q2/figures/`；该做法会造成图、表、正文和摘要事实冲突。
+- 影响：归档资产状态为 `STALE/ARCHIVED`，禁止被论文与构建脚本引用；需用冻结模型重算后才能生成新的 Q2 Origin 图。
+- 暂缓：`modules/document.*`、`output/results/document.*` 和 `output/图/` 由队友编辑，本轮冻结不动。
