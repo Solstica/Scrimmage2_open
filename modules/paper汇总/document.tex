@@ -101,6 +101,26 @@
 	urlcolor=blue
 }
 
+% ===== 摘要宽度与正文一致 =====
+\makeatletter
+\renewenvironment{abstract}{%
+	\if@twocolumn
+	\section*{\abstractname}%
+	\else
+	\begin{center}%
+		{\bfseries\large\abstractname\vspace{0.5em}\par}%
+	\end{center}%
+	\fi
+	\leftskip0pt\relax
+	\rightskip0pt\relax
+	\parindent2em\relax
+	\normalsize
+}{%
+	\par
+	\vspace{1em}
+}
+\makeatother
+
 % 表格列格式
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
@@ -159,6 +179,7 @@
 	
 	% ---------- 摘要 ----------
 	\begin{abstract}
+		
 		本文围绕红外反射光谱测量外延层厚度，以PAPER\_A的色散关系和Fresnel干涉模型为主体，依次建立双光束正演、SiC厚度反演和硅多光束反演模型，并用统一代码重新计算官方附件。
 		
 		针对问题一，建立Sellmeier-Drude-Fresnel双光束模型。先统一波数、波长和厚度单位，固定载流子有效质量，再由Snell定律和带符号s、p偏振Fresnel系数叠加表面反射束与第一束内部反射束。正入射、零厚度、相位缩放、反射率非负性和单位换算五项程序检查全部通过。
@@ -306,13 +327,25 @@
 	\end{equation}
 	其中Sellmeier参数在登记值的 $\pm5\%$ 范围内变化，厚度满足 $6.5\le d\le 8.5\ \mu\mathrm{m}$。
 	
-	图\ref{fig:spec_15}展示了 $15^\circ$ 入射角的原始反射率光谱。可以看出反射率在 $2500\sim3300\ \mathrm{cm^{-1}}$ 波段呈现明显的周期性振荡，这是外延层上下界面反射光干涉的结果，振荡周期与光学厚度 $nd$ 直接相关。振荡幅度约为 $20\%$，基线反射率约 $15\%$，符合SiC在红外波段的典型反射特征。$10^\circ$ 入射角的原始光谱具有类似特征，但振荡相位略有差异，这为多角度约束厚度提供了互补信息。
+	图\ref{fig:spec_compare}展示了 $10^\circ$ 和 $15^\circ$ 两个入射角的原始反射率光谱。可以看出反射率在 $2500\sim3300\ \mathrm{cm^{-1}}$ 波段均呈现明显的周期性振荡，这是外延层上下界面反射光干涉的结果，振荡周期与光学厚度 $nd$ 直接相关。振荡幅度约为 $20\%$，基线反射率约 $15\%$，符合SiC在红外波段的典型反射特征。两个角度的振荡相位略有差异，这为多角度约束厚度提供了互补信息——$10^\circ$ 的干涉条纹间距略宽，$15^\circ$ 的条纹间距略窄，这与倾斜入射时有效光学厚度 $nd\cos\gamma$ 随角度增大而减小的物理规律一致。
 	
 	\begin{figure}[htbp]
 		\centering
-		\includegraphics[width=0.8\textwidth]{02_15度原始光谱.png}
-		\caption{$15^\circ$ 入射角下SiC外延层的原始反射率光谱}
-		\label{fig:spec_15}
+		\begin{subfigure}[b]{0.47\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{01_10度原始光谱.png}
+			\caption{$10^\circ$ 入射角}
+			\label{fig:spec_10}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.47\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{02_15度原始光谱.png}
+			\caption{$15^\circ$ 入射角}
+			\label{fig:spec_15}
+		\end{subfigure}
+		\caption{SiC外延层在两个入射角下的原始反射率光谱对比}
+		\label{fig:spec_compare}
 	\end{figure}
 	
 	\subsection{PAPER\_A单角度有界反演模型}
