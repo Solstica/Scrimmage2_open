@@ -1,5 +1,5 @@
 \subsection{问题一的描述与分析}
-本问要求在空气--外延层--衬底三层结构中，仅保留空气--外延层界面的表面反射光和外延层--衬底界面的第一束内部反射光，建立外延层厚度与波数、入射角及材料光学参数之间的定量关系。求解的关键有三点：一是由薄膜几何光路确定两束光的光程差与传播相位；二是用Sellmeier--Drude模型描述SiC外延层折射率随波长和载流子浓度的变化；三是利用带符号Fresnel振幅系数完成两束反射光的相干叠加，从而得到可与实测光谱直接比较的非偏振反射率模型。界面反射所引起的相位变化由Fresnel系数的符号统一表示，因此不再额外叠加固定半波损失。
+本问要求在空气--外延层--衬底三层结构中，仅保留空气--外延层界面的表面反射光和外延层--衬底界面的第一束内部反射光，建立外延层厚度与波数、入射角及材料光学参数之间的定量关系。求解的关键有三点：一是由薄膜几何光路确定两束光的光程差与传播相位；二是描述SiC外延层折射率随波长和载流子浓度的变化；三是利用Fresnel界面系数完成两束反射光的相干叠加，从而得到可与实测光谱直接比较的非偏振反射率模型。按照“几何光路--材料色散--界面反射--双光束叠加”的顺序建立正演模型，再在后续问题中由实测光谱反演厚度。
 
 图\ref{fig:q1-flow}给出问题一从几何光路、材料色散到反射率模型的总体建模流程。
 
@@ -10,10 +10,11 @@
 \label{fig:q1-flow}
 \end{figure}
 
-\subsection{Sellmeier--Drude--Fresnel双光束模型建立}
+\subsection{模型建立}
+本文在薄膜干涉与Fresnel界面理论\cite{bornwolf}的基础上，引入Sellmeier晶格色散和Drude载流子修正，建立Sellmeier--Drude--Fresnel双光束测厚模型。
 
 \subsubsection{光程差与传播相位}
-图\ref{fig:q1-schematic}给出了空气--外延层--衬底结构中两束主要反射光的传播路径。设空气、外延层和衬底折射率分别为$n_1,n_2,n_3$，外延层厚度为$d$，入射角为$i$，外延层折射角为$\gamma$。
+图\ref{fig:q1-schematic}给出了空气--外延层--衬底结构中两束主要反射光的传播路径。设空气、外延层和衬底折射率分别为$n_1,n_2,n_3$，外延层厚度为$d$，入射角为$i$，外延层折射角为$\gamma$。数值计算中取空气折射率$n_1=1.0003$，与后续程序保持一致。
 
 \begin{figure}[!htbp]
 \centering
@@ -49,10 +50,10 @@ n_1\sin i=n_2\sin\gamma.
 =4\pi\times10^{-4}\sigma d n_2\cos\gamma,
 \label{eq:q1-phase}
 \end{equation}
-其中$d$以$\mu\mathrm m$为单位，$10^{-4}$用于完成$\mu\mathrm m$到$\mathrm{cm}$的换算。式\eqref{eq:q1-phase}只表示传播引起的相位积累；界面反射相变将在Fresnel振幅系数中统一处理。
+其中$d$以$\mu\mathrm m$为单位，$10^{-4}$用于完成$\mu\mathrm m$到$\mathrm{cm}$的换算。式\eqref{eq:q1-phase}只表示传播引起的相位积累；界面反射相变在后续带符号Fresnel振幅系数中统一处理。
 
 \subsubsection{Sellmeier--Drude折射率模型}
-SiC外延层折射率随波长变化，并受到自由载流子响应的影响。为保持问题一基础模型的物理闭合，先从晶格色散与载流子修正两部分建立折射率模型；具体用于参数反演的弱吸收波段将在问题二结合实测光谱进一步确定。
+SiC外延层折射率随波长变化，并受到自由载流子响应影响。参考相关色散建模方案\cite{paperA}，将晶格响应与载流子响应在介电函数层面组合。
 
 \textbf{（1）Sellmeier晶格色散。} SiC外延层的晶格介电函数采用三项Sellmeier形式
 \begin{equation}
@@ -60,19 +61,29 @@ SiC外延层折射率随波长变化，并受到自由载流子响应的影响�
 =A+\sum_{j=1}^{3}\frac{B_j\lambda^2}{\lambda^2-C_j}.
 \label{eq:q1-sellmeier}
 \end{equation}
+其中$A,B_j$为无量纲参数，$C_j$与$\lambda^2$具有相同量纲，即单位为$\mu\mathrm m^2$。
 
-\textbf{（2）Drude载流子修正。} Drude模型的完整响应包含载流子碰撞造成的耗散项；对于SiC透明或弱吸收区域，介电函数虚部相对较小，问题一采用其实部近似，得到
+\textbf{（2）Drude载流子修正。} Drude模型\cite{drude}给出的复介电响应可写为
+\begin{equation}
+\widetilde\varepsilon_2(\omega,\lambda)
+=\varepsilon_{\mathrm L}(\lambda)
+-\frac{\omega_p^2}{\omega(\omega+\mathrm i\Gamma)},
+\qquad
+\omega_p^2=\frac{Ne^2}{\varepsilon_0m^*},
+\label{eq:q1-drude-complex}
+\end{equation}
+其中$\Gamma$为载流子碰撞频率，$N$为载流子浓度，$e$为元电荷，$\varepsilon_0$为真空介电常数，$m^*$为载流子有效质量。对于SiC透明或弱吸收区域，有$\Gamma/\omega\ll1$，耗散虚部相对较小。取式\eqref{eq:q1-drude-complex}的弱吸收实部近似，并利用$\omega=2\pi c/\lambda$，得到问题一和问题二采用的折射率模型
 \begin{equation}
 n_2^2(\lambda,N)=\varepsilon_{\mathrm L}(\lambda)
 -\frac{Ne^2\lambda^2}{4\pi^2c^2\varepsilon_0m^*}.
 \label{eq:q1-drude}
 \end{equation}
-式中，$N$为载流子浓度，$e$为元电荷，$c$为真空光速，$\varepsilon_0$为真空介电常数。Drude修正项中$N$与$m^*$以$N/m^*$的组合进入模型，仅依靠同一反射光谱难以同时独立识别二者，因此固定载流子有效质量$m^*=0.28m_0$，将$N$作为待反演参数。问题三处理硅的明显吸收时，再恢复完整复介电响应。
+Drude修正项中$N$与$m^*$以$N/m^*$的组合进入模型，仅依靠同一反射光谱难以同时独立识别二者。为消除这一结构冗余并与数值实现保持一致，本文固定$m^*=0.28m_0$，该量级与参考方案的参数设置一致\cite{paperA}，仅将$N$作为待反演参数。具体用于反演的弱吸收波段将在问题二结合实测光谱确定；问题三处理硅的明显吸收时再恢复完整复介电响应。
 
 将式\eqref{eq:q1-drude}得到的实折射率代入式\eqref{eq:q1-snell}，即可确定折射角$\gamma$。
 
 \subsubsection{Fresnel双光束反射率模型}
-对偏振态$u\in\{s,p\}$，按照光从介质$i$传播到介质$j$的方向定义带符号Fresnel振幅反射系数$r_{ij}^{(u)}$和透射系数$t_{ij}^{(u)}$。其中，s偏振满足
+对偏振态$u\in\{s,p\}$，按照光从介质$i$传播到介质$j$的方向定义带符号Fresnel振幅反射系数$r_{ij}^{(u)}$和透射系数$t_{ij}^{(u)}$\cite{bornwolf}。其中，s偏振满足
 \begin{equation}
 r_{ij}^{(s)}=
 \frac{n_i\cos\theta_i-n_j\cos\theta_j}
@@ -114,7 +125,7 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 \begin{equation}
 \left\{
 \begin{aligned}
-&\lambda=10^4/\sigma,\\
+&n_1=1.0003,\qquad \lambda=10^4/\sigma,\\
 &\varepsilon_{\mathrm L}(\lambda)
 =A+\sum_{j=1}^{3}\frac{B_j\lambda^2}{\lambda^2-C_j},\\
 &n_2^2(\lambda,N)=\varepsilon_{\mathrm L}(\lambda)
@@ -132,6 +143,25 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 给定波数$\sigma$、入射角$i$、厚度$d$、载流子浓度$N$、衬底折射率$n_3$及Sellmeier参数$\boldsymbol\beta$，依次计算外延层折射率、折射角、Fresnel系数和传播相位，即可得到理论反射率$R_{\mathrm{th}}$。问题二将在实测SiC光谱的弱吸收区内反演$d$及相关光学参数；问题三则使用Airy多光束模型讨论高阶内部反射对厚度测量的影响与双光束近似的适用范围。
 
 \subsection{模型自洽性检验}
-本问以解析模型建立为主，不另设迭代求解算法。为检查公式推导与数值实现的一致性，分别验证正入射时Fresnel系数退化到经典界面反射结果、$d\to0$时薄膜反射退化到相应零厚度极限、传播相位满足$\Phi\propto d$，并检查被动介质参数范围内理论反射率的物理取值。上述检验同时确认：采用带符号Fresnel振幅系数后，模型没有重复加入固定半波损失；单位换算中的$10^{-4}$因子与波数--波长关系保持一致。
+本问以解析模型建立为主，不另设迭代求解算法。为避免用不属于截断双光束模型的极限性质作为验证依据，仅检查能够由当前模型直接推出的关系，结果见表\ref{tab:q1-selfcheck}。
+
+\begin{table}[!htbp]
+\centering
+\caption{问题一模型自洽性检验}
+\label{tab:q1-selfcheck}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{0.94\textwidth}{>{\centering\arraybackslash}p{3.0cm} X >{\centering\arraybackslash}p{2.3cm}}
+\toprule
+\textbf{检验项} & \textbf{理论关系} & \textbf{结果} \\
+\midrule
+零载流子极限 & $N\to0$时，式\eqref{eq:q1-drude}退化为$n_2^2=\varepsilon_{\mathrm L}$ & 满足 \\
+正入射极限 & $i=\gamma=0$时，式\eqref{eq:q1-fresnel-s}--\eqref{eq:q1-fresnel-p}退化为经典正入射Fresnel系数 & 满足 \\
+厚度线性 & 其他参数固定时，$\Phi=4\pi\times10^{-4}\sigma n_2\cos\gamma\,d$，故$\Phi\propto d$ & 满足 \\
+相位处理 & 界面反射相变由带符号$r_{ij}^{(u)}$承担，不再重复叠加固定$\pi$相位 & 一致 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+上述检验同时核对了波数--波长换算中的$10^{-4}$因子。需要强调的是，$d\to0$时严格退化为空气--衬底单界面属于完整多光束级数的性质，并非当前只保留前两束反射光的截断模型所必然满足，因此不将其作为问题一的验证条件。
 
 \FloatBarrier
