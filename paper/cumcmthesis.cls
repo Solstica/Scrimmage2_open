@@ -36,7 +36,8 @@
 \ClassError{mcmthesis}{You must use the `xelatex' driver\MessageBreak Please choose `xelatex'}{%
 Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \fi
-% 支持中文的 ctex 宏包
+% 支持中文的 ctex 宏包：统一采用范文汇总稿使用的 Fandol 中文字体族
+\PassOptionsToPackage{fontset=fandol}{ctex}
 \RequirePackage{ctex}
 % 页面布局
 \RequirePackage{geometry}
@@ -147,10 +148,10 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \IfFileExists{C:/Windows/Fonts/times.ttf}{\setmainfont{Times New Roman}}{\setmainfont{Liberation Serif}}
 %\setmonofont{Courier New}
 \IfFileExists{C:/Windows/Fonts/arial.ttf}{\setsansfont{Arial}}{\setsansfont{Liberation Sans}}
-\IfFileExists{C:/Windows/Fonts/simsun.ttc}{\setCJKfamilyfont{song}[AutoFakeBold]{SimSun}}{\setCJKfamilyfont{song}[AutoFakeBold]{Noto Serif CJK SC}}
-\newcommand*{\song}{\CJKfamily{song}}
-\IfFileExists{C:/Windows/Fonts/simkai.ttf}{\setCJKfamilyfont{kai}[AutoFakeBold]{KaiTi}}{\setCJKfamilyfont{kai}[AutoFakeBold]{Noto Serif CJK SC}}
-\newcommand*{\kai}{\CJKfamily{kai}}
+% 中文字体由 ctex 的 Fandol fontset 统一管理；不要再在此处切回 SimSun/KaiTi。
+% 保留旧类文件使用的 \song / \kai 接口，但映射到 ctex 标准族。
+\newcommand*{\song}{\songti}
+\newcommand*{\kai}{\kaishu}
 
 \renewcommand\normalsize{%
 	\@setfontsize\normalsize{12.05}{14.45}%
