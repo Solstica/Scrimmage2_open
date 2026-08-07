@@ -226,16 +226,33 @@ R_{ki}
 \right]^2.
 \label{eq:q3-ls}
 \end{equation}
-每个角度采用$6$组覆盖不同厚度、衬底折射率及载流子参数尺度的确定性初值，选择最终残差最小的Airy解作为该角度正式结果。两个独立厚度最后按
+
+\subsubsection{四参数多初值反演}
+为降低单一初值落入错误厚度级次的风险，每个角度使用相同的$6$组确定性初值。按$(d,n_3,q_N,q_\Gamma)$排列，初值集合为
+\begin{equation}
+\mathcal S_3=\left\{
+\begin{array}{llll}
+(2.70,3.0,14.0,12.0), & (2.90,3.5,16.0,13.699),\\
+(3.05,4.0,18.0,13.0), & (3.20,3.5,16.0,14.0),\\
+(3.40,3.0,18.0,14.5), & (3.60,4.5,20.0,15.0)
+\end{array}
+\right\}.
+\label{eq:q3-seeds}
+\end{equation}
+每一组初值均使用同一个Airy正式正演模型和同一组物理边界求解式\eqref{eq:q3-ls}，并检查复折射率支路与$0<|P|\le1$的被动传播条件。各候选解以最终RMSE排序，残差最低者作为该角度正式解；边界活跃只作为可辨识性诊断记录，不因参数触边而自动丢弃候选。
+
+两个独立厚度最后按
 \begin{equation}
 d_{\mathrm{Si}}
 =\frac{d_{10^\circ}^{\mathrm{Si}}+d_{15^\circ}^{\mathrm{Si}}}{2}
 \label{eq:q3-average}
 \end{equation}
-进行等权综合。
+进行等权综合。算术平均只综合两个独立厚度，不形成第三次拟合。
 
-\subsubsection{求解算法}
-图\ref{fig:q3-algorithm}给出与正式数值实现一致的求解流程。核心顺序为“固定硅背景参数$\rightarrow$分角度多初值Airy拟合$\rightarrow$厚度综合$\rightarrow$SiC高阶光束回溯”。
+\subsubsection{诊断与回溯求解}
+得到两个角度的最优Airy参数后，进一步执行三项诊断：其一，在同一组最优参数下计算双光束截断曲线，用于隔离高阶内部反射对理论谱形的影响；其二，在最优点构造残差Jacobian并进行尺度化SVD，区分厚度方向与附属载流子参数的局部可辨识性；其三，将问题二SiC冻结厚度及对应光学参数代入$\eta_3$，仅比较高阶单束反射与$0.1\%$工程量级参照，不据此切换硅的正式模型。
+
+图\ref{fig:q3-algorithm}给出整体求解流程，标准伪代码见算法\ref{alg:q3-airy}。
 
 \begin{figure}[!htbp]
 \centering
@@ -244,7 +261,14 @@ d_{\mathrm{Si}}
 \label{fig:q3-algorithm}
 \end{figure}
 
-\lstinputlisting[caption={问题三多光束厚度反演伪代码}]{\ProjectRoot/modules/40_q3/paper/q3_pseudocode.txt}
+\input{\ProjectRoot/modules/40_q3/paper/q3_algorithm.tex}
+
+若拟合窗口含$m$个光谱点、每组局部求解平均需要$L$次Airy正演评价，则两个角度六初值反演的主要计算量为
+\begin{equation}
+\mathcal O(12Lm),
+\label{eq:q3-complexity}
+\end{equation}
+而单次Airy正演对$m$近似线性。Jacobian--SVD和同参双光束比较均在最终候选确定后执行，不参与厚度目标函数的重新优化。
 
 \subsection{结果与分析}
 
