@@ -2,10 +2,13 @@ INPUT spectra at 10deg and 15deg
 FOR each angle k
   convert reflectance percent to fraction
   keep 2500--3300 cm^-1
-  run bounded least_squares from deterministic coarse seeds
-  retain eight distinct attraction basins
-  refine each basin with Sellmeier perturbations released
-  choose the feasible solution with minimum residual sum
+  define q_N = log10(N / 1 cm^-3)
+  run 90 bounded stage-I least_squares fits over deterministic seeds
+  sort stage-I solutions by RMSE
+  deduplicate by key (round(d,3), round(q_N,2))
+  retain the first eight distinct candidate solutions
+  release seven Sellmeier parameters and refine the full 10-parameter model
+  choose the candidate with minimum refined RMSE
 END FOR
 d_final <- (d_10deg + d_15deg) / 2
-REPORT d_final, half_range, RMSE, R2, boundary_hits
+REPORT d_final, angle difference, half-range, RMSE, MAPE, R2, boundary hits
