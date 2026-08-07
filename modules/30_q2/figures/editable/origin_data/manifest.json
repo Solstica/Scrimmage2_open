@@ -1,0 +1,480 @@
+{
+  "schema_version": "origin_data.paper_a.v1",
+  "routes": {
+    "q2": "independent angle fits followed by arithmetic mean",
+    "q3": "Airy independent angle fits; double beam is same-parameter comparison only"
+  },
+  "frozen_values_um": {
+    "q2": [
+      7.856635820616846,
+      7.622957415253701,
+      7.739796617935274
+    ],
+    "q3": [
+      3.2479974169771597,
+      3.1875196790859226,
+      3.217758548031541
+    ]
+  },
+  "sources": {
+    "q2_frozen_sha256": "ee625fd4e5cef323cc687caa6bfd754f1112c537a874c6d1bc42fd3491514571",
+    "q3_frozen_sha256": "cd63c0bbc3be5b89c581cc9be75cc3341cb3ae12f96239e5d87829ec48f273d5",
+    "attachments": {
+      "attachment_1": "b42f8bdabe7497951284cd044386c3cdf9d349b5e8ef4baaa0336e65ff84c67b",
+      "attachment_2": "24b3113e80d5ec5458ba4f447df9ed185578481e8b0081bdf0673689505e49d0",
+      "attachment_3": "79e9f66a00409f1d1130d9f4f3d76b4d5e5a1ccd3ac2d24dc0af8ecc583d0ec8",
+      "attachment_4": "9cf1400404c4560958da06685beb8c2e1e4df5918a6e13863663a54440ba12e3"
+    }
+  },
+  "files": [
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_raw_10deg.csv",
+      "rows": 7469,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "angle_deg",
+        "in_fit_band"
+      ],
+      "sha256": "1a9ddd3616626ee578292e9443bc0490cbc3bb31ae0ddfc6bb34d1eef82e2cdc"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_raw_15deg.csv",
+      "rows": 7469,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "angle_deg",
+        "in_fit_band"
+      ],
+      "sha256": "08ccc4a562bd2d47cc4c67f7689b1583fd7f74404395d864f6c6c74927570b7f"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_fit_10deg.csv",
+      "rows": 1659,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "reflectance_fitted",
+        "residual_signed",
+        "residual_abs",
+        "angle_deg"
+      ],
+      "sha256": "13ee0089a249982e7699a025038e0f24290c79ac26248bcf48696114b8baedfc"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_fit_15deg.csv",
+      "rows": 1659,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "reflectance_fitted",
+        "residual_signed",
+        "residual_abs",
+        "angle_deg"
+      ],
+      "sha256": "68e111ed8dd2fee9c217175676634d9e2da87769e053fdfd183fcfb8eae0e06e"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_summary.csv",
+      "rows": 3,
+      "columns": [
+        "result_type",
+        "angle_deg",
+        "thickness_um",
+        "rmse_fraction",
+        "r2",
+        "mae_fraction",
+        "mape_percent",
+        "mape_defined",
+        "boundary_hits"
+      ],
+      "sha256": "bbca9139137013d11e4b53806b8d7f5c2cfa72eea540f354003247be6ce2ab0f"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_multistart.csv",
+      "rows": 16,
+      "columns": [
+        "angle_deg",
+        "seed_id",
+        "d_init_um",
+        "log10N_init_cm3",
+        "N_init_cm3",
+        "n3_init",
+        "d_final_um",
+        "rmse_final",
+        "success",
+        "boundary_hits",
+        "basin_id"
+      ],
+      "sha256": "5dcc9d735ad68a1a388839f2e1634691e5fd43bc4d237cbfde78a2fda1671154"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_residual_histogram.csv",
+      "rows": 30,
+      "columns": [
+        "bin_left",
+        "bin_right",
+        "bin_center",
+        "count_10deg",
+        "fraction_10deg",
+        "count_15deg",
+        "fraction_15deg"
+      ],
+      "sha256": "ca2158e81e262a955067836f55c0fbc175ae6484ed430f279c0f8956a6c92682"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_residual_boxplot.csv",
+      "rows": 1659,
+      "columns": [
+        "sample_id",
+        "residual_10deg",
+        "residual_15deg"
+      ],
+      "sha256": "0dcd705b525920634bd16c62aa84a28cf6517dce01342c99bca1914c5b4aaa15"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_residual_heatmap.csv",
+      "rows": 80,
+      "columns": [
+        "angle_deg",
+        "bin_left_cm1",
+        "bin_right_cm1",
+        "bin_center_cm1",
+        "residual_mean",
+        "sample_count"
+      ],
+      "sha256": "53fcd48504e3b9d52e896371add8d63ab64149e03273b64a8a4b2110967ca9ea"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_residual_ecdf.csv",
+      "rows": 3318,
+      "columns": [
+        "angle_deg",
+        "residual_abs",
+        "ecdf"
+      ],
+      "sha256": "aefe21c37ea64babb10800fe2300b1565f282a5b98623d834c5b47b96864413c"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_basin_stage1.csv",
+      "rows": 180,
+      "columns": [
+        "angle_deg",
+        "seed_id",
+        "d_init_um",
+        "log10N_init",
+        "n3_init",
+        "d_stage1_um",
+        "log10N_stage1",
+        "n3_stage1",
+        "rmse_stage1",
+        "success",
+        "nfev",
+        "raw_basin_key",
+        "representative_basin_id"
+      ],
+      "sha256": "b14cba2c31e1e87ed55c366da690a741b4d9bd202be4972ef8bb715da7718680"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_basin_refined.csv",
+      "rows": 16,
+      "columns": [
+        "angle_deg",
+        "rank_by_rmse",
+        "basin_id",
+        "support_count_stage1",
+        "thickness_um",
+        "log10N",
+        "substrate_index",
+        "rmse",
+        "mae",
+        "r2",
+        "success",
+        "nfev",
+        "boundary_hit_count",
+        "boundary_hits"
+      ],
+      "sha256": "b868766ab88d4679921f2b5e81bbd967b48f28120df301115067d7a7d84e251a"
+    },
+    {
+      "path": "modules/30_q2/figures/editable/origin_data/csv/q2_basin_summary.csv",
+      "rows": 2,
+      "columns": [
+        "angle_deg",
+        "best_basin_id",
+        "best_thickness_um",
+        "best_rmse",
+        "second_best_thickness_um",
+        "second_best_rmse",
+        "rmse_gap_relative",
+        "sse_ratio_second_to_best",
+        "best_basin_support_count",
+        "best_basin_support_fraction",
+        "total_stage1_starts",
+        "raw_stage1_basin_key_count",
+        "refined_basin_count"
+      ],
+      "sha256": "31081a9c0e6a1524f76686bcd5cb35dd893ec44cb32eb2bcd0fc4d0826da2403"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_fit_10deg.csv",
+      "rows": 4148,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "reflectance_airy",
+        "reflectance_double_same_params",
+        "residual_signed",
+        "residual_abs",
+        "eta3_percent",
+        "angle_deg"
+      ],
+      "sha256": "451ba712374fc837eaea22f55e212f7675f286f2fe4c8821069d459dc050c656"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_fit_15deg.csv",
+      "rows": 4148,
+      "columns": [
+        "wavenumber_cm1",
+        "reflectance_observed",
+        "reflectance_airy",
+        "reflectance_double_same_params",
+        "residual_signed",
+        "residual_abs",
+        "eta3_percent",
+        "angle_deg"
+      ],
+      "sha256": "ed07ea81d48a0aa94e8870e4e9fca4b442f714c009c13bf63389c0e444d78e52"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_summary.csv",
+      "rows": 3,
+      "columns": [
+        "result_type",
+        "angle_deg",
+        "thickness_um",
+        "rmse_fraction",
+        "rmse_percentage_point",
+        "r2",
+        "log10N_cm3",
+        "log10Gamma_s1",
+        "n3",
+        "boundary_hits",
+        "jacobian_condition_number",
+        "jacobian_sigma_min"
+      ],
+      "sha256": "e87b1f361293119b689cceaadba80f289c5afc7408706d0d03ef0e7b03836b2f"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_multistart.csv",
+      "rows": 12,
+      "columns": [
+        "angle_deg",
+        "seed_id",
+        "d_init_um",
+        "n3_init",
+        "log10N_init_cm3",
+        "log10Gamma_init_s1",
+        "d_final_um",
+        "rmse_final_percentage_point",
+        "success",
+        "boundary_hits",
+        "basin_id",
+        "basin_count"
+      ],
+      "sha256": "aeb64aff020416039a042955937dfc794c42736af17566ca0aa1bcbd7f36ab3b"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_sic_backcheck.csv",
+      "rows": 1659,
+      "columns": [
+        "wavenumber_cm1",
+        "eta3_10deg_percent",
+        "eta3_15deg_percent",
+        "engineering_threshold_percent"
+      ],
+      "sha256": "8174e10f6e6cbc65a4d8163e9dedcc1fabe9a8cf6bab6247b6adfe295705d1f6"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_residual_boxplot.csv",
+      "rows": 4148,
+      "columns": [
+        "sample_id",
+        "residual_10deg",
+        "residual_15deg"
+      ],
+      "sha256": "2b8617c282a66479ddb1f2d653092fddac88503bb16d4b31e66c154f4285c432"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_residual_heatmap.csv",
+      "rows": 80,
+      "columns": [
+        "angle_deg",
+        "bin_left_cm1",
+        "bin_right_cm1",
+        "bin_center_cm1",
+        "residual_mean",
+        "sample_count"
+      ],
+      "sha256": "16b498dd8bc38bb4a44e5d9ae3358a5a7bfdfb4e990daf80d603e86a66478b55"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_thickness.csv",
+      "rows": 4,
+      "columns": [
+        "result_type",
+        "thickness_um",
+        "role"
+      ],
+      "sha256": "75fbfb624a321fc987e31a05031d08f397bce34f27e51cb851f30a351477d693"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_identifiability.csv",
+      "rows": 2,
+      "columns": [
+        "angle_deg",
+        "rmse_percentage_point",
+        "jacobian_condition_number",
+        "jacobian_sigma_min",
+        "boundary_hits",
+        "log10_jacobian_condition_number",
+        "boundary_hit_count"
+      ],
+      "sha256": "28ea255816b82fc30e4c10563803b35a38c57b948b410c4886e41ff5e6990c46"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_threshold_context.csv",
+      "rows": 6,
+      "columns": [
+        "angle_deg",
+        "engineering_threshold_percent",
+        "eta3_max_percent",
+        "eta3_to_threshold_ratio",
+        "usage"
+      ],
+      "sha256": "c8e3381592ede17f4a0419da236b909aeeaaf939e1ab60a9ef6942b68ebe6bb4"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_validation_comparison.csv",
+      "rows": 3,
+      "columns": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "sha256": "61bb392412631700876659a8151d43d66a97fc244a3abd76b64da9b5c394928c"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_identifiability_summary_detailed.csv",
+      "rows": 2,
+      "columns": [
+        "angle_deg",
+        "n_points",
+        "thickness_um",
+        "substrate_index",
+        "log10N",
+        "log10Gamma",
+        "rmse_percentage_point",
+        "boundary_hits",
+        "jacobian_rank_numeric",
+        "jacobian_cond_raw",
+        "jacobian_tol_raw",
+        "jacobian_rank_column_normalized",
+        "jacobian_cond_column_normalized",
+        "jacobian_tol_column_normalized",
+        "sigma1_raw",
+        "sigma2_raw",
+        "sigma3_raw",
+        "sigma4_raw",
+        "sigma1_colnorm",
+        "sigma2_colnorm",
+        "sigma3_colnorm",
+        "sigma4_colnorm"
+      ],
+      "sha256": "819552641e84528ab24affa793ccc75bf82eff9961ea46dc134646d6eca28876"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_identifiability_parameters.csv",
+      "rows": 8,
+      "columns": [
+        "angle_deg",
+        "parameter",
+        "estimate",
+        "column_norm_raw",
+        "relative_scale",
+        "relative_sensitivity",
+        "weakest_right_singular_weight",
+        "boundary_hit"
+      ],
+      "sha256": "6f20a134e1973694318982cb04f9cdfe9f5f666d14cbcbf646c9372fde1bb1eb"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_identifiability_correlation.csv",
+      "rows": 32,
+      "columns": [
+        "angle_deg",
+        "parameter_i",
+        "parameter_j",
+        "local_correlation"
+      ],
+      "sha256": "d74fba97b16abc1fe6c89d595bd7730d1705b4b4eeef34bd8c38670594fb56e9"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_multistart_diagnostics.csv",
+      "rows": 12,
+      "columns": [
+        "angle_deg",
+        "seed_id",
+        "d_init_um",
+        "n3_init",
+        "log10N_init",
+        "log10Gamma_init",
+        "d_final_um",
+        "n3_final",
+        "log10N_final",
+        "log10Gamma_final",
+        "rmse_percentage_point",
+        "success",
+        "boundary_hits"
+      ],
+      "sha256": "c6fe09df6a102693b41bc790ba0e03287950e21b4cdc55d9f1d0044d58be1bfe"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_extended_jacobian_summary.csv",
+      "rows": 2,
+      "columns": [
+        "angle_deg",
+        "extended_parameter_count",
+        "rank_column_normalized",
+        "condition_column_normalized",
+        "svd_tolerance",
+        "sigma1_colnorm",
+        "sigma2_colnorm",
+        "sigma3_colnorm",
+        "sigma4_colnorm",
+        "sigma5_colnorm",
+        "sigma6_colnorm",
+        "sigma7_colnorm",
+        "sigma8_colnorm",
+        "sigma9_colnorm",
+        "sigma10_colnorm",
+        "sigma11_colnorm"
+      ],
+      "sha256": "95d4a8bcc05bfd0ebb26257f19c350b4661919d45adc532c3a22384e4b52cfff"
+    },
+    {
+      "path": "modules/40_q3/figures/editable/origin_data/csv/q3_extended_jacobian_parameters.csv",
+      "rows": 22,
+      "columns": [
+        "angle_deg",
+        "parameter",
+        "estimate",
+        "column_norm_raw",
+        "relative_scale",
+        "relative_sensitivity"
+      ],
+      "sha256": "bef3b5ca6ce63d890e232a36892c71d75d08dbf0f6383a5a7be4729001ec8770"
+    }
+  ]
+}

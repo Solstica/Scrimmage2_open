@@ -1,0 +1,5 @@
+﻿result_type,thickness_um,role
+10deg_airy,3.2479974169771597,frozen_result
+15deg_airy,3.1875196790859226,frozen_result
+angle_mean,3.217758548031541,frozen_result
+paper_a_reference,3.04,external_reference_only

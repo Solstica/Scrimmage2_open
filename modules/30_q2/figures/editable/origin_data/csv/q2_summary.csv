@@ -1,0 +1,4 @@
+﻿result_type,angle_deg,thickness_um,rmse_fraction,r2,mae_fraction,mape_percent,mape_defined,boundary_hits
+independent_angle_fit,10.0,7.856635820616846,0.0005982024535836858,0.9551268358859842,0.0004835558636184901,0.26795538193624957,True,log10_carrier_cm3:lower;sellmeier_A:upper;sellmeier_B1:upper;sellmeier_B3:lower;sellmeier_C2_um2:lower;sellmeier_C3_um2:upper
+independent_angle_fit,15.0,7.622957415253701,0.000706521515615503,0.9526452869039299,0.0005612436405360213,0.29777612959657107,True,log10_carrier_cm3:lower;sellmeier_A:lower;sellmeier_B1:lower;sellmeier_B3:lower;sellmeier_C1_um2:lower;sellmeier_C2_um2:upper;sellmeier_C3_um2:upper
+arithmetic_mean,,7.739796617935274,,,,,False,

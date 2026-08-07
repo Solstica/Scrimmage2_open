@@ -1,0 +1,3 @@
+﻿angle_deg,rmse_percentage_point,jacobian_condition_number,jacobian_sigma_min,boundary_hits,log10_jacobian_condition_number,boundary_hit_count
+10.0,1.8738296801541654,86612.46048009471,0.00016423877758049292,log10_collision_s-1,4.93758037617976,1
+15.0,3.3553823523633466,570698260.2085589,3.227676351341874e-08,log10_carrier_cm3;log10_collision_s-1,8.756406548590707,2

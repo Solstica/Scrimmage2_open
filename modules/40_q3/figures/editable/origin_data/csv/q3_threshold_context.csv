@@ -1,0 +1,7 @@
+﻿angle_deg,engineering_threshold_percent,eta3_max_percent,eta3_to_threshold_ratio,usage
+10.0,0.05,0.0030087735499799,0.060175470999597996,engineering_context_only
+15.0,0.05,0.0038824475711443,0.077648951422886,engineering_context_only
+10.0,0.1,0.0030087735499799,0.030087735499798998,engineering_context_only
+15.0,0.1,0.0038824475711443,0.038824475711443,engineering_context_only
+10.0,0.2,0.0030087735499799,0.015043867749899499,engineering_context_only
+15.0,0.2,0.0038824475711443,0.0194122378557215,engineering_context_only
