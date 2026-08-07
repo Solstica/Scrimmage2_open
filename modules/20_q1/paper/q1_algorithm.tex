@@ -2,27 +2,30 @@
 \centering
 \begingroup
 \setlength{\tabcolsep}{0pt}
-\renewcommand{\arraystretch}{0.92}
-\begin{tabularx}{\textwidth}{@{}>{\raggedleft\arraybackslash}p{1.65em}@{\hspace{0.45em}}X@{}}
+\renewcommand{\arraystretch}{0.88}
+\newcommand{\AlgV}{\tikz[baseline=-0.55ex]{\draw[line width=0.42pt] (0,1.30ex)--(0,-1.30ex);}}
+\newcommand{\AlgTop}{\tikz[baseline=-0.55ex]{\draw[line width=0.42pt] (0,1.30ex)--(0,-1.30ex);\draw[line width=0.42pt] (0,1.30ex)--(0.42em,1.30ex);}}
+\newcommand{\AlgBottom}{\tikz[baseline=-0.55ex]{\draw[line width=0.42pt] (0,1.30ex)--(0,-0.20ex);\draw[line width=0.42pt] (0,-0.20ex)--(0.42em,-0.20ex);}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedleft\arraybackslash\footnotesize}p{1.45em}@{\hspace{0.28em}}>{\centering\arraybackslash}p{0.52em}>{\centering\arraybackslash}p{0.52em}@{\hspace{0.25em}}X@{\hspace{0.55em}}>{\raggedleft\arraybackslash\footnotesize\itshape}p{0.18\textwidth}@{}}
 \hline
-\multicolumn{2}{@{}l@{}}{\textbf{Algorithm 1:}\quad 问题一双光束理论反射率正演算法}\\[-0.20ex]
+\multicolumn{5}{@{}l@{}}{\textbf{Algorithm 1:}\quad 问题一双光束理论反射率正演算法}\\[-0.25ex]
 \hline
-\multicolumn{2}{@{}p{\textwidth}@{}}{\textbf{Input:} 波数序列$\{\sigma_j\}_{j=1}^{M}$，入射角$i$，厚度$d$，材料参数$N,n_3,\boldsymbol\beta$；}\\[-0.15ex]
-\multicolumn{2}{@{}p{\textwidth}@{}}{\textbf{Initialize:} $n_1\leftarrow1.0003$，$m^*\leftarrow0.28m_0$，建立空反射率序列$\mathcal R$；}\\[-0.10ex]
-1 & \textbf{for} $j=1,2,\ldots,M$ \textbf{do} \\
-2 & \hspace{0.80em}计算波长$\lambda_j\leftarrow10^4/\sigma_j$； \\
-3 & \hspace{0.80em}由Sellmeier模型计算晶格介电函数$\varepsilon_{\mathrm L}(\lambda_j)$； \\
-4 & \hspace{0.80em}由Drude弱吸收修正计算$n_{2,j}$；若$n_{2,j}^2\le0$，则标记该参数组无效； \\
-5 & \hspace{0.80em}由Snell定律计算折射角$\gamma_j$； \\
-6 & \hspace{0.80em}分别计算$s,p$偏振的$r_{12},t_{12},r_{23},t_{21}$； \\
-7 & \hspace{0.80em}计算传播相位$\Phi_j\leftarrow4\pi\times10^{-4}\sigma_j d n_{2,j}\cos\gamma_j$； \\
-8 & \hspace{0.80em}\textbf{for} $u\in\{s,p\}$ \textbf{do} \\
-9 & \hspace{1.60em}计算$\rho_u\leftarrow r_{12}^{(u)}+t_{12}^{(u)}r_{23}^{(u)}t_{21}^{(u)}e^{-\mathrm i\Phi_j}$； \\
-10 & \hspace{0.80em}\textbf{end for} \\
-11 & \hspace{0.80em}计算$R_j\leftarrow\bigl(|\rho_s|^2+|\rho_p|^2\bigr)/2$并写入$\mathcal R$； \\
-12 & \textbf{end for} \\
-13 & \textbf{return} $\mathcal R=\{R_j\}_{j=1}^{M}$； \\
-\multicolumn{2}{@{}p{\textwidth}@{}}{\textbf{Output:} 与输入波数逐点对应的非偏振理论反射率序列$\mathcal R$。}\\[-0.20ex]
+& & & \multicolumn{2}{@{}l@{}}{\textbf{Input:} 波数序列$\{\sigma_j\}_{j=1}^{M}$，入射角$i$，厚度$d$，材料参数$N,n_3,\boldsymbol\beta$；}\\[-0.20ex]
+& & & \multicolumn{2}{@{}l@{}}{\textbf{Initialize:} $n_1\leftarrow1.0003$，$m^*\leftarrow0.28m_0$，建立空反射率序列$\mathcal R$；}\\[-0.14ex]
+1 & & & \textbf{for} $j=1,2,\ldots,M$ \textbf{do} & // 逐点计算 \\
+2 & \AlgTop & & 计算波长$\lambda_j\leftarrow10^4/\sigma_j$； & \\
+3 & \AlgV & & 由Sellmeier模型计算晶格介电函数$\varepsilon_{\mathrm L}(\lambda_j)$； & \\
+4 & \AlgV & & 由Drude弱吸收修正计算$n_{2,j}$；若$n_{2,j}^2\le0$，则标记该参数组无效； & // 可行性检查 \\
+5 & \AlgV & & 由Snell定律计算折射角$\gamma_j$； & \\
+6 & \AlgV & & 分别计算$s,p$偏振的$r_{12},t_{12},r_{23},t_{21}$； & \\
+7 & \AlgV & & 计算传播相位$\Phi_j\leftarrow4\pi\times10^{-4}\sigma_j d n_{2,j}\cos\gamma_j$； & \\
+8 & \AlgV & & \textbf{for} $u\in\{s,p\}$ \textbf{do} & \\
+9 & \AlgV & \AlgTop & 计算$\rho_u\leftarrow r_{12}^{(u)}+t_{12}^{(u)}r_{23}^{(u)}t_{21}^{(u)}e^{-\mathrm i\Phi_j}$； & // 相干叠加 \\
+10 & \AlgV & \AlgBottom & \textbf{end for} & \\
+11 & \AlgV & & 计算$R_j\leftarrow\bigl(|\rho_s|^2+|\rho_p|^2\bigr)/2$并写入$\mathcal R$； & // 非偏振平均 \\
+12 & \AlgBottom & & \textbf{end for} & \\
+13 & & & \textbf{return} $\mathcal R=\{R_j\}_{j=1}^{M}$； & \\
+& & & \multicolumn{2}{@{}l@{}}{\textbf{Output:} 与输入波数逐点对应的非偏振理论反射率序列$\mathcal R$。}\\[-0.25ex]
 \hline
 \end{tabularx}
 \endgroup
