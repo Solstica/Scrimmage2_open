@@ -1,2 +1,20 @@
-% Module entry; the skill-compatible abstract source remains single-sourced in paper/.
-\input{\ProjectRoot/paper/abstract_content.tex}
+% ABSTRACT_CONTENT_V2 - author revised from work/abstract_compressed_zh.md
+% <ABS:INTRO>
+本文围绕红外反射光谱测量外延层厚度，以PAPER\_A的色散关系和Fresnel干涉模型为主体，依次建立双光束正演、SiC厚度反演和硅多光束反演模型，并用统一代码重新计算官方附件。
+% </ABS:INTRO>
+
+% <ABS:Q1>
+针对问题一，建立\textbf{Sellmeier--Drude--Fresnel双光束模型}。先统一波数、波长和厚度单位，固定载流子有效质量，再由Snell定律和带符号s、p偏振Fresnel系数叠加表面反射束与第一束内部反射束。正入射、零厚度、相位缩放、反射率非负性和单位换算五项程序检查全部通过。
+% </ABS:Q1>
+
+% <ABS:Q2>
+针对问题二，先在弱吸收波段处理两个角度的反射光谱。对波数为2500至3300每厘米的观测采用确定性多初值有界最小二乘，得到10度和15度厚度分别为7.8566微米和7.6230微米，算术平均为\textbf{7.7398微米}。两个角度的拟合优度均大于0.95，峰谷位置与实测光谱一致；两角度结果差异处于百分之三量级。
+% </ABS:Q2>
+
+% <ABS:Q3>
+针对问题三，使用\textbf{双振子--Drude复折射率与Airy多光束模型}。固定硅背景参数，仅按角度拟合厚度、衬底折射率、载流子浓度和碰撞率，得到10度和15度厚度分别为3.2480微米和3.1875微米，平均厚度为\textbf{3.2178微米}。该值较范文报告值高5.85\%，本文保留诚实重算值并披露参数口径差异。SiC第三束光强比远低于0.1\%工程阈值，因此问题二厚度无需多光束修正。
+% </ABS:Q3>
+
+% <ABS:KEYWORDS>
+\keywords{外延层厚度反演；Sellmeier--Drude模型；Fresnel双光束干涉；Airy多光束模型；有界最小二乘}
+% </ABS:KEYWORDS>
