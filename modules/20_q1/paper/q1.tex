@@ -1,5 +1,5 @@
 \subsection{问题一的描述与分析}
-本问要求在空气--外延层--衬底三层结构中，仅保留空气--外延层界面的表面反射光和外延层--衬底界面的第一束内部反射光，建立外延层厚度与波数、入射角及材料光学参数之间的定量关系。求解的关键有三点：一是由薄膜几何光路确定两束光的光程差与传播相位；二是描述SiC外延层折射率随波长和载流子浓度的变化；三是利用Fresnel界面系数完成两束反射光的相干叠加，从而得到可与实测光谱直接比较的非偏振反射率模型。按照“几何光路--材料色散--界面反射--双光束叠加”的顺序建立正演模型，再在后续问题中由实测光谱反演厚度。
+本问要求在空气--外延层--衬底三层结构中，仅保留空气--外延层界面的表面反射光和外延层--衬底界面的第一束内部反射光，建立外延层厚度与波数、入射角及材料光学参数之间的定量关系。求解的关键有三点：一是由薄膜几何光路确定两束光的光程差与传播相位；二是描述SiC外延层折射率随波长和载流子浓度的变化；三是利用带符号Fresnel振幅系数完成两束反射光的相干叠加，从而得到可与实测光谱直接比较的非偏振反射率模型。按照“几何光路--材料色散--界面反射--双光束叠加”的顺序建立正演模型，再在后续问题中由实测光谱反演厚度。
 
 图\ref{fig:q1-flow}给出问题一从几何光路、材料色散到反射率模型的总体建模流程。
 
@@ -67,12 +67,12 @@ SiC外延层折射率随波长变化，并受到自由载流子响应影响。�
 \begin{equation}
 \widetilde\varepsilon_2(\omega,\lambda)
 =\varepsilon_{\mathrm L}(\lambda)
--\frac{\omega_p^2}{\omega(\omega+\mathrm i\Gamma)},
+-\frac{\omega_p^2}{\omega(\omega+\mathrm i\Gamma_e)},
 \qquad
 \omega_p^2=\frac{Ne^2}{\varepsilon_0m^*},
 \label{eq:q1-drude-complex}
 \end{equation}
-其中$\Gamma$为载流子碰撞频率，$N$为载流子浓度，$e$为元电荷，$\varepsilon_0$为真空介电常数，$m^*$为载流子有效质量。对于SiC透明或弱吸收区域，有$\Gamma/\omega\ll1$，耗散虚部相对较小。取式\eqref{eq:q1-drude-complex}的弱吸收实部近似，并利用$\omega=2\pi c/\lambda$，得到问题一和问题二采用的折射率模型
+其中$\Gamma_e$为自由载流子碰撞频率，$N$为载流子浓度，$e$为元电荷，$\varepsilon_0$为真空介电常数，$m^*$为载流子有效质量。对于SiC透明或弱吸收区域，有$\Gamma_e/\omega\ll1$，耗散虚部相对较小。取式\eqref{eq:q1-drude-complex}的弱吸收实部近似，并利用$\omega=2\pi c/\lambda$，得到问题一和问题二采用的折射率模型
 \begin{equation}
 n_2^2(\lambda,N)=\varepsilon_{\mathrm L}(\lambda)
 -\frac{Ne^2\lambda^2}{4\pi^2c^2\varepsilon_0m^*}.
@@ -147,14 +147,14 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 
 \input{\ProjectRoot/modules/20_q1/paper/q1_algorithm.tex}
 
-若光谱包含$M$个波数点，算法只需对每个波数执行一次固定规模的代数运算，因此时间复杂度为$O(M)$；若逐点输出理论光谱，存储复杂度为$O(M)$。计算过程中还需检查$n_2^2>0$以及Snell关系的可实现性，避免将非物理解送入后续拟合。由此得到的正演算子可记为
+计算过程中检查$n_2^2>0$以及Snell关系的可实现性，避免将非物理解送入后续拟合。由此得到的正演算子可记为
 \begin{equation}
 \mathcal F:\ (\sigma,i;d,N,n_3,\boldsymbol\beta)\longmapsto R_{\mathrm{th}},
 \label{eq:q1-forward-operator}
 \end{equation}
 问题二的厚度反演即是在实测光谱约束下求使$\mathcal F$与观测反射率最接近的参数组。
 
-\subsection{模型结果分析}
+\subsection{模型性质与厚度信息分析}
 
 \subsubsection{厚度对干涉条纹的控制作用}
 由式\eqref{eq:q1-phase}可直接得到
@@ -190,7 +190,7 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 由此可见，单个干涉条纹的位置并不足以独立区分$d$与全部材料参数；但厚度对整个波段相位斜率具有一致作用，而材料色散与界面参数对谱形的影响形式不同。利用连续波段并在不同入射角下重复反演，可以增加厚度信息与附属光学参数之间的可分离性。该分析为问题二采用分角度全谱非线性最小二乘及多初值搜索提供了物理依据。
 
 \subsection{模型检验}
-问题一以解析正演模型为主，不另行虚构实验精度结论。为确认公式推导与数值实现的一致性，仅检查能够由当前双光束模型直接推出的解析关系，结果见表\ref{tab:q1-selfcheck}。
+问题一以解析正演模型为主，因此检验重点放在公式极限关系与数值实现的一致性上。表\ref{tab:q1-selfcheck}列出能够由当前双光束模型直接推出的主要自洽关系。
 
 \begin{table}[!htbp]
 \centering
