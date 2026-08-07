@@ -1,13 +1,13 @@
 \begin{tikzpicture}[node distance=4mm and 7mm,>=Latex,
 box/.style={draw=CumcmBlue,rounded corners,fill=CumcmLightBlue,align=center,minimum width=29mm,minimum height=7mm,font=\small},
 arrow/.style={->,thick,CumcmBlue}]
-\node[box] (load) {读取附件1、2\\选择弱吸收波段};
-\node[box,right=of load] (coarse) {每角度多初值\\有界粗拟合};
-\node[box,right=of coarse] (refine) {保留前8吸引域\\释放色散参数精修};
-\node[box,below=of refine] (average) {分别取最小残差解\\两厚度算术平均};
-\node[box,left=of average] (check) {检查RMSE、$R^2$\\边界与角度差};
+\node[box] (load) {读取附件1、2\\截取弱吸收波段};
+\node[box,right=of load] (coarse) {每角度90组初值\\有界粗拟合};
+\node[box,right=of coarse] (dedup) {按$(d,q_N)$数值去重\\保留前8候选解};
+\node[box,below=of dedup] (refine) {完整十参数精修\\各取最低残差解};
+\node[box,left=of refine] (average) {两个独立厚度\\等权算术平均};
 \draw[arrow] (load)--(coarse);
-\draw[arrow] (coarse)--(refine);
+\draw[arrow] (coarse)--(dedup);
+\draw[arrow] (dedup)--(refine);
 \draw[arrow] (refine)--(average);
-\draw[arrow] (average)--(check);
 \end{tikzpicture}
