@@ -124,7 +124,7 @@ def git(*args: str, check: bool = True) -> str:
 
 
 def normalize(path: str) -> str:
-    return path.replace("\\", "/").lstrip("./")
+    return path.replace("\\", "/")
 
 
 def is_archive(path: str) -> bool:
