@@ -1,0 +1,36 @@
+\begin{algorithm}[H]
+\SetAlgoLined
+\setstretch{0.92}
+\SetAlFnt{\normalsize}
+\SetArgSty{textnormal}
+\SetAlgoNlRelativeSize{-1}
+\SetInd{0.55em}{1.05em}
+\SetKwInput{KwIn}{Input}
+\SetKwInput{KwInit}{Initialize}
+\SetKwInput{KwOut}{Output}
+\SetKwFor{For}{for}{do}{end for}
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{end if}
+\SetKw{KwRet}{return}
+\caption{问题二分角度多初值有界反演算法}
+\KwIn{$10^\circ$、$15^\circ$实测反射光谱，问题一双光束正演算子$R_{\mathrm{th}}$}
+\KwInit{拟合窗口$[2500,3300]\,\mathrm{cm}^{-1}$，参数边界$\Omega$，阶段一$90$组确定性初值}
+\For{$k\in\{10^\circ,15^\circ\}$}{
+将反射率百分数转为无量纲小数，并截取正式拟合窗口\;
+固定Sellmeier参数$\boldsymbol\beta_0$，建立阶段一候选集$\mathcal C_k\leftarrow\varnothing$\;
+\For{每一组阶段一初值$\boldsymbol s\in\mathcal S$}{
+对$(d,q_N,n_3)$求解有界非线性最小二乘\;
+计算候选解RMSE并写入$\mathcal C_k$\tcp*[r]{粗搜索}
+}
+按数值分辨率合并近似重复候选，并按RMSE升序保留前$8$个不同候选\;
+建立精修集合$\mathcal F_k\leftarrow\varnothing$\;
+\For{$\boldsymbol c\in\mathcal C_k$的前$8$个候选}{
+释放$7$个Sellmeier参数，在完整十参数边界内再次最小二乘精修\;
+记录厚度、RMSE、MAPE、$R^2$及边界活跃参数并写入$\mathcal F_k$\;
+}
+取$\boldsymbol p_k^*\leftarrow\arg\min_{\boldsymbol p\in\mathcal F_k}\mathrm{RMSE}(\boldsymbol p)$\tcp*[r]{最低残差候选}
+记录$d_k\leftarrow d(\boldsymbol p_k^*)$\;
+}
+计算$d_{\mathrm{SiC}}\leftarrow(d_{10^\circ}+d_{15^\circ})/2$\;
+\KwRet $d_{\mathrm{SiC}}$及两个角度的最优候选、拟合指标和候选局部极小解信息\;
+\KwOut{SiC外延层正式厚度$d_{\mathrm{SiC}}$及反演可信度诊断量}
+\end{algorithm}
