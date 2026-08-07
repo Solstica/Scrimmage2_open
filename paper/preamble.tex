@@ -1,55 +1,24 @@
-% Baseline derived from the annotated 2025 A-paper exemplar.
-\usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
-\usepackage{fontspec}
-\usepackage{xeCJK}
-\usepackage{amsmath,amssymb,bm}
-\usepackage{booktabs,array,tabularx,longtable,colortbl}
-\usepackage{graphicx,subcaption,float}
-\usepackage{xcolor}
-\usepackage{titlesec}
-\usepackage{enumitem}
-\usepackage{hyperref}
+% Shared additions on top of the supplied cumcmthesis.cls baseline.
+% Both the full paper and all local previews input this exact file.
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{placeins}
 \usepackage{fancyvrb}
-\usepackage{listings}
+\usepackage{subcaption}
 \usepackage{microtype}
-
-\IfFontExistsTF{Noto Serif CJK SC}{
-  \setCJKmainfont{Noto Serif CJK SC}
-  \setCJKsansfont{Noto Sans CJK SC}
-}{
-  % ctex Fandol fallback is used when Noto CJK is unavailable.
-}
-\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{Liberation Serif}}
+\usepackage{tikz}
+\usepackage{setspace}
+\usepackage[ruled,lined,linesnumbered]{algorithm2e}
+\usetikzlibrary{arrows.meta,positioning}
 
 \definecolor{CumcmBlue}{HTML}{2F75B5}
 \definecolor{CumcmLightBlue}{HTML}{DCEAF7}
 \definecolor{CumcmGray}{HTML}{F2F2F2}
 \definecolor{CumcmOrange}{HTML}{E69F00}
 
-\pagestyle{plain}
-\setlength{\parindent}{2em}
-\setlength{\parskip}{0pt}
-\renewcommand{\baselinestretch}{1.37}
-\AtBeginDocument{\selectfont}
-
-\titleformat{\section}{\centering\bfseries\fontsize{15pt}{19.9pt}\selectfont}{\thesection}{1em}{}
-\titleformat{\subsection}{\bfseries\fontsize{12pt}{19.9pt}\selectfont}{\thesubsection}{0.75em}{}
-\titleformat{\subsubsection}{\bfseries\fontsize{12pt}{19.9pt}\selectfont}{\thesubsubsection}{0.75em}{}
-\titlespacing*{\section}{0pt}{12pt}{6pt}
-\titlespacing*{\subsection}{0pt}{8pt}{2pt}
-\titlespacing*{\subsubsection}{0pt}{6pt}{1pt}
-
-\newcommand{\PaperTitle}[1]{%
-  \begin{center}\bfseries\fontsize{16pt}{22pt}\selectfont #1\end{center}\vspace{2pt}}
-\newcommand{\AbstractHeading}{%
-  \begin{center}\bfseries\fontsize{14pt}{20pt}\selectfont 摘要\end{center}\vspace{-2pt}}
-\newcommand{\AbstractIntro}[1]{\noindent #1\par\medskip}
-\newcommand{\AbstractQuestion}[2]{\noindent #2\par\medskip}
-\newcommand{\AbstractInnovation}[1]{\noindent #1\par\medskip}
-\newcommand{\AbstractKeywords}[1]{\noindent\textbf{关键词：}#1\par}
-
 \newenvironment{ThreeLineTable}[1]{%
-  \begin{table}[H]\centering\caption{#1}\small
+  \begin{table}[!htbp]\centering\caption{#1}\small
 }{%
   \end{table}
 }
