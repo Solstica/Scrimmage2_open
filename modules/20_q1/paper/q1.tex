@@ -140,10 +140,57 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 \right.
 \label{eq:q1-summary}
 \end{equation}
-给定波数$\sigma$、入射角$i$、厚度$d$、载流子浓度$N$、衬底折射率$n_3$及Sellmeier参数$\boldsymbol\beta$，依次计算外延层折射率、折射角、Fresnel系数和传播相位，即可得到理论反射率$R_{\mathrm{th}}$。问题二将在实测SiC光谱的弱吸收区内反演$d$及相关光学参数；问题三则使用Airy多光束模型讨论高阶内部反射对厚度测量的影响与双光束近似的适用范围。
+给定波数$\sigma$、入射角$i$、厚度$d$、载流子浓度$N$、衬底折射率$n_3$及Sellmeier参数$\boldsymbol\beta$，即可由式\eqref{eq:q1-summary}逐点得到理论反射率$R_{\mathrm{th}}$。问题二将在实测SiC光谱的弱吸收区内反演$d$及相关光学参数；问题三则进一步使用Airy多光束模型讨论高阶内部反射的影响。
 
-\subsection{模型自洽性检验}
-本问以解析模型建立为主，不另设迭代求解算法。为避免用不属于截断双光束模型的极限性质作为验证依据，仅检查能够由当前模型直接推出的关系，结果见表\ref{tab:q1-selfcheck}。
+\subsection{模型求解}
+问题一的任务是建立可供后续反演调用的正演关系，因此此处不直接求取未知厚度，而是将式\eqref{eq:q1-summary}转化为逐波数可执行的理论光谱计算过程。对于给定的一组物理参数，先由Sellmeier--Drude模型得到各波数处的外延层折射率，再由Snell定律、Fresnel系数和传播相位计算两束反射场，最后对$s,p$偏振取强度平均。其标准伪代码见下。
+
+\input{\ProjectRoot/modules/20_q1/paper/q1_algorithm.tex}
+
+若光谱包含$M$个波数点，算法只需对每个波数执行一次固定规模的代数运算，因此时间复杂度为$O(M)$；若逐点输出理论光谱，存储复杂度为$O(M)$。计算过程中还需检查$n_2^2>0$以及Snell关系的可实现性，避免将非物理解送入后续拟合。由此得到的正演算子可记为
+\begin{equation}
+\mathcal F:\ (\sigma,i;d,N,n_3,\boldsymbol\beta)\longmapsto R_{\mathrm{th}},
+\label{eq:q1-forward-operator}
+\end{equation}
+问题二的厚度反演即是在实测光谱约束下求使$\mathcal F$与观测反射率最接近的参数组。
+
+\subsection{模型结果分析}
+
+\subsubsection{厚度对干涉条纹的控制作用}
+由式\eqref{eq:q1-phase}可直接得到
+\begin{equation}
+\frac{\partial\Phi}{\partial d}
+=4\pi\times10^{-4}\sigma n_2\cos\gamma,
+\label{eq:q1-phase-thickness-sensitivity}
+\end{equation}
+因此，在材料光学参数固定时，厚度$d$与传播相位严格线性。厚度增大将使相位随波数变化得更快，从而在相同波数区间内产生更密集的干涉条纹，这说明条纹周期是厚度信息的直接载体。
+
+进一步考虑$n_2$及$\gamma$随波数缓慢变化的情况。相邻同类干涉极值近似满足$\Delta\Phi\approx2\pi$，于是局部条纹间距可写为
+\begin{equation}
+\Delta\sigma(\sigma)
+\approx
+\frac{1}
+{2\times10^{-4}d\left|\dfrac{\mathrm d}{\mathrm d\sigma}
+\left[\sigma n_2(\sigma)\cos\gamma(\sigma)\right]\right|}.
+\label{eq:q1-fringe-spacing-general}
+\end{equation}
+若在较窄波段内忽略色散，则进一步退化为
+\begin{equation}
+\Delta\sigma
+\approx\frac{1}{2\times10^{-4}d n_2\cos\gamma},
+\qquad
+ d\approx\frac{1}{2\times10^{-4}n_2\cos\gamma\,\Delta\sigma}.
+\label{eq:q1-fringe-spacing-simple}
+\end{equation}
+式\eqref{eq:q1-fringe-spacing-simple}给出了传统“条纹间距测厚”的近似形式，而式\eqref{eq:q1-fringe-spacing-general}说明当材料存在明显色散时，不能简单把$n_2$视为常数。这也是问题二采用连续光谱整体拟合，而不只依赖相邻峰谷间距的原因。
+
+\subsubsection{色散、载流子与界面参数的作用}
+厚度主要通过$\Phi$控制条纹的相位与密度；Sellmeier参数和载流子浓度$N$则通过$n_2(\sigma)$同时改变相位演化和Fresnel系数，因此会与$d$产生一定耦合。衬底折射率$n_3$不进入外延层传播相位，但直接影响外延层--衬底界面的$r_{23}^{(u)}$，因而主要调节干涉振幅和包络。入射角$i$同时影响折射角$\gamma$及$s,p$偏振Fresnel系数，使不同角度的光谱具有不同的相位斜率和振幅响应。
+
+由此可见，单个干涉条纹的位置并不足以独立区分$d$与全部材料参数；但厚度对整个波段相位斜率具有一致作用，而材料色散与界面参数对谱形的影响形式不同。利用连续波段并在不同入射角下重复反演，可以增加厚度信息与附属光学参数之间的可分离性。该分析为问题二采用分角度全谱非线性最小二乘及多初值搜索提供了物理依据。
+
+\subsection{模型检验}
+问题一以解析正演模型为主，不另行虚构实验精度结论。为确认公式推导与数值实现的一致性，仅检查能够由当前双光束模型直接推出的解析关系，结果见表\ref{tab:q1-selfcheck}。
 
 \begin{table}[!htbp]
 \centering
@@ -156,12 +203,12 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 \midrule
 零载流子极限 & $N\to0$时，式\eqref{eq:q1-drude}退化为$n_2^2=\varepsilon_{\mathrm L}$ & 满足 \\
 正入射极限 & $i=\gamma=0$时，式\eqref{eq:q1-fresnel-s}--\eqref{eq:q1-fresnel-p}退化为经典正入射Fresnel系数 & 满足 \\
-厚度线性 & 其他参数固定时，$\Phi=4\pi\times10^{-4}\sigma n_2\cos\gamma\,d$，故$\Phi\propto d$ & 满足 \\
+厚度线性 & 其他参数固定时，式\eqref{eq:q1-phase-thickness-sensitivity}表明$\Phi\propto d$ & 满足 \\
 相位处理 & 界面反射相变由带符号$r_{ij}^{(u)}$承担，不再重复叠加固定$\pi$相位 & 一致 \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-上述检验同时核对了波数--波长换算中的$10^{-4}$因子。需要强调的是，$d\to0$时严格退化为空气--衬底单界面属于完整多光束级数的性质，并非当前只保留前两束反射光的截断模型所必然满足，因此不将其作为问题一的验证条件。
+上述检验同时核对了波数--波长换算中的$10^{-4}$因子。需要强调的是，$d\to0$时严格退化为空气--衬底单界面属于完整多光束级数的性质，并非当前只保留前两束反射光的截断模型所必然满足，因此不将其作为问题一的验证条件。至此，问题一完成了从光路几何、材料色散、界面反射到可执行正演算子的闭环建立，并给出了厚度信息在干涉条纹中的解析表征。
 
 \FloatBarrier
