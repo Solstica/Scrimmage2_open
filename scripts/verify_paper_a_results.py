@@ -23,6 +23,9 @@ def main() -> None:
     hashes = {name: digest(path) for name, path in paths.items()}
 
     q3_mean = data["q3"]["si_primary_result"]["thickness_um"]
+    backcheck = data["q3"]["sic_backcheck"]
+    q3_reference = backcheck["engineering_reference_percent"]
+    q3_max_ratio = max(backcheck["max_ratio_percent_by_angle"])
     checks = {
         "q1_frozen": data["q1"]["status"] == "FROZEN" and all(data["q1"]["checks"].values()),
         "q2_frozen": data["q2"]["status"] == "FROZEN",
@@ -35,9 +38,11 @@ def main() -> None:
             and all(row["propagation_max_abs"] <= 1.0 + 1.0e-12 for row in data["q3"]["si_angle_results"])
         ),
         "q3_q2_hash": data["q3"]["q2_dependency"]["sha256"] == hashes["q2"],
-        "q3_sic_backcheck": (
-            data["q3"]["sic_backcheck"]["retain_q2_result"]
-            and abs(data["q3"]["sic_backcheck"]["q2_thickness_um"] - data["q2"]["primary_result"]["thickness_um"]) < 1.0e-12
+        "q3_sic_backcheck_scale": (
+            abs(backcheck["q2_thickness_um"] - data["q2"]["primary_result"]["thickness_um"]) < 1.0e-12
+            and backcheck["interpretation"] == "magnitude_reference_only_not_model_selector"
+            and q3_reference > 0.0
+            and abs(backcheck["max_to_engineering_reference_ratio"] - q3_max_ratio / q3_reference) < 1.0e-15
         ),
         "q3_frozen_with_disclosed_exception": (
             data["q3"]["status"] == "FROZEN"
