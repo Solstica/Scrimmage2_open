@@ -10,6 +10,11 @@
 \input{../modules/00_abstract/paper/abstract.tex}
 \end{abstract}
 
+\clearpage
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+
 \section{问题重述}
 \input{../modules/10_restatement/paper/restatement.tex}
 
@@ -33,9 +38,11 @@
 
 \input{../modules/60_references/paper/references.tex}
 
-\section{附录：程序代码}
+\section*{附录：程序代码}
+\addcontentsline{toc}{section}{附录：程序代码}
 \input{../modules/70_appendix/paper/appendix_code.tex}
 
-\section{AI使用报告}
+\section*{AI使用报告}
+\addcontentsline{toc}{section}{AI使用报告}
 \input{../modules/80_ai_report/paper/ai_report.tex}
 \end{document}
