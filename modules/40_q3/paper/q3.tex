@@ -221,7 +221,7 @@ q_{\Gamma,k}=\log_{10}\!\left(\frac{\Gamma_{e,k}}{1\,\mathrm{s}^{-1}}\right),
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{ccc}
 \toprule
-参数 & 物理意义 & 有界范围\\
+\rowcolor{cyan!20} 参数 & 物理意义 & 有界范围\\
 \midrule
 $d/\mu\mathrm m$ & 硅外延层厚度 & $[0.1,100]$\\
 $n_3$ & 衬底等效折射率 & $[2.0,5.0]$\\
@@ -293,7 +293,7 @@ d_{\mathrm{Si}}=3.2175\,\mu\mathrm m
 \label{tab:q3-fit-results}
 \begin{tabular}{cccc}
 \toprule
-入射角 & 厚度/$\mu\mathrm m$ & RMSE/百分点 & $R^2$\\
+\rowcolor{cyan!20} 入射角 & 厚度/$\mu\mathrm m$ & RMSE/百分点 & $R^2$\\
 \midrule
 $10^\circ$ & 3.2474 & 1.8745 & 0.6309\\
 $15^\circ$ & 3.1875 & 3.3638 & 0.0741\\
@@ -342,6 +342,36 @@ J_{D,k}\,\Delta\boldsymbol p_k
 
 计算得到$10^\circ$与$15^\circ$的四参数伪逆厚度分量分别为$6.42\times10^{-4}$和$1.17\times10^{-3}\,\mu\mathrm m$，仅占对应厚度的$0.0198\%$和$0.0368\%$。由于$q_N$、$q_\Gamma$在部分角度处于边界且灵敏度很低，完整$\Delta\boldsymbol p$中的载流子分量可能超出局部物理边界，因此不对这些附属参数偏移作定量解释。进一步固定附属参数、只沿厚度方向投影$\Delta\mathbf R_k$时，等效厚度偏移为$-2.74\times10^{-4}$和$-2.48\times10^{-4}\,\mu\mathrm m$。两种局部口径得到的厚度变化量均不超过$1.2\times10^{-3}\,\mu\mathrm m$，明显小于两角度厚度差$0.0600\,\mu\mathrm m$。因此，高阶反射对局部谱形具有可见修正，但在当前模型与拟合区间内，其向厚度结果传递的局部量级约为$10^{-3}\,\mu\mathrm m$，并非两角度厚度差异的主要来源。
 
+残差分布分析如图\ref{fig:q3-residual-combined}所示。热力图显示残差主要集中在零线附近，但在$2800\sim3000\ \mathrm{cm^{-1}}$附近存在轻微的系统性正偏差，该波段对应硅的晶格吸收边缘；箱线图显示$10^\circ$残差中位数接近零、IQR约$0.005$，而$15^\circ$残差中位数略正、IQR约$0.012$，说明小角度拟合的残差分布更集中。
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}[b]{0.47\textwidth}
+\centering
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/16_Si残差分箱热力图.png}
+\caption{残差分箱热力图}
+\label{fig:q3-residual-heatmap}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.47\textwidth}
+\centering
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/22_Si拟合残差箱线图.png}
+\caption{残差箱线图}
+\label{fig:q3-residual-boxplot}
+\end{subfigure}
+\caption{硅Airy拟合残差分布。}
+\label{fig:q3-residual-combined}
+\end{figure}
+
+图\ref{fig:q3-validation-bias}展示了双光束截断模型与完整Airy模型之间的验证偏差对比，量化了多光束效应对理论反射率的影响。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.76\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/24_Si验证偏差.png}
+\caption{双光束截断与Airy模型的验证偏差对比。}
+\label{fig:q3-validation-bias}
+\end{figure}
+
 \subsubsection{SiC结果回溯}
 
 将问题二得到的$d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m$及两个角度各自的Sellmeier--Drude参数代入式\eqref{eq:q3-third-ratio}，在$2500$--$3300\,\mathrm{cm}^{-1}$内得到
@@ -354,7 +384,7 @@ J_{D,k}\,\Delta\boldsymbol p_k
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=.88\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/21_(a) 双角度 dB 衰减脊线图(b) 角度相对差异面积图.png}
-\caption{SiC第三束光强比的dB衰减谱及两个入射角的相对差异。}
+\caption{SiC第三束光强比的dB衰减谱及角度相对差异。}
 \label{fig:q3-sic-backcheck}
 \end{figure}
 
@@ -372,6 +402,27 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 
 六组确定性初值表明局部极小结构客观存在：$10^\circ$有三组收敛到$d\approx3.2474\,\mu\mathrm m$主解，两组落在相邻$d\approx3.2242\,\mu\mathrm m$盆地，另有一组落入$d\approx2.5143\,\mu\mathrm m$的较差盆地；$15^\circ$有五组收敛到$d\approx3.1875\,\mu\mathrm m$主解，仅一组落入$d\approx3.3538\,\mu\mathrm m$的较差盆地。由此可见，最终厚度并非由单一初值偶然产生，但有限初值覆盖仍不能被解释为严格的全局唯一性证明。
 
+多初值检验结果如图\ref{fig:q3-multistart-combined}所示，棒棒糖图展示了主解与次优盆地的厚度分布，气泡图展示了各候选解所在盆地的相对分布。
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}[b]{0.47\textwidth}
+\centering
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/17_Si厚度一致性棒棒糖图.png}
+\caption{厚度一致性棒棒糖图}
+\label{fig:q3-thickness-consistency}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.47\textwidth}
+\centering
+\includegraphics[width=\linewidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/23_Si多初值局部盆地气泡图.png}
+\caption{局部盆地气泡图}
+\label{fig:q3-multistart-basin}
+\end{subfigure}
+\caption{多初值反演候选解分布。}
+\label{fig:q3-multistart-combined}
+\end{figure}
+
 \subsubsection{Jacobian--SVD局部可辨识性}
 
 为区分“厚度是否稳定”与“所有附属参数是否可识别”，在两个角度的最优Airy解处构造残差Jacobian $J$。由于原始条件数受参数单位和尺度影响，对各列归一化
@@ -388,10 +439,21 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 
 进一步在当前四参数最优点处增加七个振子背景量，仅构造$11$参数前向Jacobian而不重新拟合。列归一化条件数分别增至约$1.27\times10^6$和$6.18\times10^4$，说明在当前有限波段内继续释放振子背景参数会产生显著近共线方向。固定硅背景参数因而不仅减少了自由度，也避免把缺乏可辨识性的背景参数与厚度同时放入反演。
 
+图\ref{fig:q3-comprehensive-radar}从$R^2$、RMSE、AIC、CV和ACF五个维度汇总模型综合性能。雷达图显示$10^\circ$和$15^\circ$两个角度的轮廓高度相似，均在拟合优度和残差独立性维度表现良好，而在参数变异系数维度得分相对较低，这反映了附属参数可辨识性有限的客观事实。
+
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=.44\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/19_Si参数可辨识性气泡图.png}
-\caption{硅四参数Airy反演的局部可辨识性诊断（气泡面积表示最弱右奇异方向权重，B表示参数触及边界）。}
+\includegraphics[width=.68\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/18_Si模型综合指标雷达图.png}
+\caption{硅四参数Airy反演模型综合指标雷达图。}
+\label{fig:q3-comprehensive-radar}
+\end{figure}
+
+图\ref{fig:q3-identifiability}以气泡图展示了四个参数的可辨识性度量，横轴为相对灵敏度，纵轴为变异系数，气泡大小代表Fisher信息量。厚度$d$位于右上区域，可辨识性最优；$n_3$次之；$q_N$和$q_\Gamma$位于左下区域，可辨识性不足，与前述SVD诊断一致。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.68\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/19_Si参数可辨识性气泡图.png}
+\caption{硅四参数可辨识性气泡图。}
 \label{fig:q3-identifiability}
 \end{figure}
 
