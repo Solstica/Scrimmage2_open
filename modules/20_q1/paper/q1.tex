@@ -10,8 +10,8 @@
 \label{fig:q1-flow}
 \end{figure}
 
-\subsection{模型建立}
-本文在薄膜干涉与Fresnel界面理论\cite{bornwolf}的基础上，引入Sellmeier晶格色散和Drude载流子修正，建立Sellmeier--Drude--Fresnel双光束测厚模型。
+\subsection{Sellmeier--Drude--Fresnel双光束模型}
+本文在薄膜干涉、分层介质传播与Fresnel界面理论\cite{bornwolf,yeh}的基础上，引入Sellmeier晶格色散和Drude载流子修正，建立Sellmeier--Drude--Fresnel双光束测厚模型。
 
 \subsubsection{光程差与传播相位}
 图\ref{fig:q1-schematic}为空气--外延层--衬底结构中的双光束干涉光路示意图。设空气、外延层和衬底折射率分别为$n_1,n_2,n_3$，外延层厚度为$d$，入射角为$i$，外延层折射角为$\gamma$。数值计算中取空气折射率$n_1=1.0003$。
@@ -194,6 +194,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \renewcommand{\arraystretch}{1.18}
 \begin{tabularx}{0.94\textwidth}{>{\centering\arraybackslash}p{3.0cm} X >{\centering\arraybackslash}p{2.3cm}}
 \toprule
+\rowcolor{CumcmLightBlue}
 \textbf{检验项} & \textbf{理论关系} & \textbf{结果} \\
 \midrule
 零载流子极限 & $N\to0$时，式\eqref{eq:q1-drude}退化为$n_2^2=\varepsilon_{\mathrm L}$ & 满足 \\
