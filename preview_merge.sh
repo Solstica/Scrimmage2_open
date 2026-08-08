@@ -227,7 +227,11 @@ finish_merge_interactively() {
 }
 
 compile_paper() {
-  local wt="$1" paper_dir="$wt/paper" pdf="$wt/paper/main.pdf"
+  local wt paper_dir pdf ans
+  wt="$1"
+  paper_dir="$wt/paper"
+  pdf="$paper_dir/main.pdf"
+
   [[ -f "$paper_dir/main.tex" ]] || die "找不到 $paper_dir/main.tex；说明合并结果不是标准全文结构。"
   say ""
   say "========== 编译 paper/main.tex =========="
@@ -360,9 +364,12 @@ main() {
 
   say ""
   say "[4/5] 合并完成，检查最终状态..."
-  git -C "$preview_dir" status --short
-  say ""
-  git -C "$preview_dir" --no-pager log --oneline --decorate --graph -15
+  if [[ -n "$(git -C "$preview_dir" status --porcelain)" ]]; then
+    git -C "$preview_dir" status --short
+  else
+    say "临时预览工作区状态：干净。"
+  fi
+  say "详细临时 merge 历史不在终端展开。"
 
   say ""
   say "[5/5] 编译全文..."
