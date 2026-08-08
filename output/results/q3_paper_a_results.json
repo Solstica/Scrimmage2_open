@@ -143,8 +143,9 @@
       4.851828653579551e-07,
       4.661561075781151e-07
     ],
-    "threshold_percent": 0.1,
-    "retain_q2_result": true
+    "engineering_reference_percent": 0.1,
+    "max_to_engineering_reference_ratio": 4.8518286535795505e-06,
+    "interpretation": "magnitude_reference_only_not_model_selector"
   },
   "q2_dependency": {
     "path": "q2_paper_a_results.json",
@@ -164,6 +165,7 @@
   ],
   "disclosures": [
     "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
+    "The 0.1% value is an engineering magnitude reference only and is not used as an automatic model-switch rule.",
     "The air refractive index is fixed at 1.0003 to keep the Snell/Fresnel geometry consistent with Q1 and Q2.",
     "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
     "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
