@@ -19,7 +19,7 @@ if str(PROJECT) not in sys.path:
 
 from shared.code.data_io import Spectrum, load_official_bundle
 
-N_AIR = 1.0
+N_AIR = 1.0003
 C0 = 299_792_458.0
 EPS0 = 8.854_187_812_8e-12
 E_CHARGE = 1.602_176_634e-19
@@ -220,7 +220,7 @@ def save_si_assets(module: Path, spectrum: Spectrum, fit: dict[str, object]) -> 
     table.to_csv(table_path, index=False, encoding="utf-8-sig")
     fig, axes = plt.subplots(2, 1, figsize=(8.0, 6.0), sharex=True, height_ratios=(3, 1))
     axes[0].plot(spectrum.wavenumber_cm, spectrum.reflectance, lw=1.0, label="Observed")
-    axes[0].plot(spectrum.wavenumber_cm, airy, lw=1.2, label="PAPER_A Airy")
+    axes[0].plot(spectrum.wavenumber_cm, airy, lw=1.2, label="Airy fit")
     axes[0].set_ylabel("Reflectance")
     axes[0].legend()
     axes[0].grid(alpha=0.25)
@@ -359,6 +359,7 @@ def main() -> None:
         "fixed_material_parameters": {
             "epsilon_inf": EPS_INF, "oscillators": OSCILLATORS,
             "effective_mass_ratio": MSTAR_RATIO,
+            "air_refractive_index": N_AIR,
         },
         "si_angle_results": si_fits,
         "si_primary_result": {
@@ -372,16 +373,17 @@ def main() -> None:
             "paper_a_reference_only": PAPER_A_TARGET,
         },
         "sic_backcheck": backcheck,
-        "q2_dependency": {"path": str(args.q2_results.resolve()), "sha256": sha256(args.q2_results)},
+        "q2_dependency": {"path": args.q2_results.name, "sha256": sha256(args.q2_results)},
         "inputs": [
-            {"source": row.source, "path": str((args.data_dir / row.source).resolve()), "sha256": sha256(args.data_dir / row.source)}
+            {"source": row.source, "path": row.source, "sha256": sha256(args.data_dir / row.source)}
             for row in bundle["si"]
         ],
         "disclosures": [
             "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
+            "The air refractive index is fixed at 1.0003 to keep the Snell/Fresnel geometry consistent with Q1 and Q2.",
             "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
             "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
-            "The corrected attenuating propagation branch produces a mean thickness 5.85% above the paper's reported value; the user accepted the identifiable four-parameter recomputation as the frozen result.",
+            f"The corrected attenuating propagation branch produces a mean thickness {distance_percent:.2f}% above the paper's reported value; the user accepted the identifiable four-parameter recomputation as the frozen result.",
         ],
     }
     output = project / "output" / "results" / "q3_paper_a_results.json"

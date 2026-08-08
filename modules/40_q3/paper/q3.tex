@@ -1,5 +1,5 @@
 \subsection{问题三的描述与分析}
-问题三要求在问题一、二的双光束模型基础上讨论多次内反射对测厚精度的影响，并利用附件3、4给出的硅晶圆红外反射光谱计算外延层厚度，最后回溯检验SiC结果是否需要修正。与SiC高波数弱吸收区不同，硅在本问拟合波段内存在不可忽略的吸收，因此需要由实折射率模型推广到复折射率传播；同时，高阶反射光以相干振幅形式累积，不能仅用单束光强大小代替完整的多光束叠加。基于此，本文先分析多光束干涉形成条件，建立双振子--Drude复折射率与Airy无限多光束反射率模型，再对$10^\circ$、$15^\circ$光谱分别进行有界多初值反演并取厚度平均，最后通过第三束光强比、双光束--Airy同参数比较以及Jacobian--SVD诊断评价模型影响与参数可辨识性。
+问题三要求在问题一、二的双光束模型基础上讨论多次内反射对测厚精度的影响，并利用附件3、4给出的硅晶圆红外反射光谱计算外延层厚度，最后回溯检验SiC结果是否需要修正。与SiC高波数弱吸收区不同，硅在本问拟合波段内存在不可忽略的吸收，因此需要由实折射率模型推广到复折射率传播；同时，高阶反射光以相干振幅形式累积，不能仅用单束光强大小代替完整的多光束叠加。基于此，本文先分析多光束干涉形成条件，建立双振子--Drude复折射率与Airy无限多光束反射率模型，再对$10^\circ$、$15^\circ$光谱分别进行有界多初值反演并取厚度平均，最后通过第三束光强比、双光束--Airy同参数比较、模型误差向厚度偏差的一阶传播以及Jacobian--SVD诊断评价多光束影响与参数可辨识性。
 
 图\ref{fig:q3-overall-flow}给出问题三从多光束建模、硅厚度反演到SiC回溯的总体流程。
 
@@ -39,7 +39,14 @@ E_{m+1}^{(u)}=q_u E_m^{(u)},\qquad
 q_u=r_{21}^{(u)}r_{23}^{(u)}P,\quad m\ge2.
 \label{eq:q3-ratio}
 \end{equation}
-因此，多光束干涉能否在实际测量中形成并产生可观测影响，主要受以下条件共同制约\cite{bornwolf}：
+由式\eqref{eq:q3-ratio}可得
+\begin{equation}
+\left|\frac{E_m^{(u)}}{E_2^{(u)}}\right|=|q_u|^{m-2},\qquad
+|q_u|=|r_{21}^{(u)}r_{23}^{(u)}|
+\exp\!\left[-4\pi\times10^{-4}\sigma d\kappa\cos\gamma\right],
+\label{eq:q3-order-decay}
+\end{equation}
+其中$\widetilde n_2=n-\mathrm i\kappa$且$\kappa\ge0$。因此$|q_u|$直接控制高阶光束的衰减速度；相邻反射束的主要光程差约为$2\operatorname{Re}(\widetilde n_2)d\cos\gamma$，还需光源相干长度覆盖该量级。若$|q_u|$过小，高阶项即使存在也会很快低于仪器分辨能力。综合来看，多光束干涉能否在实际测量中形成并产生可观测影响，主要受以下条件共同制约\cite{bornwolf}：
 
 \begin{enumerate}[leftmargin=2em,itemsep=0.2ex]
 \item \textbf{界面反射条件：}上下界面需具有非零振幅反射系数，使第二束及后续返回光束能够形成；
@@ -99,7 +106,7 @@ q_u=r_{21}^{(u)}r_{23}^{(u)}P,\quad m\ge2.
 \right),
 \label{eq:q3-real-angle}
 \end{equation}
-而完整复折射率仍代入$s$、$p$偏振的Fresnel振幅系数。外延层一次往返传播因子为
+其中空气折射率与前两问统一取$n_1=1.0003$，而完整复折射率仍代入$s$、$p$偏振的Fresnel振幅系数。外延层一次往返传播因子为
 \begin{equation}
 P
 =\exp\!\left(
@@ -239,7 +246,7 @@ d_{\mathrm{Si}}
 进行等权综合。算术平均只综合两个独立厚度，不形成第三次拟合。
 
 \subsubsection{诊断与回溯求解}
-得到两个角度的最优Airy参数后，进一步执行三项诊断：其一，在同一组最优参数下计算双光束截断曲线，用于隔离高阶内部反射对理论谱形的影响；其二，在最优点构造残差Jacobian并进行尺度化SVD，区分厚度方向与附属载流子参数的局部可辨识性；其三，将问题二SiC冻结厚度及对应光学参数代入$\eta_3$，仅比较高阶单束反射与$0.1\%$工程量级参照，不据此切换硅的正式模型。
+得到两个角度的最优Airy参数后，进一步执行四项诊断：其一，在同一组最优参数下计算双光束截断曲线，用于隔离高阶内部反射对理论谱形的影响；其二，将Airy与双光束的同参反射率差通过截断模型Jacobian传播到厚度方向，直接量化忽略高阶反射可能带来的局部厚度偏移；其三，在最优点构造残差Jacobian并进行尺度化SVD，区分厚度方向与附属载流子参数的局部可辨识性；其四，将问题二SiC冻结厚度及对应光学参数代入$\eta_3$，仅比较高阶单束反射与$0.1\%$工程量级参照，不据此切换硅的正式模型。
 
 图\ref{fig:q3-algorithm}给出整体求解流程，标准伪代码见算法\ref{alg:q3-airy}。
 
@@ -252,7 +259,7 @@ d_{\mathrm{Si}}
 
 \input{\ProjectRoot/modules/40_q3/paper/q3_algorithm.tex}
 
-Jacobian--SVD和同参双光束比较均在正式候选确定后执行，不参与厚度目标函数的重新优化，因此三类诊断量只用于解释结果可信度与模型差异，不改变两个角度的正式Airy厚度。
+Jacobian--SVD、同参双光束比较和一阶模型误差传播均在正式候选确定后执行，不参与厚度目标函数的重新优化；SiC回溯也只检验问题二近似是否需要修正。因此这些诊断量用于解释结果可信度与模型差异，不改变两个角度的正式Airy厚度。
 
 \subsection{结果与分析}
 
@@ -260,7 +267,7 @@ Jacobian--SVD和同参双光束比较均在正式候选确定后执行，不参�
 两个入射角的最低残差Airy解分别为
 \begin{equation}
 d_{10^\circ}^{\mathrm{Si}}
-=3.2480\,\mu\mathrm m,\qquad
+=3.2474\,\mu\mathrm m,\qquad
 d_{15^\circ}^{\mathrm{Si}}
 =3.1875\,\mu\mathrm m.
 \label{eq:q3-angle-thickness}
@@ -268,11 +275,11 @@ d_{15^\circ}^{\mathrm{Si}}
 由式\eqref{eq:q3-average}得到
 \begin{equation}
 \boxed{
-d_{\mathrm{Si}}=3.2178\,\mu\mathrm m
+d_{\mathrm{Si}}=3.2175\,\mu\mathrm m
 }.
 \label{eq:q3-si-result}
 \end{equation}
-两角度厚度相差$0.0605\,\mu\mathrm m$，相对于平均厚度的差异为$1.88\%$，半极差为$0.0302\,\mu\mathrm m$。半极差仅描述两个独立角度结果之间的离散程度，不作为统计置信区间。
+两角度厚度相差$0.0600\,\mu\mathrm m$，相对于平均厚度的差异为$1.86\%$，半极差为$0.0300\,\mu\mathrm m$。半极差仅描述两个独立角度结果之间的离散程度，不作为统计置信区间。
 
 拟合指标见表\ref{tab:q3-fit-results}。其中$10^\circ$光谱的主要条纹结构能够较好解释；$15^\circ$的$R^2$明显较低，说明固定背景四参数模型对该角度的幅值基线和局部吸收结构仍存在未解释成分。因此本文不把较低残差等同于“所有光学参数均被准确识别”，而将厚度的一致性、多初值结果和后续可辨识性诊断结合起来评价可信度。
 
@@ -284,9 +291,9 @@ d_{\mathrm{Si}}=3.2178\,\mu\mathrm m
 \toprule
 入射角 & 厚度/$\mu\mathrm m$ & RMSE/百分点 & $R^2$\\
 \midrule
-$10^\circ$ & 3.2480 & 1.8738 & 0.6312\\
-$15^\circ$ & 3.1875 & 3.3554 & 0.0788\\
-平均 & \textbf{3.2178} & -- & --\\
+$10^\circ$ & 3.2474 & 1.8745 & 0.6309\\
+$15^\circ$ & 3.1875 & 3.3638 & 0.0741\\
+平均 & \textbf{3.2175} & -- & --\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -306,9 +313,9 @@ $15^\circ$ & 3.1875 & 3.3554 & 0.0788\\
 \end{figure}
 
 \subsubsection{多光束项对理论反射率的影响}
-为单独考察高阶内部反射造成的谱形变化，在同一组正式Airy最优参数下分别计算完整Airy反射率与仅保留前两束的截断反射率，不重新拟合双光束参数。两个角度的平均绝对理论反射率差分别约为$0.0553$和$0.0813$个百分点，最大差分别约为$0.2684$和$0.3119$个百分点，说明高阶项对局部峰谷仍可产生可见修正。
+为单独考察高阶内部反射造成的谱形变化，在同一组正式Airy最优参数下分别计算完整Airy反射率与仅保留前两束的截断反射率，不重新拟合双光束参数。两个角度的平均绝对理论反射率差分别约为$0.0553$和$0.0813$个百分点，最大差分别约为$0.2679$和$0.3121$个百分点，说明高阶项对局部峰谷仍可产生可见修正。
 
-另一方面，硅的$\eta_{3,\max}$约为$0.00301\%$和$0.00388\%$。这一数值小于$0.1\%$并不与采用Airy模型矛盾，因为$\eta_3$衡量的是第三束自身强度，而总反射率修正还包含高阶振幅与已有光束之间的相干交叉项。因此，本文不使用$\eta_3$阈值对硅进行模型切换，而始终以物理完整的Airy模型作为正式正演算子。
+另一方面，硅的$\eta_{3,\max}$约为$0.00299\%$和$0.00389\%$。这一数值小于$0.1\%$并不与采用Airy模型矛盾，因为$\eta_3$衡量的是第三束自身强度，而总反射率修正还包含高阶振幅与已有光束之间的相干交叉项。因此，本文不使用$\eta_3$阈值对硅进行模型切换，而始终以物理完整的Airy模型作为正式正演算子。
 
 \begin{figure}[!htbp]
 \centering
@@ -316,6 +323,32 @@ $15^\circ$ & 3.1875 & 3.3554 & 0.0788\\
 \caption{同一组硅参数下双光束截断与Airy多光束理论反射率对比。}
 \label{fig:q3-double-airy}
 \end{figure}
+
+\subsubsection{模型误差向厚度偏差的一阶传播}
+式\eqref{eq:q3-airy-R}与双光束截断模型之间的反射率差异还需要转换到厚度尺度，才能直接回答多光束项对厚度计算精度的影响。对第$k$个入射角，在正式Airy最优参数$\boldsymbol p_k^*$处定义
+\begin{equation}
+\Delta\mathbf R_k
+=\mathbf R_{\mathrm{Airy}}(\boldsymbol p_k^*)
+-\mathbf R_{\mathrm{double}}(\boldsymbol p_k^*),
+\label{eq:q3-model-error}
+\end{equation}
+并令$J_{D,k}$为双光束截断正演算子对$\boldsymbol p=(d,n_3,q_N,q_\Gamma)$的数值Jacobian。若忽略高阶反射后仍要求截断模型局部逼近同一Airy理论谱，则一阶近似满足
+\begin{equation}
+J_{D,k}\,\Delta\boldsymbol p_k
+\approx\Delta\mathbf R_k,
+\qquad
+\Delta\boldsymbol p_k
+\approx J_{D,k}^{+}\Delta\mathbf R_k,
+\label{eq:q3-model-error-transfer}
+\end{equation}
+其中$J_{D,k}^{+}$为Moore--Penrose广义逆，厚度分量为
+\begin{equation}
+\Delta d_k
+=\mathbf e_d^{\mathsf T}J_{D,k}^{+}\Delta\mathbf R_k.
+\label{eq:q3-thickness-bias}
+\end{equation}
+
+按统一后的$n_1=1.0003$重新计算，$10^\circ$与$15^\circ$的四参数伪逆厚度分量分别为$6.42\times10^{-4}$和$1.17\times10^{-3}\,\mu\mathrm m$，仅占对应厚度的$0.0198\%$和$0.0368\%$。由于$q_N$、$q_\Gamma$在部分角度处于边界且灵敏度极低，完整$\Delta\boldsymbol p$中的载流子分量会超出局部物理边界，因此这些附属参数偏移不作定量解释。进一步固定附属参数、仅沿厚度方向投影$\Delta\mathbf R_k$时，等效厚度偏移为$-2.74\times10^{-4}$和$-2.48\times10^{-4}\,\mu\mathrm m$。两种局部口径给出的厚度变化量均不超过$1.2\times10^{-3}\,\mu\mathrm m$，明显小于两角度厚度差$0.0600\,\mu\mathrm m$。因此，高阶反射对局部反射率峰谷具有可见修正，但在当前固定背景参数和拟合区间内，其向厚度结果传递的局部量级约为$10^{-3}\,\mu\mathrm m$，不是本题两角度厚度差异的主要来源。
 
 \subsubsection{SiC结果回溯}
 将问题二得到的
@@ -325,9 +358,9 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 及两个角度各自的Sellmeier--Drude参数代入式\eqref{eq:q3-third-ratio}，在$2500$--$3300\,\mathrm{cm}^{-1}$内得到
 \[
 \eta_{3,\max}^{10^\circ}
-=4.85\times10^{-7}\%,\qquad
+=4.852\times10^{-7}\%,\qquad
 \eta_{3,\max}^{15^\circ}
-=4.66\times10^{-7}\%.
+=4.662\times10^{-7}\%.
 \]
 二者均比$0.1\%$工程参照低约五个数量级，说明SiC弱吸收拟合区中的高阶单束反射极弱，问题二的双光束近似无需因多光束效应回溯修正，因此保留
 \begin{equation}
@@ -346,8 +379,8 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 
 \subsection{模型验证与局限性}
 
-\subsubsection{多初值稳定性}
-六组确定性初值表明局部极小结构客观存在：$10^\circ$有三组收敛到$d\approx3.248\,\mu\mathrm m$主解，两组落在相邻$d\approx3.224\,\mu\mathrm m$盆地，另有一组落入较差盆地；$15^\circ$有五组收敛到$d\approx3.188\,\mu\mathrm m$主解，仅一组落入$d\approx3.354\,\mu\mathrm m$的较差盆地。该结果说明正式厚度并非由单一初值偶然产生，但有限初值覆盖仍不能被解释为严格的全局唯一性证明。
+\subsubsection{多初值局部盆地检验}
+六组确定性初值表明局部极小结构客观存在：$10^\circ$有三组收敛到$d\approx3.2474\,\mu\mathrm m$主解，两组落在相邻$d\approx3.2242\,\mu\mathrm m$盆地，另有一组落入$d\approx2.5143\,\mu\mathrm m$的较差盆地；$15^\circ$有五组收敛到$d\approx3.1875\,\mu\mathrm m$主解，仅一组落入$d\approx3.3538\,\mu\mathrm m$的较差盆地。该结果说明正式厚度并非由单一初值偶然产生，但有限初值覆盖仍不能被解释为严格的全局唯一性证明。
 
 \subsubsection{Jacobian--SVD局部可辨识性}
 为区分“厚度是否稳定”与“所有附属参数是否可识别”，在两个角度的最优Airy解处构造残差Jacobian $J$。由于原始条件数受参数单位和尺度影响，进一步对各列归一化
@@ -358,24 +391,24 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 并进行SVD。最新重算得到列归一化条件数约为
 \[
 \kappa(\widetilde J)_{10^\circ}=3.09,\qquad
-\kappa(\widetilde J)_{15^\circ}=9.64.
+\kappa(\widetilde J)_{15^\circ}=9.95.
 \]
-在$15^\circ$最弱右奇异方向中，$q_N$与$q_\Gamma$的权重合计约$81.9\%$，而厚度权重不足$1\%$，表明主要退化方向来自载流子浓度与碰撞频率的耦合，而不是厚度本身。
+在$15^\circ$最弱右奇异方向中，$q_N$与$q_\Gamma$的权重合计约$82.1\%$，而厚度权重不足$1\%$，表明主要退化方向来自载流子浓度与碰撞频率的耦合，而不是厚度本身。
 
 进一步仅在当前四参数最优点处增加七个振子背景量，构造$11$参数前向Jacobian而不重新拟合。列归一化条件数分别增至约
 \[
 1.27\times10^6,\qquad
-6.19\times10^4,
+6.18\times10^4,
 \]
 说明在当前有限波段内继续释放振子背景参数会显著增加近共线方向。由此，固定硅背景参数不是单纯为减少计算量，而是具有逆问题可辨识性依据。
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=.68\textwidth]{\ProjectRoot/modules/40_q3/figures/editable/origin_templates/reference_png/19_Si参数可辨识性气泡图.png}
-\caption{硅四参数Airy反演的局部可辨识性诊断。}
+\caption{硅四参数Airy反演的局部可辨识性诊断（气泡面积表示最弱右奇异方向权重，B表示参数触及边界）。}
 \label{fig:q3-identifiability}
 \end{figure}
 
-综合两角度厚度一致性、多初值结果和Jacobian--SVD诊断，本文将厚度作为问题三的主要定量结论，不对达到边界或处于弱可辨方向的载流子参数作材料常数解释。与此同时，$15^\circ$拟合优度较低，且题目未提供光源相干长度、界面粗糙度和独立材料光学常数测量，因此$3.2178\,\mu\mathrm m$应理解为当前固定背景Airy模型下的反演结果，而非脱离模型假设的绝对测量值。
+综合两角度厚度一致性、多初值结果和Jacobian--SVD诊断，本文将厚度作为问题三的主要定量结论，不对达到边界或处于弱可辨方向的载流子参数作材料常数解释。与此同时，$15^\circ$拟合优度较低，且题目未提供光源相干长度、界面粗糙度和独立材料光学常数测量，因此$3.2175\,\mu\mathrm m$应理解为当前固定背景Airy模型下的反演结果，而非脱离模型假设的绝对测量值。
 
 \FloatBarrier
