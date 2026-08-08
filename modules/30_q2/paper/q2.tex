@@ -1,26 +1,21 @@
 \subsection{问题二的描述与分析}
 
-附件1、2给出了同一块SiC晶圆在$10^\circ$和$15^\circ$入射角下的红外反射光谱。本问在问题一的双光束正演模型基础上，由实测连续光谱反演外延层厚度。反演的主要挑战来自三个方面：低波数区域的材料吸收、干涉级次诱导的最小二乘多峰性，以及载流子浓度、衬底折射率与Sellmeier参数对谱形的耦合影响。为此，先选定弱吸收波段，再对两个入射角分别执行有界多初值非线性最小二乘反演，通过比较候选局部极小解确定最低残差厚度，最后将两个独立厚度的算术平均值作为SiC外延层厚度，并以角度间一致性、拟合误差和局部极小解的竞争关系作为结果可信度的依据。
+附件1、2给出了同一块SiC晶圆在$10^\circ$和$15^\circ$入射角下的红外反射光谱。本问需要在问题一双光束正演关系的基础上，由连续实测光谱反演外延层厚度，并对结果可靠性作定量判断。主要困难有三点：低波数区存在明显材料吸收，不能直接套用弱吸收实折射率模型；干涉相位使最小二乘目标具有多个厚度级次对应的局部极小值；载流子浓度、衬底折射率和Sellmeier参数均会改变谱形，可能与厚度产生耦合。基于这些特点，本文依次进行拟合波段筛选、分角度有界多初值反演和结果可靠性检验，以两个独立角度的厚度一致性、拟合误差及候选极小解竞争关系共同评价反演结果。
 
-图\ref{fig:q2-overall-flow}给出问题二从光谱预处理、分角度反演到结果验证的总体流程。
+图\ref{fig:q2-overall-flow}给出问题二从光谱预处理、参数反演到结果验证的总体流程。
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=.88\textwidth]{\ProjectRoot/modules/30_q2/figures/editable/origin_templates/reference_png/2.png}
+\includegraphics[width=\textwidth]{\ProjectRoot/modules/30_q2/figures/editable/origin_templates/reference_png/2.png}
 \caption{问题二SiC外延层厚度反演总体流程。}
 \label{fig:q2-overall-flow}
 \end{figure}
 
-\subsection{数据预处理与参数设置}
+\subsection{数据分析与预处理}
 
-\subsubsection{弱吸收拟合波段的选取}
+\subsubsection{原始光谱与拟合波段选取}
 
-问题一的实折射率模型建立在弱吸收近似下，因此问题二不直接使用全部波数范围。参考同类SiC外延层厚度反演中对高波数透明区的处理\cite{paperA}，删除共同的零波数边界点，并截取
-\begin{equation}
-2500\le \sigma\le 3300\ \mathrm{cm}^{-1}
-\label{eq:q2-fit-window}
-\end{equation}
-作为正式拟合区间，使数据条件与问题一的弱吸收正演模型保持一致。原始百分数反射率统一除以$100$转为无量纲小数后参与拟合。图\ref{fig:q2-raw-spectrum}给出两个入射角下的原始反射光谱，用于说明正式拟合窗口在全谱中的位置。
+图\ref{fig:q2-raw-spectrum}给出了两个入射角下的原始反射光谱。两组曲线的整体演化规律一致，低波数区域存在显著材料响应，而高波数区保留了较规则的干涉起伏。问题一的实折射率模型建立在透明或弱吸收近似下，因此本问不直接使用全波段数据。
 
 \begin{figure}[!htbp]
 \centering
@@ -29,13 +24,20 @@
 \label{fig:q2-raw-spectrum}
 \end{figure}
 
+邱杰等\cite{paperA}在SiC外延层红外干涉反演中同样通过避开强吸收区，使折射率模型的适用范围与拟合数据相匹配。结合问题一模型的弱吸收条件，本文删除两组数据共同的零波数边界点，并截取
+\begin{equation}
+2500\le \sigma\le 3300\ \mathrm{cm}^{-1}
+\label{eq:q2-fit-window}
+\end{equation}
+作为拟合区间。原始百分数反射率统一除以$100$转为无量纲小数后参与计算。这样处理的目的不是人为提高拟合优度，而是使观测数据落在所采用光学模型的适用区间内，并保留足以识别厚度相位变化的连续干涉条纹。
+
 \subsubsection{待估参数与约束}
 
-问题一中固定载流子有效质量$m^*=0.28m_0$，空气折射率取$n_1=1.0003$。由于载流子浓度具有量纲，定义无量纲对数参数
+载流子有效质量取$m^*=0.28m_0$，空气折射率取$n_1=1.0003$。由于载流子浓度具有量纲，定义无量纲对数参数
 \begin{equation}
 q_{N,k}=\log_{10}\!\left(\frac{N_k}{1\ \mathrm{cm}^{-3}}\right),
 \end{equation}
-从而对每个入射角$\theta_k\in\{10^\circ,15^\circ\}$独立定义参数向量
+并对每个入射角$\theta_k\in\{10^\circ,15^\circ\}$分别定义参数向量
 \begin{equation}
 \boldsymbol p_k=
 \left(d_k,q_{N,k},n_{3,k},A_k,B_{1,k},B_{2,k},B_{3,k},C_{1,k},C_{2,k},C_{3,k}\right).
@@ -47,7 +49,7 @@ q_{N,k}=\log_{10}\!\left(\frac{N_k}{1\ \mathrm{cm}^{-3}}\right),
 (1.00000,\,0.20075,\,5.54861,\,35.65066,\,-12.07224,\,0.02641,\,1268.24708),
 \label{eq:q2-sell-ref}
 \end{equation}
-三个$C_j$的单位按问题一约定为$\mu\mathrm m^2$。在$2500$--$3300\,\mathrm{cm}^{-1}$的窄拟合区间内，将衬底折射率$n_3$近似为与波数无关的常数。正式反演中的参数范围与阶段一初值见表\ref{tab:q2-parameter-setting}。
+三个$C_j$的单位均为$\mu\mathrm m^2$。在$2500$--$3300\,\mathrm{cm}^{-1}$的窄波段内，将衬底折射率$n_3$近似为与波数无关的常数。参数边界与第一阶段初值见表\ref{tab:q2-parameter-setting}。
 
 \begin{table}[!htbp]
 \centering
@@ -66,51 +68,45 @@ $\boldsymbol\beta$ & Sellmeier参数 & $\boldsymbol\beta_0$附近$\pm5\%$ & 固�
 \end{tabular}
 \end{table}
 
-两个角度的参数独立估计，不引入共享参数联合目标；角度间的信息只在最终厚度综合与一致性检验环节使用。
+两组光谱来自同一晶圆的两次角度观测。为保留其作为独立重复观测的检验价值，两个角度分别进行参数估计，仅在结果层面对厚度进行综合，而不在优化阶段强制共享待估参数。
 
 \subsection{模型建立}
 
 \subsubsection{分角度非线性最小二乘模型}
 
-设第$k$个入射角在波数$\sigma_i$处的实测反射率为$R_{ki}$，问题一建立的非偏振双光束反射率正演算子记为
-$R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k)$。定义残差
+设第$k$个入射角在波数$\sigma_i$处的实测反射率为$R_{ki}$，问题一建立的非偏振双光束反射率记为$R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k)$。定义残差
 \begin{equation}
 e_{ki}(\boldsymbol p_k)
 =R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),
 \label{eq:q2-residual}
 \end{equation}
-则每个入射角分别求解有界非线性最小二乘问题
+则两个角度分别求解有界非线性最小二乘问题
 \begin{equation}
 \boldsymbol p_k^{*}
 =\operatorname*{arg\,min}_{\boldsymbol p_k\in\Omega}
 J_k(\boldsymbol p_k),\qquad
 J_k(\boldsymbol p_k)
-=\sum_{i:\,2500\le\sigma_i\le3300}
-e_{ki}^2(\boldsymbol p_k),
+=\sum_{i:\,2500\le\sigma_i\le3300}e_{ki}^2(\boldsymbol p_k),
 \label{eq:q2-separate-fit}
 \end{equation}
-其中$\Omega$由表\ref{tab:q2-parameter-setting}中的有界约束共同确定。厚度$d_k$通过问题一的传播相位进入$R_{\mathrm{th}}$，因此目标函数对$d_k$呈现多个干涉级次对应的局部极小值，不能依赖单一初值直接确定最终解。
+其中$\Omega$由表\ref{tab:q2-parameter-setting}中的物理边界共同确定。厚度$d_k$通过传播相位进入$R_{\mathrm{th}}$，不同干涉级次会在厚度方向形成多个局部极小值，因此单一初值收敛不足以作为最终厚度依据。
 
 \subsubsection{多初值候选极小解筛选}
 
-为降低局部极小值对厚度反演的影响，采用“粗搜索--候选去重--完整精修”的两阶段策略。第一阶段暂固定Sellmeier参数，仅对$(d,q_N,n_3)$进行有界拟合；由表\ref{tab:q2-parameter-setting}中的初值组合得到
-\begin{equation}
-10\times3\times3=90
-\end{equation}
-组确定性初始点。随后合并数值上近似重复的阶段一收敛解，并按RMSE由小到大保留前$8$个不同候选解；候选去重仅用于减少重复计算，不构成物理盆地边界或全局最优性判据。第二阶段释放$7$个Sellmeier参数，对完整十参数模型进行精修，选取RMSE最小的候选解作为该入射角的正式结果。有限初值覆盖可降低错误干涉级次锁定的风险，但不保证全局最优。
+为降低错误干涉级次锁定的风险，采用“低维粗搜索--候选去重--完整参数精修”的两阶段策略。第一阶段固定Sellmeier参数，只拟合$(d,q_N,n_3)$，从多个确定性初始点搜索不同局部极小区域；随后合并数值上近似重复的收敛解，并选取残差较小的不同候选进入第二阶段。第二阶段释放Sellmeier参数，对完整十参数模型进行有界精修，再按RMSE比较各候选。多初值搜索用于扩大局部极小区域的覆盖范围，但有限初值不能构成全局最优或唯一性的证明。
 
-两个角度独立得到$d_{10^\circ}$和$d_{15^\circ}$后，鉴于两组光谱来自同一晶圆、两角度拟合精度处于同一量级，采用等权算术平均
+两个角度独立得到$d_{10^\circ}$和$d_{15^\circ}$后，考虑到两组光谱来自同一晶圆且拟合精度处于同一量级，采用等权算术平均
 \begin{equation}
 \boxed{
 \bar d=\frac{d_{10^\circ}+d_{15^\circ}}{2}
 }.
 \label{eq:q2-average}
 \end{equation}
-综合两个独立厚度。该平均值并非基于新的光谱拟合，不定义RMSE、MAPE或$R^2$。
+综合两个独立厚度。该平均值只用于汇总厚度，不对应新的光谱拟合，因此不另行定义RMSE、MAPE或$R^2$。
 
 \subsection{模型汇总}
 
-综上，问题二的厚度反演模型可归纳为
+问题二的厚度反演模型可归纳为
 \begin{equation}
 \left\{
 \begin{aligned}
@@ -118,27 +114,22 @@ e_{ki}^2(\boldsymbol p_k),
 &e_{ki}=R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),\\
 &\boldsymbol p_k^*=\operatorname*{arg\,min}_{\boldsymbol p_k\in\Omega}
 \sum_i e_{ki}^2,\qquad k\in\{10^\circ,15^\circ\},\\
-&\text{每角度：90组粗拟合初值}\rightarrow\text{候选去重}\rightarrow\text{8个候选解}\rightarrow\text{完整参数精修},\\
 &d_{\mathrm{SiC}}=\dfrac{d_{10^\circ}+d_{15^\circ}}{2}.
 \end{aligned}
 \right.
 \label{eq:q2-summary}
 \end{equation}
-该模型保持问题一的物理正演结构不变，仅通过波段筛选、有界多初值优化和分角度结果综合完成参数反演。
+其中多初值搜索用于识别相互竞争的局部极小解，最终以同一角度内RMSE最低的候选作为该角度的反演结果。
 
 \subsection{模型求解}
 
-\subsubsection{两阶段多初值求解}
+对$10^\circ$和$15^\circ$两个角度执行相同的两阶段搜索。第一阶段在固定$\boldsymbol\beta_0$的条件下遍历表\ref{tab:q2-parameter-setting}所给组合，共形成$10\times3\times3=90$组确定性初值，仅拟合$(d,q_N,n_3)$；将近似重复的收敛结果合并后，按RMSE保留前$8$个不同候选。第二阶段以这些候选为初值，释放完整十参数并进行有界精修。每个候选均重新计算完整模型残差，最低RMSE候选作为该角度结果，次优候选保留用于分析目标函数的多峰结构。
 
-问题二的数值难点不是单次最小二乘本身，而是干涉相位使目标函数具有多个级次对应的局部极小值。因此，对$10^\circ$和$15^\circ$两个角度分别执行同一套两阶段搜索。阶段一在固定$\boldsymbol\beta_0$的条件下遍历$90$组确定性初值，仅拟合$(d,q_N,n_3)$，以较低维度快速定位不同候选极小区域；阶段二再从残差最小的前$8$个不同候选出发，释放完整十参数并进行有界精修。整个过程中两个角度的参数向量始终独立，不在优化阶段交换或共享参数。
-
-求解流程的标准伪代码见算法\ref{alg:q2-inversion}，其重点是保留多个竞争候选后再比较最终残差，而不是通过单一初值直接接受一次局部收敛结果。
+求解流程的标准伪代码见算法\ref{alg:q2-inversion}。
 
 \input{\ProjectRoot/modules/30_q2/paper/q2_algorithm.tex}
 
-\subsubsection{候选解判别}
-
-阶段二对每个候选解重新计算完整模型残差，并以RMSE作为同一角度内候选极小值的统一排序依据。最低RMSE候选作为该角度的正式结果，次优候选则保留用于检验干涉级次诱导的多峰结构与结果稳定性。这样做既能避免以单次局部收敛直接决定厚度，也明确将多初值搜索结果理解为有限搜索下的最优近似，而非严格的全局优化证明。
+这种处理把“搜索范围是否充分”与“某一次局部优化是否收敛”区分开来：前者通过多初值候选比较进行检验，后者由单次最小二乘求解器完成。因而所得厚度应理解为当前物理边界与有限候选搜索下残差最低的稳定解，而非由算法本身证明的全局唯一解。
 
 \subsection{结果与分析}
 
@@ -150,12 +141,12 @@ d_{10^\circ}=7.8566\,\mu\mathrm m,\qquad
 d_{15^\circ}=7.6230\,\mu\mathrm m.
 \label{eq:q2-angle-thickness}
 \end{equation}
-代入式\eqref{eq:q2-average}，得到SiC外延层厚度
+代入式\eqref{eq:q2-average}得到
 \begin{equation}
 \boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
 \label{eq:q2-final-thickness}
 \end{equation}
-两角度厚度相差$0.2337\,\mu\mathrm m$，相对于平均厚度的差异为$3.02\%$；半极差为$0.1168\,\mu\mathrm m$。半极差仅描述两次独立角度反演之间的离散程度，不将其解释为统计置信区间或仪器测量不确定度。
+两角度厚度相差$0.2337\,\mu\mathrm m$，相对于平均厚度的差异为$3.02\%$，半极差为$0.1168\,\mu\mathrm m$。半极差只描述两次独立角度反演之间的离散程度，不解释为统计置信区间或仪器测量不确定度。
 
 为量化曲线拟合效果，定义
 \begin{align}
@@ -164,7 +155,7 @@ d_{15^\circ}=7.6230\,\mu\mathrm m.
 R_k^2&=1-\frac{\sum_i e_{ki}^2}{\sum_i(R_{ki}-\overline R_k)^2}.
 \label{eq:q2-metrics}
 \end{align}
-对应结果见表\ref{tab:q2-paper-a-results}。
+结果见表\ref{tab:q2-paper-a-results}。
 
 \begin{table}[!htbp]
 \centering
@@ -177,16 +168,16 @@ R_k^2&=1-\frac{\sum_i e_{ki}^2}{\sum_i(R_{ki}-\overline R_k)^2}.
 $10^\circ$ & 7.8566 & $5.9820\times10^{-4}$ & 0.2680 & 0.9551 & 单角度结果\\
 $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\\
 \midrule
-平均 & \textbf{7.7398} & -- & -- & -- & 正式厚度\\
+平均 & \textbf{7.7398} & -- & -- & -- & 综合厚度\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection{拟合效果与残差结构}
 
-图\ref{fig:q2-paper-a-fit}给出理论反射率与实测光谱的对比及对应残差。两个角度下理论曲线均能较好恢复主要干涉峰谷，且RMSE均低于$7.1\times10^{-4}$、MAPE均低于$0.30\%$、$R^2$均高于$0.95$，说明问题一建立的双光束模型在所选弱吸收波段内能够解释光谱中的主要厚度信息。
+图\ref{fig:q2-paper-a-fit}给出理论反射率与实测光谱的对比及对应残差。两个角度下理论曲线均能恢复主要干涉峰谷，RMSE均低于$7.1\times10^{-4}$，MAPE均低于$0.30\%$，$R^2$均高于$0.95$。这说明在$2500$--$3300\,\mathrm{cm}^{-1}$弱吸收区内，双光束正演模型已经捕捉了决定厚度的主要相位信息。
 
-同时，残差曲线仍可见随波数连续起伏的局部结构，说明当前双光束弱吸收模型尚未解释全部谱形细节。该结构可能同时受到高阶内部反射、弱吸收近似、材料色散误差及测量基线等因素影响，因此本文不根据残差形态作单一物理机理归因，也不将残差近似正态作为模型正确性的充分证据；问题三将从多光束物理机制出发进一步检验高阶内部反射对谱形与厚度反演的影响。
+与此同时，残差仍存在随波数连续起伏的局部结构，说明模型尚未解释全部谱形细节。高阶内部反射、弱吸收近似、材料色散误差和测量基线均可能产生类似残差，因此不根据残差形态作单一机理归因，也不以残差近似正态作为模型正确性的充分证据。该现象提示还需从多光束物理机制出发检验被截断的内部反射项是否会显著传递到厚度结果。
 
 \begin{figure}[!htbp]
 \centering
@@ -207,11 +198,11 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 \label{fig:q2-paper-a-fit}
 \end{figure}
 
-\subsection{模型验证与结果可信度}
+\subsection{结果可靠性分析}
 
-\textbf{（1）双角度结果一致性。} 两个入射角完全独立反演后，厚度相对差异为$3.02\%$。二者在不共享待估参数的情况下仍落在相近厚度范围，并具有相近的RMSE、MAPE和$R^2$，说明主要干涉条纹所携带的厚度信息具有跨角度一致性。需要指出，角度接近性只能作为结果一致性证据，不能单独证明目标函数不存在其他局部极小值。
+\textbf{（1）双角度一致性。} 两个入射角完全独立反演后，厚度相对差异为$3.02\%$。在不共享待估参数的条件下，两次观测仍得到相近厚度，并具有相近的RMSE、MAPE和$R^2$，说明主要干涉条纹所携带的厚度信息具有跨角度一致性。但这种一致性只能作为重复观测证据，不能单独排除其他局部极小值。
 
-\textbf{（2）多初值局部极小解检验。} 每个角度均使用$90$组阶段一初值覆盖不同起始区域。完整参数精修后，$10^\circ$的次优候选解RMSE较最优解高$39.3\%$，对应SSE约为最优解的$1.94$倍；$15^\circ$的次优候选解RMSE高$11.2\%$，对应SSE约为$1.24$倍。这表明目标函数确实存在干涉级次诱导的多峰结构，而正式厚度对应的是当前边界与搜索方案下最低残差的候选解。图\ref{fig:q2-local-basins}进一步展示了不同初值收敛至的候选厚度与RMSE关系，可见最优盆地与次优盆地在残差上具有可辨差异，但有限初值覆盖仍不能被解释为严格的全局唯一性证明。
+\textbf{（2）多初值局部极小解检验。} 每个角度均使用$90$组第一阶段初值覆盖不同起始区域。完整参数精修后，$10^\circ$的次优候选解RMSE较最优解高$39.3\%$，对应SSE约为最优解的$1.94$倍；$15^\circ$的次优候选解RMSE高$11.2\%$，对应SSE约为$1.24$倍。目标函数由此呈现出干涉级次诱导的多峰结构，而当前厚度对应给定边界和候选搜索下残差最低的局部盆地。图\ref{fig:q2-local-basins}展示了不同初值收敛得到的候选厚度与RMSE关系，最优盆地与次优盆地在残差上具有可辨差异。
 
 \begin{figure}[!htbp]
 \centering
@@ -220,12 +211,11 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 \label{fig:q2-local-basins}
 \end{figure}
 
-\textbf{（3）附属参数解释边界。} 两个角度的$q_N$均收敛至允许范围下边界附近，且多个Sellmeier扰动参数达到$\pm5\%$边界，说明这些附属参数在有限波段内可辨识性较弱。因此本文仅将它们作为谱形修正参数使用，不作材料常数的定量解释；厚度$d$仍是问题二的核心输出量。
+\textbf{（3）附属参数解释边界。} 两个角度的$q_N$均收敛至允许范围下边界附近，且多个Sellmeier扰动参数达到$\pm5\%$边界，说明这些附属参数在有限波段内的可辨识性较弱。因此本文只将其作为谱形修正参数，不对其作材料常数层面的高精度解释；外延层厚度$d$是本问的核心输出。
 
-综合两个角度的拟合精度、厚度一致性及多初值候选解残差比较，本文取
-
-$\boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}$
-
-作为问题二的正式结果。
+综合拟合精度、双角度一致性和多初值候选解比较，得到SiC外延层厚度
+\begin{equation}
+\boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
+\end{equation}
 
 \FloatBarrier
