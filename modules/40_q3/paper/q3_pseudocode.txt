@@ -1,0 +1,15 @@
+INPUT: 附件3、4硅光谱，问题二SiC厚度及对应光学参数
+PREPROCESS: 删除共同零值边界点，保留1500--3500 cm^-1
+FOR each angle k in {10 deg, 15 deg}
+  固定双振子背景参数与有效质量
+  FOR each of 6 deterministic initial points
+    求解四参数有界Airy最小二乘: d, n3, log10(N), log10(Gamma_e)
+    检查被动传播支路 0 < abs(P) <= 1
+  END FOR
+  选择残差最小的Airy候选解
+END FOR
+d_Si <- (d_10deg + d_15deg) / 2
+COMPARE: 在同一最优参数下比较Airy与双光束截断反射率
+DIAGNOSE: 多初值局部盆地、Jacobian--SVD局部可辨识性及模型误差到厚度偏差的一阶传播
+BACKCHECK: 计算SiC第三束光强比；若远低于0.1%工程参照，则保留Q2厚度
+OUTPUT: d_Si 与回溯后的d_SiC

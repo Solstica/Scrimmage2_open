@@ -1,0 +1,15 @@
+\begin{tikzpicture}[node distance=4mm and 7mm,>=Latex,
+box/.style={draw=CumcmBlue,rounded corners,fill=CumcmLightBlue,align=center,minimum width=29mm,minimum height=7mm,font=\small},
+arrow/.style={->,thick,CumcmBlue}]
+\node[box] (load) {读取附件3、4\\截取1500--3500 cm$^{-1}$};
+\node[box,right=of load] (fixed) {双振子--Drude复折射率\\固定背景参数};
+\node[box,right=of fixed] (fit) {每角度6组初值\\Airy有界拟合};
+\node[box,below=of fit] (average) {两个独立厚度\\等权算术平均};
+\node[box,left=of average] (back) {第三束光强比\\回溯SiC结果};
+\node[box,right=of average] (diag) {同参双光束比较\\SVD与厚度偏差传播};
+\draw[arrow] (load)--(fixed);
+\draw[arrow] (fixed)--(fit);
+\draw[arrow] (fit)--(average);
+\draw[arrow] (average)--(back);
+\draw[arrow] (fit)--(diag);
+\end{tikzpicture}

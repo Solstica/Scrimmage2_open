@@ -1,0 +1,41 @@
+\begin{algorithm}[H]
+\SetAlgoLined
+\setstretch{0.92}
+\SetAlFnt{\normalsize}
+\SetArgSty{textnormal}
+\SetAlgoNlRelativeSize{-1}
+\SetInd{0.55em}{1.05em}
+\SetKwInput{KwIn}{Input}
+\SetKwInput{KwInit}{Initialize}
+\SetKwInput{KwOut}{Output}
+\SetKwFor{For}{for}{do}{end for}
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{end if}
+\SetKw{KwRet}{return}
+\caption{问题三四参数Airy反演与SiC回溯算法}
+\label{alg:q3-airy}
+\KwIn{附件3、4硅光谱，问题二SiC厚度及对应光学参数}
+\KwInit{固定双振子背景参数与有效质量，设置四参数边界$\Omega_3$和$6$组确定性初值}
+\For{$k\in\{10^\circ,15^\circ\}$}{
+将反射率百分数转为无量纲小数，并截取$1500$--$3500\,\mathrm{cm}^{-1}$\;
+建立候选集合$\mathcal C_k\leftarrow\varnothing$\;
+\For{每一组初值$\boldsymbol s\in\mathcal S_3$}{
+由双振子--Drude模型计算复折射率$\widetilde n_2$\;
+构造Airy多光束正演反射率$R_{\mathrm{Airy}}$\;
+对$(d,n_3,q_N,q_\Gamma)$求解有界非线性最小二乘\;
+\If{被动传播条件$0<|P|\le1$不满足}{
+舍弃该候选\tcp*[r]{物理可行性检查}
+}
+记录候选厚度、RMSE、$R^2$及边界活跃参数并写入$\mathcal C_k$\;
+}
+取$\boldsymbol p_k^*\leftarrow\arg\min_{\boldsymbol p\in\mathcal C_k}\mathrm{RMSE}(\boldsymbol p)$\tcp*[r]{正式Airy解}
+记录$d_k\leftarrow d(\boldsymbol p_k^*)$\;
+在$\boldsymbol p_k^*$处构造残差Jacobian并进行尺度化SVD诊断\;
+在同一$\boldsymbol p_k^*$下计算双光束截断曲线，仅用于同参比较\;
+以$\Delta\mathbf R=\mathbf R_{\mathrm{Airy}}-\mathbf R_{\mathrm{double}}$构造一阶Jacobian厚度偏移诊断\;
+}
+计算$d_{\mathrm{Si}}\leftarrow(d_{10^\circ}+d_{15^\circ})/2$\;
+将问题二SiC冻结参数代入第三束强度比$\eta_3$，与$0.1\%$工程参照比较\tcp*[r]{不执行模型切换}
+保留问题二SiC厚度$d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m$\;
+\KwRet $d_{\mathrm{Si}}$、$d_{\mathrm{SiC}}$及Airy拟合、SVD、高阶光束与模型误差传播诊断量\;
+\KwOut{硅外延层厚度、SiC回溯结果及模型可信度诊断}
+\end{algorithm}
