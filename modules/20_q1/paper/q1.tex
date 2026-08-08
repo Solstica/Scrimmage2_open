@@ -5,7 +5,7 @@
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=.96\textwidth]{\ProjectRoot/modules/20_q1/figures/editable/origin_templates/reference_png/q1_flow_reference.png}
+\includegraphics[width=.88\textwidth]{\ProjectRoot/modules/20_q1/figures/editable/origin_templates/reference_png/q1_flow_reference.png}
 \caption{问题一Sellmeier--Drude--Fresnel双光束模型流程。}
 \label{fig:q1-flow}
 \end{figure}
@@ -18,7 +18,7 @@
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=.94\textwidth]{\ProjectRoot/modules/20_q1/figures/q1_interference_schematic.png}
+\includegraphics[width=.88\textwidth]{\ProjectRoot/modules/20_q1/figures/q1_interference_schematic.png}
 \caption{空气--外延层--衬底结构中的双光束干涉光路。}
 \label{fig:q1-schematic}
 \end{figure}
@@ -187,7 +187,7 @@ $\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$
 \subsubsection{色散、载流子与界面参数的作用}
 厚度主要通过$\Phi$控制条纹的相位与密度；Sellmeier参数和载流子浓度$N$则通过$n_2(\sigma)$同时改变相位演化和Fresnel系数，因此会与$d$产生一定耦合。衬底折射率$n_3$不进入外延层传播相位，但直接影响外延层--衬底界面的$r_{23}^{(u)}$，因而主要调节干涉振幅和包络。入射角$i$同时影响折射角$\gamma$及$s,p$偏振Fresnel系数，使不同角度的光谱具有不同的相位斜率和振幅响应。
 
-由此可见，单个干涉条纹的位置并不足以独立区分$d$与全部材料参数；但厚度对整个波段相位斜率具有一致作用，而材料色散与界面参数对谱形的影响形式不同。利用连续波段并在不同入射角下重复反演，可以增加厚度信息与附属光学参数之间的可分离性。该分析为问题二采用分角度全谱非线性最小二乘及多初值搜索提供了物理依据。
+由此可见，单个干涉条纹的位置并不足以独立区分$d$与全部材料参数；但厚度对整个波段相位斜率具有一致作用，而材料色散与界面参数对谱形的影响形式不同。连续波段能够利用厚度相位斜率与材料色散响应的差异增强参数分离；不同入射角则提供相互独立的重复观测，可在问题二中通过跨角度厚度一致性检验反演结果的稳定性。该分析为问题二采用分角度全谱非线性最小二乘及多初值搜索提供了物理依据。
 
 \subsection{模型检验}
 问题一以解析正演模型为主，因此检验重点放在公式极限关系与数值实现的一致性上。表\ref{tab:q1-selfcheck}列出能够由当前双光束模型直接推出的主要自洽关系。
