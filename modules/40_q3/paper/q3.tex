@@ -22,7 +22,7 @@
 \label{fig:q3-multibeam-schematic}
 \end{figure}
 
-\subsection{模型建立}
+\subsection{双振子--Drude--Airy多光束模型}
 
 \subsubsection{多光束振幅递推与形成条件}
 
@@ -50,7 +50,7 @@ q_u=r_{21}^{(u)}r_{23}^{(u)}P,\quad m\ge2.
 \exp\!\left[-4\pi\times10^{-4}\sigma d\kappa\cos\gamma\right],
 \label{eq:q3-order-decay}
 \end{equation}
-其中$\widetilde n_2=n-\mathrm i\kappa$且$\kappa\ge0$。式\eqref{eq:q3-order-decay}表明，高阶反射能否保留可观测幅值取决于界面反射和传播吸收；另一方面，相干叠加还要求不同往返次数的光束在时间和空间上能够重合。结合薄膜干涉理论\cite{bornwolf}，多光束干涉产生可观测影响需要同时满足：
+其中$\widetilde n_2=n-\mathrm i\kappa$且$\kappa\ge0$。式\eqref{eq:q3-order-decay}表明，高阶反射能否保留可观测幅值取决于界面反射和传播吸收；另一方面，相干叠加还要求不同往返次数的光束在时间和空间上能够重合。结合薄膜干涉与分层介质理论\cite{bornwolf,yeh}，多光束干涉产生可观测影响需要同时满足：
 
 \begin{enumerate}[leftmargin=2em,itemsep=0.2ex]
 \item \textbf{界面反射条件：}上下界面具有非零振幅反射系数，使第二束及后续返回光束能够形成；
@@ -221,6 +221,7 @@ q_{\Gamma,k}=\log_{10}\!\left(\frac{\Gamma_{e,k}}{1\,\mathrm{s}^{-1}}\right),
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{ccc}
 \toprule
+\rowcolor{CumcmLightBlue}
 参数 & 物理意义 & 有界范围\\
 \midrule
 $d/\mu\mathrm m$ & 硅外延层厚度 & $[0.1,100]$\\
@@ -254,7 +255,7 @@ d_{\mathrm{Si}}
 =\frac{d_{10^\circ}^{\mathrm{Si}}+d_{15^\circ}^{\mathrm{Si}}}{2}
 \label{eq:q3-average}
 \end{equation}
-进行等权综合。该平均值只汇总两次独立反演，不形成第三次拟合。
+进行等权综合。由于当前残差包含幅值基线、局部吸收等模型失配，两个角度的RMSE不能直接解释为厚度估计方差，因此不据此构造RMSE加权平均。该平均值只汇总两次独立反演，不形成第三次拟合。
 
 求解步骤的标准伪代码见算法\ref{alg:q3-airy}。
 
@@ -285,7 +286,7 @@ d_{\mathrm{Si}}=3.2175\,\mu\mathrm m
 \end{equation}
 两角度厚度相差$0.0600\,\mu\mathrm m$，相对于平均厚度的差异为$1.86\%$，半极差为$0.0300\,\mu\mathrm m$。半极差只描述两个独立角度结果之间的离散程度，不作为统计置信区间。
 
-拟合指标见表\ref{tab:q3-fit-results}。$10^\circ$光谱的主要条纹结构能够得到较好解释；$15^\circ$的$R^2$仅为$0.0741$，说明固定背景四参数模型对该角度的幅值基线和局部吸收结构仍存在明显未解释成分。因此不能把较低残差等同于全部光学参数均被准确识别，厚度结论还需结合双角度一致性、多初值结果和可辨识性诊断共同判断。
+拟合指标见表\ref{tab:q3-fit-results}。$10^\circ$光谱的主要条纹结构能够得到较好解释；$15^\circ$的$R^2$仅为$0.0741$，说明固定背景四参数模型对该角度的幅值基线和局部吸收结构仍存在明显未解释成分。因此不能把较低残差等同于全部光学参数均被准确识别。本文保留$15^\circ$厚度作为独立相位观测结果，是因为厚度主要由连续干涉条纹的相位位置约束，并进一步通过多初值局部盆地和Jacobian--SVD检验其局部稳定性；对于触边或弱可辨的附属光学参数则不作高精度解释。
 
 \begin{table}[!htbp]
 \centering
@@ -293,6 +294,7 @@ d_{\mathrm{Si}}=3.2175\,\mu\mathrm m
 \label{tab:q3-fit-results}
 \begin{tabular}{cccc}
 \toprule
+\rowcolor{CumcmLightBlue}
 入射角 & 厚度/$\mu\mathrm m$ & RMSE/百分点 & $R^2$\\
 \midrule
 $10^\circ$ & 3.2474 & 1.8745 & 0.6309\\
@@ -374,7 +376,7 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 
 \subsubsection{Jacobian--SVD局部可辨识性}
 
-为区分“厚度是否稳定”与“所有附属参数是否可识别”，在两个角度的最优Airy解处构造残差Jacobian $J$。由于原始条件数受参数单位和尺度影响，对各列归一化
+为区分“厚度是否稳定”与“所有附属参数是否可识别”，在两个角度的最优Airy解处构造残差Jacobian $J$。由于原始条件数受参数单位和尺度影响，按数值线性代数中的尺度化思想\cite{golub2013}对各列归一化
 \begin{equation}
 \widetilde J_{\cdot j}
 =\frac{J_{\cdot j}}{\|J_{\cdot j}\|_2}
@@ -395,6 +397,6 @@ d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m
 \label{fig:q3-identifiability}
 \end{figure}
 
-综合双角度厚度一致性、多初值结果和Jacobian--SVD诊断，本文将厚度作为问题三的主要定量结论，不对触及边界或处于弱可辨方向的载流子参数作材料常数层面的高精度解释。需要保留的局限是：$15^\circ$拟合优度较低，且题目未给出光源相干长度、界面粗糙度及独立材料光学常数测量。因此$d_{\mathrm{Si}}=3.2175\,\mu\mathrm m$应理解为当前双振子--Drude--Airy物理模型和给定数据条件下的反演结果，而不是脱离模型假设的绝对测量值。
+综合双角度厚度一致性、多初值结果和Jacobian--SVD诊断，本文将厚度作为问题三的主要定量结论，不对触及边界或处于弱可辨方向的载流子参数作材料常数层面的高精度解释。需要保留的局限是：$15^\circ$拟合优度较低，且题目未给出光源相干长度、界面粗糙度及独立材料光学常数测量。因此$d_{\mathrm{Si}}=3.2175\,\mu\mathrm m$仅适用于当前双振子--Drude--Airy物理模型和给定数据条件，不应解释为脱离模型假设的绝对测量值。
 
 \FloatBarrier
