@@ -58,7 +58,8 @@ q_{N,k}=\log_{10}\!\left(\frac{N_k}{1\ \mathrm{cm}^{-3}}\right),
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{cccc}
 \toprule
-\rowcolor{cyan!20} 参数 & 物理意义 & 有界范围 & 阶段一初值 \\
+\rowcolor{CumcmLightBlue}
+参数 & 物理意义 & 有界范围 & 阶段一初值 \\
 \midrule
 $d/\mu\mathrm m$ & 外延层厚度 & $[6.5,8.5]$ & $6.6,6.8,\ldots,8.4$ \\
 $q_N$ & 载流子浓度对数 & $[14.0,20.5]$ & $15.5,18.0,20.0$ \\
@@ -163,7 +164,8 @@ R_k^2&=1-\frac{\sum_i e_{ki}^2}{\sum_i(R_{ki}-\overline R_k)^2}.
 \label{tab:q2-paper-a-results}
 \begin{tabular}{cccccc}
 \toprule
-\rowcolor{cyan!20} 入射角 & 厚度/$\mu\mathrm m$ & RMSE & MAPE/$\%$ & $R^2$ & 结果用途\\
+\rowcolor{CumcmLightBlue}
+入射角 & 厚度/$\mu\mathrm m$ & RMSE & MAPE/$\%$ & $R^2$ & 结果用途\\
 \midrule
 $10^\circ$ & 7.8566 & $5.9820\times10^{-4}$ & 0.2680 & 0.9551 & 单角度结果\\
 $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\\
@@ -211,9 +213,11 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 \label{fig:q2-local-basins}
 \end{figure}
 
-\textbf{（3）附属参数解释边界。} 两个角度的$q_N$均收敛至允许范围下边界附近，且多个Sellmeier扰动参数达到$\pm5\%$边界，说明这些附属参数在有限波段内的可辨识性较弱。因此本文只将其作为谱形修正参数，不对其作材料常数层面的高精度解释；外延层厚度$d$是本问的核心输出。
+\textbf{（3）参数自由化前后的盆地延续性。} 第一阶段固定Sellmeier参数时，最终最优盆地已经分别由$27/90$和$13/90$组初值识别；在第二阶段释放七个Sellmeier参数后，这两个盆地仍保持各自角度的最低RMSE。说明最终厚度盆地并非在释放大量附属参数后才由额外自由度“拟合出来”，而是在低维参数搜索中已经存在，并在完整模型精修后继续占优。这一结果为厚度相对于附属参数自由化的稳定性提供了补充证据。
 
-综合拟合精度、双角度一致性和多初值候选解比较，得到SiC外延层厚度
+\textbf{（4）附属参数解释边界。} 两个角度的$q_N$均收敛至允许范围下边界附近，且多个Sellmeier扰动参数达到$\pm5\%$边界，说明这些附属参数在有限波段内的可辨识性较弱。因此本文只将其作为谱形修正参数，不对其作材料常数层面的高精度解释；外延层厚度$d$是本问的核心输出。
+
+综合拟合精度、双角度一致性、多初值盆地竞争及参数自由化前后的盆地延续性，得到SiC外延层厚度
 \begin{equation}
 \boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
 \end{equation}
