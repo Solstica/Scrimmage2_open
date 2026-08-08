@@ -139,14 +139,8 @@ e_{ki}^2(\boldsymbol p_k),
 
 问题二的数值难点不是单次最小二乘本身，而是干涉相位使目标函数具有多个级次对应的局部极小值。因此，对$10^\circ$和$15^\circ$两个角度分别执行同一套两阶段搜索。阶段一在固定$\boldsymbol\beta_0$的条件下遍历$90$组确定性初值，仅拟合$(d,q_N,n_3)$，以较低维度快速定位不同候选极小区域；阶段二再从残差最小的前$8$个不同候选出发，释放完整十参数并进行有界精修。整个过程中两个角度的参数向量始终独立，不在优化阶段交换或共享参数。
 
-图\ref{fig:q2-algorithm}给出求解流程。标准伪代码见算法\ref{alg:q2-inversion}，其重点是保留多个竞争候选后再比较最终残差，而不是通过单一初值直接接受一次局部收敛结果。
+求解流程的标准伪代码见算法\ref{alg:q2-inversion}，其重点是保留多个竞争候选后再比较最终残差，而不是通过单一初值直接接受一次局部收敛结果。
 
-\begin{figure}[!htbp]
-\centering
-\input{\ProjectRoot/modules/30_q2/figures/q2_algorithm_flow.tex}
-\caption{问题二分角度多初值有界反演流程。}
-\label{fig:q2-algorithm}
-\end{figure}
 
 \input{\ProjectRoot/modules/30_q2/paper/q2_algorithm.tex}
 
