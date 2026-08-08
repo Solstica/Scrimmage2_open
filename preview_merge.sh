@@ -70,9 +70,9 @@ clean_preview() {
   if [[ -n "$wt" ]]; then
     say "检测到预览 worktree：$wt"
     if [[ -n "$(git -C "$wt" status --porcelain 2>/dev/null || true)" ]]; then
-      warn "预览目录内存在未提交改动。它本应是一次性目录。"
-      read -r -p "确认丢弃这些临时改动并删除？[y/N] " ans
-      [[ "${ans:-N}" =~ ^[Yy]$ ]] || { say "已取消。"; exit 0; }
+      warn "预览目录内存在未提交改动/未完成合并。该目录是一次性的，可以直接丢弃。"
+      read -r -p "删除这个临时预览并丢弃其中改动？[Y/n] " ans
+      [[ ! "${ans:-Y}" =~ ^[Nn]$ ]] || { say "已取消。"; exit 0; }
     fi
     git worktree remove --force "$wt" || die "worktree 删除失败，请不要手工乱删 .git 内容。"
   else
@@ -110,6 +110,38 @@ is_common_owned_file() {
   esac
 }
 
+# 这些都是历史归档、运行输出或缓存，不参与当前论文正文。
+# 在一次性全文预览中若发生冲突，直接从预览树删除，不再询问用户。
+is_ignorable_preview_file() {
+  case "$1" in
+    work/archive/*|archive/*|work/*/archive/*|work/*/output/*|work/*/outputs/*|work/*/results/*|work/cache/*|work/tmp/*|output/*|outputs/*|results/*|*.aux|*.log|*.fls|*.fdb_latexmk|*.synctex.gz)
+      return 0 ;;
+    *)
+      return 1 ;;
+  esac
+}
+
+remove_conflict_from_preview() {
+  local wt="$1" file="$2"
+  git -C "$wt" rm -f --ignore-unmatch -- "$file" >/dev/null 2>&1 || true
+  if git -C "$wt" ls-files -u -- "$file" | grep -q .; then
+    git -C "$wt" update-index --force-remove -- "$file" >/dev/null 2>&1 || true
+    rm -f "$wt/$file" 2>/dev/null || true
+  fi
+}
+
+# 对普通“删除/修改”冲突也做容错：若某一侧根本没有该文件，则该侧的含义就是删除。
+take_side_or_delete() {
+  local wt="$1" side="$2" file="$3"
+  if git -C "$wt" checkout "--${side}" -- "$file" >/dev/null 2>&1; then
+    git -C "$wt" add -- "$file"
+    return 0
+  fi
+
+  warn "$file 在 ${side} 一侧不存在（典型删除/修改冲突），按该侧的‘删除’处理。"
+  remove_conflict_from_preview "$wt" "$file"
+}
+
 resolve_expected_conflicts() {
   local wt="$1" branch="$2" prefix="$3" file unresolved
   unresolved="$(git -C "$wt" diff --name-only --diff-filter=U)"
@@ -117,17 +149,21 @@ resolve_expected_conflicts() {
 
   say ""
   say "发现冲突，先按项目约定自动处理可判断项："
+  say "  - work/archive、output、results 等历史/运行文件：预览中直接忽略"
   say "  - 当前模块目录 ${prefix:-<未知>}：采用待合入分支版本"
   say "  - paper/main.tex / preamble / sections：采用 common-final 版本"
 
   while IFS= read -r file; do
     [[ -n "$file" ]] || continue
-    if [[ -n "$prefix" && "$file" == "$prefix"* ]]; then
+    if is_ignorable_preview_file "$file"; then
+      say "  [忽略] $file -> 与论文正文无关，从临时预览删除"
+      remove_conflict_from_preview "$wt" "$file"
+    elif [[ -n "$prefix" && "$file" == "$prefix"* ]]; then
       say "  [模块] $file -> 采用 ${branch}"
-      git -C "$wt" checkout --theirs -- "$file" && git -C "$wt" add -- "$file"
+      take_side_or_delete "$wt" theirs "$file"
     elif is_common_owned_file "$file"; then
       say "  [公共] $file -> 保留 common-final"
-      git -C "$wt" checkout --ours -- "$file" && git -C "$wt" add -- "$file"
+      take_side_or_delete "$wt" ours "$file"
     fi
   done <<< "$unresolved"
 }
@@ -144,7 +180,9 @@ finish_merge_interactively() {
 
     say ""
     say "仍有脚本无法安全判断的冲突文件："
-    printf '  - %s\n' $remaining
+    while IFS= read -r f; do
+      [[ -n "$f" ]] && say "  - $f"
+    done <<< "$remaining"
     say ""
     say "请选择："
     say "  1) 安全停止（推荐：不碰正式分支，保留预览目录供建模手处理）"
@@ -165,13 +203,13 @@ finish_merge_interactively() {
       2)
         while IFS= read -r f; do
           [[ -n "$f" ]] || continue
-          git -C "$wt" checkout --ours -- "$f" && git -C "$wt" add -- "$f"
+          take_side_or_delete "$wt" ours "$f"
         done <<< "$remaining"
         ;;
       3)
         while IFS= read -r f; do
           [[ -n "$f" ]] || continue
-          git -C "$wt" checkout --theirs -- "$f" && git -C "$wt" add -- "$f"
+          take_side_or_delete "$wt" theirs "$f"
         done <<< "$remaining"
         ;;
       4)
@@ -266,9 +304,9 @@ main() {
     case "$choice" in
       1)
         if [[ -n "$(git -C "$old_wt" status --porcelain 2>/dev/null || true)" ]]; then
-          warn "旧预览目录里有未提交改动。这里原则上不应该手改。"
-          read -r -p "确认丢弃旧预览改动并重建？[y/N] " ans
-          [[ "${ans:-N}" =~ ^[Yy]$ ]] || { say "已取消。"; exit 0; }
+          warn "旧预览目录里有未提交改动/未完成合并。这里原则上不应该手改。"
+          read -r -p "直接丢弃旧临时预览并重建？[Y/n] " ans
+          [[ ! "${ans:-Y}" =~ ^[Nn]$ ]] || { say "已取消。"; exit 0; }
         fi
         git worktree remove --force "$old_wt" || die "旧预览 worktree 删除失败。"
         git branch -D "$PREVIEW_BRANCH" >/dev/null 2>&1 || true
