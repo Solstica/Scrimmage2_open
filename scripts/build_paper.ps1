@@ -8,6 +8,13 @@ $abstractSource = Join-Path $projectRoot 'modules\00_abstract\paper\abstract.tex
 $abstractCompat = Join-Path $paperDir 'abstract_content.tex'
 $sectionDir = Join-Path $paperDir 'sections'
 
+# Fail closed on stale numerical results or unregistered body figures before
+# spending time on the full XeLaTeX build.
+& python (Join-Path $projectRoot 'scripts\verify_paper_a_results.py')
+if ($LASTEXITCODE -ne 0) { throw 'Frozen-result verification failed.' }
+& python (Join-Path $projectRoot 'scripts\check_writing_quality.py')
+if ($LASTEXITCODE -ne 0) { throw 'Writing/figure verification failed.' }
+
 New-Item -ItemType Directory -Force $buildDir, $outputDir, $sectionDir | Out-Null
 Copy-Item -LiteralPath $abstractSource -Destination $abstractCompat -Force
 
@@ -32,6 +39,7 @@ Push-Location $paperDir
 try {
     latexmk -xelatex -interaction=nonstopmode -halt-on-error `
         "-outdir=$buildDir" paper_template.tex
+    if ($LASTEXITCODE -ne 0) { throw 'Full paper build failed.' }
 }
 finally {
     Pop-Location
