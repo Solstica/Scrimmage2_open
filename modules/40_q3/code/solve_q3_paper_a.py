@@ -1,4 +1,4 @@
-"""PAPER_A Q3: fixed Si oscillator--Drude constants and Airy inversion."""
+"""Q3 fixed-background silicon oscillator--Drude Airy inversion."""
 from __future__ import annotations
 
 import argparse
@@ -27,7 +27,7 @@ M_E = 9.109_383_701_5e-31
 MSTAR_RATIO = 0.26
 SI_BAND = (1500.0, 3500.0)
 SIC_BAND = (2500.0, 3300.0)
-THRESHOLD_PERCENT = 0.1
+ENGINEERING_REFERENCE_PERCENT = 0.1
 PAPER_A_TARGET = {"10deg_um": 3.143, "15deg_um": 2.937, "average_um": 3.040}
 
 EPS_INF = 11.68
@@ -57,7 +57,7 @@ def band_only(spectrum: Spectrum, band: tuple[float, float]) -> Spectrum:
 
 
 def silicon_index(wavenumber_cm: np.ndarray, log_density_cm3: float, log_collision_s: float) -> np.ndarray:
-    """PAPER_A double-oscillator--Drude index under exp(-ikz)."""
+    """Double-oscillator--Drude index under the exp(-ikz) convention."""
     wavelength_um = 1.0e4 / np.asarray(wavenumber_cm, dtype=float)
     epsilon = np.full(wavelength_um.shape, EPS_INF, dtype=complex)
     for strength, resonance_um, damping_um in OSCILLATORS:
@@ -149,8 +149,9 @@ def metric_block(observed: np.ndarray, predicted: np.ndarray) -> dict[str, float
 
 
 def fit_si(spectrum: Spectrum) -> dict[str, object]:
-    # Starts concentrate around the fringe-count estimate used by PAPER_A but
-    # retain the paper's broad physical bounds, including d in 0.1--100 um.
+    # Q1's fringe-spacing relation places the Si thickness on the few-micrometre scale.
+    # These starts probe neighbouring local basins around that data-informed scale, while
+    # the optimizer retains the broad physical bounds d in 0.1--100 um.
     starts = [
         [2.70, 3.0, 14.0, 12.0], [2.90, 3.5, 16.0, math.log10(5e13)],
         [3.05, 4.0, 18.0, 13.0], [3.20, 3.5, 16.0, 14.0],
@@ -261,7 +262,9 @@ def sic_backcheck(
     fig, ax = plt.subplots(figsize=(7.4, 4.6))
     for angle, block in table.groupby("angle_deg"):
         ax.plot(block["wavenumber_cm-1"], block["third_beam_ratio_percent"], label=f"{angle:g} deg")
-    ax.axhline(THRESHOLD_PERCENT, ls="--", color="#b44", label="0.1% threshold")
+    ax.axhline(
+        ENGINEERING_REFERENCE_PERCENT, ls="--", color="#b44", label="0.1% engineering reference"
+    )
     ax.set(xlabel=r"Wavenumber (cm$^{-1}$)", ylabel="Third-beam ratio (%)")
     ax.set_yscale("log")
     ax.grid(alpha=0.25)
@@ -269,11 +272,13 @@ def sic_backcheck(
     fig.tight_layout()
     fig.savefig(module / "figures" / "q3_sic_paper_a_backcheck.png", dpi=240)
     plt.close(fig)
+    maximum = max(maxima)
     return {
         "q2_thickness_um": q2["primary_result"]["thickness_um"],
         "max_ratio_percent_by_angle": maxima,
-        "threshold_percent": THRESHOLD_PERCENT,
-        "retain_q2_result": bool(max(maxima) < THRESHOLD_PERCENT),
+        "engineering_reference_percent": ENGINEERING_REFERENCE_PERCENT,
+        "max_to_engineering_reference_ratio": float(maximum / ENGINEERING_REFERENCE_PERCENT),
+        "interpretation": "magnitude_reference_only_not_model_selector",
     }
 
 
@@ -314,7 +319,9 @@ def main() -> None:
         label = f"{int(spectrum.angle_deg)}deg"
         table = pd.read_csv(module / "tables" / f"q3_si_{label}_paper_a.csv")
         ax.plot(table["wavenumber_cm-1"], table["third_beam_ratio_percent"], label=f"{spectrum.angle_deg:g} deg")
-    ax.axhline(THRESHOLD_PERCENT, ls="--", color="#b44", label="0.1% threshold")
+    ax.axhline(
+        ENGINEERING_REFERENCE_PERCENT, ls="--", color="#b44", label="0.1% engineering reference"
+    )
     ax.set(xlabel=r"Wavenumber (cm$^{-1}$)", ylabel="Third-beam ratio (%)")
     ax.set_yscale("log")
     ax.grid(alpha=0.25)
@@ -346,9 +353,10 @@ def main() -> None:
     fig.tight_layout()
     fig.savefig(module / "figures" / "q3_si_double_airy_comparison.png", dpi=240)
     plt.close(fig)
+
     q2 = json.loads(args.q2_results.read_text(encoding="utf-8"))
     if abs(q2["primary_result"]["thickness_um"] - 7.7398) > 5.0e-4:
-        raise ValueError("Q2 dependency is not the fresh PAPER_A result")
+        raise ValueError("Q2 dependency is not the fresh frozen result")
     backcheck = sic_backcheck(module, bundle["sic"], q2)
     payload = {
         "schema_version": "run_02.q3.paper_a.v1",
@@ -379,11 +387,12 @@ def main() -> None:
             for row in bundle["si"]
         ],
         "disclosures": [
-            "Silicon uses the Airy model as the formal PAPER_A route; the third-beam ratio is explanatory, not a model selector.",
+            "Silicon uses the Airy model as the formal route; the third-beam ratio is explanatory, not a model selector.",
+            "The 0.1% value is retained only as an engineering magnitude reference and never as an automatic model-switch rule.",
             "The air refractive index is fixed at 1.0003 to keep the Snell/Fresnel geometry consistent with Q1 and Q2.",
             "Oscillator constants and effective mass are fixed; only d, n3, N and collision rate are fitted independently by angle.",
             "No angle gain, offset, finite-order Neumann expansion, AIC selector or joint-angle primary fit is used.",
-            f"The corrected attenuating propagation branch produces a mean thickness {distance_percent:.2f}% above the paper's reported value; the user accepted the identifiable four-parameter recomputation as the frozen result.",
+            f"The corrected attenuating propagation branch produces a mean thickness {distance_percent:.2f}% above the paper's reported value; the identifiable four-parameter recomputation is retained as the frozen result.",
         ],
     }
     output = project / "output" / "results" / "q3_paper_a_results.json"
