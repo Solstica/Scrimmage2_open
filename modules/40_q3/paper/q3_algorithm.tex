@@ -31,10 +31,11 @@
 记录$d_k\leftarrow d(\boldsymbol p_k^*)$\;
 在$\boldsymbol p_k^*$处构造残差Jacobian并进行尺度化SVD诊断\;
 在同一$\boldsymbol p_k^*$下计算双光束截断曲线，仅用于同参比较\;
+以$\Delta\mathbf R=\mathbf R_{\mathrm{Airy}}-\mathbf R_{\mathrm{double}}$构造一阶Jacobian厚度偏移诊断\;
 }
 计算$d_{\mathrm{Si}}\leftarrow(d_{10^\circ}+d_{15^\circ})/2$\;
 将问题二SiC冻结参数代入第三束强度比$\eta_3$，与$0.1\%$工程参照比较\tcp*[r]{不执行模型切换}
 保留问题二SiC厚度$d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m$\;
-\KwRet $d_{\mathrm{Si}}$、$d_{\mathrm{SiC}}$及Airy拟合、SVD和高阶光束诊断量\;
+\KwRet $d_{\mathrm{Si}}$、$d_{\mathrm{SiC}}$及Airy拟合、SVD、高阶光束与模型误差传播诊断量\;
 \KwOut{硅外延层厚度、SiC回溯结果及模型可信度诊断}
 \end{algorithm}
