@@ -1,31 +1,26 @@
 \subsection{程序与结果文件清单}
-\begin{longtable}{p{.28\textwidth}p{.62\textwidth}}
+\begingroup\small\sloppy
+\begin{longtable}{p{.38\textwidth}p{.52\textwidth}}
 \toprule
 文件 & 功能\\\midrule
 \endfirsthead
 \toprule 文件 & 功能\\\midrule\endhead
-\texttt{data\_io.py} & 读取四个官方工作簿、排除共同边界异常点、平滑与波段抽取。\\
-\texttt{materials.py} & SiC Sellmeier 背景、Si 293 K 插值与 Drude 复介电函数。\\
-\texttt{optics.py} & 被动复平方根、s/p Fresnel 系数、双光束、有限阶 Neumann 与 Airy 正算。\\
-\texttt{inversion.py} & 双角度剖面目标、全局—局部联合反演、SVD、厚度剖面与块 Bootstrap。\\
-\texttt{run\_analysis.py} & 正式全流程入口，生成 JSON、CSV 与全部数值图。\\
-\texttt{test\_physics.py} & 四项物理单元测试。\\
-\texttt{verify\_results.py} & 公式—代码—单位—缩放四联检查和冻结前数值门禁。\\
-\texttt{make\_all\_figures.py} & 生成流程图与敏感性补充图。\\
+\path{shared/code/materials.py} & SiC Sellmeier--Drude关系和硅双振子--Drude复介电函数。\\
+\path{shared/code/optics.py} & Snell关系、s/p偏振Fresnel系数、双光束与Airy反射率。\\
+\path{modules/30_q2/code/solve_q2_paper_a.py} & 问题二分角度有界反演、厚度综合和拟合图表输出。\\
+\path{modules/30_q2/code/export_q2_diagnostics.py} & 问题二多初值候选与Origin诊断数据导出。\\
+\path{modules/40_q3/code/solve_q3_paper_a.py} & 问题三四参数Airy反演、第三束光强比和SiC回溯。\\
+\path{modules/40_q3/code/export_q3_identifiability.py} & 问题三Jacobian--SVD局部可辨识性数据导出。\\
+\path{modules/40_q3/code/export_q3_model_error.py} & Airy--双光束模型差向厚度偏差的一阶传播计算。\\
+\path{scripts/test_physics.py} & 问题一物理极限、相位约定和单位缩放测试。\\
+\path{scripts/verify_paper_a_results.py} & 冻结状态、跨问哈希和数值一致性门禁。\\
+\path{scripts/check_writing_quality.py} & 正文结构、图表登记和浮动体写作门禁。\\
+\path{scripts/build_previews.ps1} & 独立编译问题一、问题二和问题三局部稿。\\
+\path{scripts/build_paper.ps1} & 编译主文档并生成最终PDF。\\
 \bottomrule
 \end{longtable}
+\endgroup
 
-公共数值内核位于 \path{shared/code/}，全项目入口位于 \path{scripts/}，各问独有代码位于对应的 \path{modules/*/code/}。数据从仓库外的 \path{raw/prob25B/} 只读加载。正式复现命令为：
-\begin{lstlisting}
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-& 'C:\Users\admin\miniconda3\shell\condabin\conda-hook.ps1'
-conda activate phasefield
-python -m scripts.run_analysis --data-dir ..\CUCCM2026\raw\prob25B --project .
-python -m unittest -v scripts.test_physics
-python -m scripts.verify_results --project .
-\end{lstlisting}
-运行环境由 \path{shared/config/environment.yml} 登记。正式结果文件为 \path{output/results/analysis_results.json}。其 SHA-256 分行登记如下：
-\begin{center}\ttfamily\small
-f17eaa6c9128c55069e1bb47eeb57d6\\
-f1732bd6dd8db50c189d4334017eb581e
-\end{center}
+\begingroup\sloppy
+正式运行环境为\texttt{phasefield}。问题二、问题三分别生成\path{output/results/q2_paper_a_results.json}和\path{output/results/q3_paper_a_results.json}；问题一验证结果为\path{output/results/q1_validation.json}。图表的数据来源统一登记在\path{work/figure_registry.csv}，正式数值及其来源哈希登记在\path{work/result_registry.csv}。完整代码随论文工程提交，不在正文重复粘贴。
+\par\endgroup
