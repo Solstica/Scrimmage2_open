@@ -185,7 +185,7 @@ finish_merge_interactively() {
     done <<< "$remaining"
     say ""
     say "请选择："
-    say "  1) 安全停止（推荐：不碰正式分支，保留预览目录供建模手处理）"
+    say "  1) 安全停止（推荐：不碰正式分支，保留预览目录供管理员处理）"
     say "  2) 剩余冲突全部保留 common-final 版本"
     say "  3) 剩余冲突全部采用当前待合入分支版本"
     say "  4) 我自己手工解决；解决完后回这里继续检查"
@@ -197,7 +197,7 @@ finish_merge_interactively() {
         git -C "$wt" merge --abort || true
         warn "已取消当前分支 ${branch} 的合并并停止。"
         say "预览目录仍保留在：$wt"
-        say "把上面的冲突文件名发给建模手即可，不要在正式分支上乱改。"
+        say "把上面的冲突文件名发给管理员即可。"
         exit 2
         ;;
       2)
@@ -234,7 +234,7 @@ compile_paper() {
   if command -v latexmk >/dev/null 2>&1; then
     if ! (cd "$paper_dir" && latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex); then
       warn "LaTeX 编译失败，但预览 worktree 已保留，正式分支未受影响。"
-      say "请把这个日志发给建模手：$paper_dir/main.log"
+      say "请把这个日志发给管理员：$paper_dir/main.log"
       exit 3
     fi
   elif command -v xelatex >/dev/null 2>&1; then
@@ -288,7 +288,7 @@ main() {
     || die "找不到基底分支 ${BASE_REMOTE}。"
   for branch in "${MERGE_BRANCHES[@]}"; do
     git show-ref --verify --quiet "refs/remotes/${branch}" \
-      || die "找不到远端分支 ${branch}。请把这条报错发给建模手。"
+      || die "找不到远端分支 ${branch}。请把这条报错发给管理员。"
   done
 
   old_wt="$(preview_worktree_for_branch || true)"
