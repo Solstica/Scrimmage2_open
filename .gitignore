@@ -10,10 +10,15 @@ tmp/
 # Quick smoke-test output is not a frozen result
 output/results/analysis_quick.json
 
-# Generated compatibility mirror for the fixed-path CUMCM Skill gates.
-# Editable sources live under modules/ and are synced by build_paper.ps1.
+# Legacy/local compatibility mirrors are never authoritative sources.
 paper/abstract_content.tex
 paper/sections/*.tex
+
+# Office lock files
+~$*.xlsx
+~$*.xls
+~$*.docx
+~$*.pptx
 
 # LaTeX auxiliary files that may be emitted beside sources
 *.aux

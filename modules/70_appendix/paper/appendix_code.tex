@@ -7,10 +7,14 @@
 \toprule 文件 & 功能\\\midrule\endhead
 \path{shared/code/materials.py} & SiC Sellmeier--Drude关系和硅双振子--Drude复介电函数。\\
 \path{shared/code/optics.py} & Snell关系、s/p偏振Fresnel系数、双光束与Airy反射率。\\
-\path{modules/30_q2/code/solve_q2_paper_a.py} & 问题二分角度有界反演、平均和图表输出。\\
+\path{modules/30_q2/code/solve_q2_paper_a.py} & 问题二分角度有界反演、厚度综合和拟合图表输出。\\
+\path{modules/30_q2/code/export_q2_diagnostics.py} & 问题二多初值候选与Origin诊断数据导出。\\
 \path{modules/40_q3/code/solve_q3_paper_a.py} & 问题三四参数Airy反演、第三束光强比和SiC回溯。\\
-\path{scripts/test_physics.py} & 问题一物理极限和单位缩放测试。\\
+\path{modules/40_q3/code/export_q3_identifiability.py} & 问题三Jacobian--SVD局部可辨识性数据导出。\\
+\path{modules/40_q3/code/export_q3_model_error.py} & Airy--双光束模型差向厚度偏差的一阶传播计算。\\
+\path{scripts/test_physics.py} & 问题一物理极限、相位约定和单位缩放测试。\\
 \path{scripts/verify_paper_a_results.py} & 冻结状态、跨问哈希和数值一致性门禁。\\
+\path{scripts/check_writing_quality.py} & 正文结构、图表登记和浮动体写作门禁。\\
 \path{scripts/build_previews.ps1} & 独立编译问题一、问题二和问题三局部稿。\\
 \path{scripts/build_paper.ps1} & 编译主文档并生成最终PDF。\\
 \bottomrule
@@ -18,5 +22,5 @@
 \endgroup
 
 \begingroup\sloppy
-正式运行环境为\texttt{phasefield}。问题二、问题三分别生成\path{output/results/q2_paper_a_results.json}和\path{output/results/q3_paper_a_results.json}；图表的数据来源登记在\path{work/figure_registry.csv}。完整代码随论文工程提交，不在正文重复粘贴。
+正式运行环境为\texttt{phasefield}。问题二、问题三分别生成\path{output/results/q2_paper_a_results.json}和\path{output/results/q3_paper_a_results.json}；问题一验证结果为\path{output/results/q1_validation.json}。图表的数据来源统一登记在\path{work/figure_registry.csv}，正式数值及其来源哈希登记在\path{work/result_registry.csv}。完整代码随论文工程提交，不在正文重复粘贴。
 \par\endgroup

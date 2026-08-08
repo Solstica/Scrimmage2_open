@@ -4,21 +4,27 @@ $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $paperDir = Join-Path $projectRoot 'paper'
 $buildDir = Join-Path $projectRoot 'build'
 $outputDir = Join-Path $projectRoot 'output\pdf'
+
+# Fail closed on stale numerical results or unregistered body figures before
+# spending time on the full XeLaTeX build.
+& python (Join-Path $projectRoot 'scripts\verify_paper_a_results.py')
+if ($LASTEXITCODE -ne 0) { throw 'Frozen-result verification failed.' }
+& python (Join-Path $projectRoot 'scripts\check_writing_quality.py')
+if ($LASTEXITCODE -ne 0) { throw 'Writing/figure verification failed.' }
+
 New-Item -ItemType Directory -Force $buildDir, $outputDir | Out-Null
 
 Push-Location $paperDir
 try {
     latexmk -xelatex -interaction=nonstopmode -halt-on-error `
-        "-outdir=$buildDir" main.tex
-    if ($LASTEXITCODE -ne 0) {
-        throw "Full paper build failed (exit $LASTEXITCODE)"
-    }
+        "-outdir=$buildDir" paper_template.tex
+    if ($LASTEXITCODE -ne 0) { throw 'Full paper build failed.' }
 }
 finally {
     Pop-Location
 }
 
-$builtPdf = Join-Path $buildDir 'main.pdf'
+$builtPdf = Join-Path $buildDir 'paper_template.pdf'
 # Windows PowerShell 5.1 reads UTF-8 files without a BOM using the active ANSI
 # code page. Build the Chinese delivery name from code points so the script
 # remains encoding-safe in both Windows PowerShell and PowerShell 7.

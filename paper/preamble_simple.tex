@@ -1,2 +1,31 @@
-% Deprecated compatibility alias. New entries must input preamble.tex directly.
-\input{preamble.tex}
+% Additions on top of the supplied cumcmthesis.cls baseline.
+% table support is passed to xcolor before \documentclass in the check files.
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{subcaption}
+\usepackage{microtype}
+
+\definecolor{CumcmBlue}{HTML}{2F75B5}
+\definecolor{CumcmLightBlue}{HTML}{DCEAF7}
+\definecolor{CumcmGray}{HTML}{F2F2F2}
+\definecolor{CumcmOrange}{HTML}{E69F00}
+
+\newenvironment{ThreeLineTable}[1]{%
+  \begin{table}[H]\centering\caption{#1}\small
+}{%
+  \end{table}
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{CumcmBlue},
+  commentstyle=\color{gray},
+  showstringspaces=false
+}
