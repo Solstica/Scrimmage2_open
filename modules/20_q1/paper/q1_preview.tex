@@ -1,0 +1,21 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[withoutpreface]{../../../paper/cumcmthesis}
+\providecommand{\ProjectRoot}{../../..}
+\input{../../../paper/preamble.tex}
+
+% Preview-only citation labels: keep local compilation self-contained without
+% printing a duplicate bibliography page. The full paper still owns the one
+% canonical bibliography in modules/60_references.
+\makeatletter
+\@namedef{b@paperA}{2}
+\@namedef{b@bornwolf}{4}
+\@namedef{b@drude}{5}
+\@namedef{b@politano2023}{7}
+\makeatother
+
+\title{问题一局部编译预览}
+\begin{document}
+\maketitle
+\section{问题一模型的建立与求解}
+\input{q1.tex}
+\end{document}
