@@ -7,9 +7,12 @@
 % cumcmthesis 在摘要环境末尾用 \newpage\null 为正文换页；
 % 独立摘要门禁没有正文，因此只在环境外暂时屏蔽该换页。
 \let\AbstractCheckNewPage\newpage
+\let\AbstractCheckNull\null
 \let\newpage\relax
+\let\null\relax
 \begin{abstract}
 \input{../modules/00_abstract/paper/abstract.tex}
 \end{abstract}
 \let\newpage\AbstractCheckNewPage
+\let\null\AbstractCheckNull
 \end{document}
