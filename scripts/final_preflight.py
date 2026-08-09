@@ -26,7 +26,9 @@ FORMAL_FILES = [
     ROOT / "modules/12_assumptions/paper/assumptions.tex",
     ROOT / "modules/20_q1/paper/q1.tex",
     ROOT / "modules/30_q2/paper/q2.tex",
+    ROOT / "modules/30_q2/paper/q2_algorithm.tex",
     ROOT / "modules/40_q3/paper/q3.tex",
+    ROOT / "modules/40_q3/paper/q3_algorithm.tex",
     ROOT / "modules/50_evaluation/paper/evaluation.tex",
     ROOT / "modules/60_references/paper/references.tex",
     ROOT / "modules/70_appendix/paper/appendix_code.tex",
@@ -155,14 +157,18 @@ def check_structure(errors, warns):
         errors.append(f"{rel(path)} 的摘要/目录/正文页码控制顺序异常")
 
     markers = [
-        "\\input{../modules/60_references/paper/references.tex}",
-        "\\section*{附录：程序及结果文件说明}",
-        "\\section*{AI使用报告}",
+        ("参考文献入口", [
+            "\\input{sections/91_references.tex}",
+            "\\input{../modules/60_references/paper/references.tex}",
+        ]),
+        ("附录入口", ["\\section*{附录：程序及结果文件说明}"]),
+        ("AI使用报告入口", ["\\section*{AI使用报告}"]),
     ]
-    for marker in markers:
-        pos = text.find(marker)
+    for label, alternatives in markers:
+        matches = [(text.find(marker), marker) for marker in alternatives if text.find(marker) >= 0]
+        pos, marker = min(matches, default=(-1, alternatives[0]))
         if pos < 0:
-            errors.append(f"{rel(path)} 缺少结构标记：{marker}")
+            errors.append(f"{rel(path)} 缺少结构标记：{label}")
             continue
         prefix = text[max(0, pos - 100):pos]
         if "\\clearpage" not in prefix:
