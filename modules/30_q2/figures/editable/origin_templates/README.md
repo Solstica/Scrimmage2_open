@@ -23,5 +23,6 @@
 
 - `01-02_原始光谱双面板.opju`
 - `13_多初值局部盆地图.opju`
+- `q2_independent_fit_residuals.opju`
 
 其余 Q2 图的 `.opju/.opj` 若仍在制图人员电脑中，仍需继续补交。
