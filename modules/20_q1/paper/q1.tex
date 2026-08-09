@@ -1,5 +1,5 @@
 \subsection{问题一的描述与分析}
-本问要求在空气--外延层--衬底三层结构中，仅保留空气--外延层界面的表面反射光和外延层--衬底界面的第一束内部反射光，建立外延层厚度与波数、入射角及材料光学参数之间的定量关系。求解的关键有三点：一是由薄膜几何光路确定两束光的光程差与传播相位；二是描述SiC外延层折射率随波长和载流子浓度的变化；三是利用带符号Fresnel振幅系数完成两束反射光的相干叠加，从而得到可与实测光谱直接比较的非偏振反射率模型。按照“几何光路--材料色散--界面反射--双光束叠加”的顺序构建从物理参数到反射光谱的前向映射，为厚度参数识别提供理论基础。
+本问需要在空气--外延层--衬底三层结构中，仅考虑表面反射光与第一束内部反射光，建立外延层厚度与红外反射光谱之间的定量关系。核心在于依次确定两束光的光程差与传播相位、描述SiC折射率的色散和载流子响应，并利用Fresnel界面系数完成相干叠加。由此得到以厚度和材料光学参数为输入、以非偏振反射率为输出的双光束理论模型，为后续实测光谱反演提供计算基础。
 
 图\ref{fig:q1-flow}给出问题一从几何光路、材料色散到反射率模型的总体建模流程。
 
@@ -11,7 +11,7 @@
 \end{figure}
 
 \subsection{Sellmeier--Drude--Fresnel双光束模型}
-本文在薄膜干涉、分层介质传播与Fresnel界面理论\cite{bornwolf,yeh}的基础上，引入Sellmeier晶格色散和Drude载流子修正，建立Sellmeier--Drude--Fresnel双光束测厚模型。
+依据薄膜干涉和分层介质传播理论\cite{bornwolf,yeh}，本文将几何传播相位、SiC材料色散和Fresnel界面响应统一到复振幅叠加框架中，建立Sellmeier--Drude--Fresnel双光束测厚模型。
 
 \subsubsection{光程差与传播相位}
 图\ref{fig:q1-schematic}为空气--外延层--衬底结构中的双光束干涉光路示意图。设空气、外延层和衬底折射率分别为$n_1,n_2,n_3$，外延层厚度为$d$，入射角为$i$，外延层折射角为$\gamma$。数值计算中取空气折射率$n_1=1.0003$。
@@ -23,7 +23,7 @@
 \label{fig:q1-schematic}
 \end{figure}
 
-近年的薄膜光学表征综述指出，薄膜厚度与光学常数的反演建立在折射关系、入射角依赖以及$s,p$偏振Fresnel响应等基本光学关系之上\cite{politano2023}。由Snell定律有
+由分层介质中的Snell折射关系\cite{bornwolf,yeh}有
 \begin{equation}
 n_1\sin i=n_2\sin\gamma.
 \label{eq:q1-snell}
@@ -45,10 +45,10 @@ n_1\sin i=n_2\sin\gamma.
 =4\pi\times10^{-4}\sigma d n_2\cos\gamma,
 \label{eq:q1-phase}
 \end{equation}
-其中$d$以$\mu\mathrm m$为单位，$10^{-4}$用于完成$\mu\mathrm m$到$\mathrm{cm}$的换算。该相位项仅描述外延层内往返传播造成的光程相位；界面反射引起的相位反转由带符号Fresnel振幅系数自然给出，二者在总反射场中分别计入而不重复叠加。
+其中$d$以$\mu\mathrm m$为单位，$10^{-4}$用于完成$\mu\mathrm m$到$\mathrm{cm}$的换算。式\eqref{eq:q1-phase}只描述外延层往返传播产生的光程相位；界面反射相变由后续带符号Fresnel振幅系数直接体现，因此总反射场中无需再附加固定$\pi$相位。
 
 \subsubsection{Sellmeier--Drude折射率模型}
-SiC外延层折射率随波长变化，并受到自由载流子响应影响。邱杰等\cite{paperA}在外延层干涉测厚中将晶格色散与自由载流子响应组合于介电函数层面，以同时描述波长色散和载流子贡献。本文采用同类组合思路建立外延层折射率模型。
+4H-SiC的折射率具有明显波长色散。Zhou等在4H-SiC红外波导色散研究中采用多项Sellmeier关系描述材料折射率\cite{zhou2023sic}；Tiwald等通过傅里叶变换红外椭偏实验测量掺氮4H/6H-SiC的介电响应，并以经典Drude项描述自由电子等离子体对红外光学响应的贡献\cite{tiwald1999sic}。据此，本文将晶格色散与自由载流子响应统一写在介电函数层面。
 
 \textbf{（1）Sellmeier晶格色散。} SiC外延层的晶格介电函数采用三项Sellmeier形式
 \begin{equation}
@@ -58,7 +58,7 @@ SiC外延层折射率随波长变化，并受到自由载流子响应影响。�
 \end{equation}
 其中$A,B_j$为无量纲参数，$C_j$与$\lambda^2$具有相同量纲，即单位为$\mu\mathrm m^2$。
 
-\textbf{（2）Drude载流子修正。} Drude模型\cite{drude}给出的复介电响应可写为
+\textbf{（2）Drude载流子修正。} 自由载流子的红外介电响应采用Drude模型\cite{drude,tiwald1999sic}
 \begin{equation}
 \widetilde\varepsilon_2(\omega,\lambda)
 =\varepsilon_{\mathrm L}(\lambda)
@@ -69,18 +69,18 @@ SiC外延层折射率随波长变化，并受到自由载流子响应影响。�
 \end{equation}
 其中$\Gamma_e$为自由载流子碰撞频率，$N$为载流子浓度，$e$为元电荷，$\varepsilon_0$为真空介电常数，$m^*$为载流子有效质量。对于SiC透明或弱吸收区域，有$\Gamma_e/\omega\ll1$，耗散虚部相对较小。
 
-取式\eqref{eq:q1-drude-complex}的弱吸收实部近似，并利用$\omega=2\pi c/\lambda$，得到弱吸收区域采用的实折射率模型
+取式\eqref{eq:q1-drude-complex}的弱吸收实部近似，并利用$\omega=2\pi c/\lambda$，得到
 \begin{equation}
 n_2^2(\lambda,N)=\varepsilon_{\mathrm L}(\lambda)
 -\frac{Ne^2\lambda^2}{4\pi^2c^2\varepsilon_0m^*}.
 \label{eq:q1-drude}
 \end{equation}
-Drude修正项中$N$与$m^*$以$N/m^*$的组合进入模型，仅依靠同一反射光谱难以同时独立识别二者。邱杰等\cite{paperA}采用固定有效质量、反演载流子浓度的参数化方式；据此取$m^*=0.28m_0$，仅将$N$作为待估参数，以消除这一冗余自由度。该实折射率近似仅适用于透明或弱吸收波段；当吸收不可忽略时，应恢复式\eqref{eq:q1-drude-complex}的完整复介电响应。
+式\eqref{eq:q1-drude}中$N$与$m^*$以$N/m^*$的组合进入折射率，仅由单一反射光谱难以同时独立识别。Volm等通过回旋共振实验与能带计算研究了4H-SiC电子有效质量张量，理论计算给出的一个主分量约为$0.28m_0$\cite{volm1996sic}。本文将$m^*=0.28m_0$作为等效有效质量固定，仅反演载流子浓度$N$；该处理用于消除$N/m^*$的参数冗余，不将$m^*$本身作为材料常数测量结果。上述实折射率近似仅用于透明或弱吸收波段，当吸收不可忽略时应保留式\eqref{eq:q1-drude-complex}的完整复介电响应。
 
 将式\eqref{eq:q1-drude}得到的实折射率代入式\eqref{eq:q1-snell}，即可确定折射角$\gamma$。
 
 \subsubsection{Fresnel双光束反射率模型}
-对偏振态$u\in\{s,p\}$，按照光从介质$i$传播到介质$j$的方向定义带符号Fresnel振幅反射系数$r_{ij}^{(u)}$和透射系数$t_{ij}^{(u)}$\cite{bornwolf,politano2023}。其中，s偏振满足
+对偏振态$u\in\{s,p\}$，按照光从介质$i$传播到介质$j$的方向定义带符号Fresnel振幅反射系数$r_{ij}^{(u)}$和透射系数$t_{ij}^{(u)}$\cite{bornwolf,yeh}。其中，s偏振满足
 \begin{equation}
 r_{ij}^{(s)}=
 \frac{n_i\cos\theta_i-n_j\cos\theta_j}
@@ -107,13 +107,13 @@ t_{ij}^{(p)}=
 +t_{12}^{(u)}r_{23}^{(u)}t_{21}^{(u)}\exp(-\mathrm i\Phi).
 \label{eq:q1-double-field}
 \end{equation}
-在所采用的振幅系数约定下，实数$r_{ij}^{(u)}<0$对应反射场相位相对翻转$\pi$，而$r_{ij}^{(u)}>0$对应无此相位翻转。因此传统所称的“半波损失”已经由带符号Fresnel反射系数的代数符号体现，式\eqref{eq:q1-double-field}无需再人为附加固定$\pi$相位。对于非偏振入射光，理论反射率取s、p两种偏振反射率的算术平均：
+在上述振幅约定下，$r_{ij}^{(u)}$的正负号已经包含界面反射所对应的相位关系。因此式\eqref{eq:q1-double-field}直接叠加界面振幅与传播相位，无需另行引入“半波损失”形式的固定$\pi$相位。对于非偏振入射光，理论反射率取s、p两种偏振反射率的算术平均：
 \begin{equation}
 R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 =\frac{|\rho_s|^2+|\rho_p|^2}{2},
 \label{eq:q1-reflectance}
 \end{equation}
-其中$\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$为Sellmeier参数向量。因此式\eqref{eq:q1-reflectance}将厚度、材料色散和界面响应统一映射为可观测反射率，构成物理参数到反射光谱的前向模型。
+其中$\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$为Sellmeier参数向量。式\eqref{eq:q1-reflectance}由此给出厚度、色散参数和界面光学性质与可观测反射率之间的定量关系。
 
 \subsection{模型汇总}
 综上，问题一的Sellmeier--Drude--Fresnel双光束模型可整理为
@@ -135,19 +135,19 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \right.
 \label{eq:q1-summary}
 \end{equation}
-给定波数$\sigma$、入射角$i$、厚度$d$、载流子浓度$N$、衬底折射率$n_3$及Sellmeier参数$\boldsymbol\beta$，即可由式\eqref{eq:q1-summary}逐点得到理论反射率$R_{\mathrm{th}}$。该模型同时保留了厚度引起的相位变化、材料色散以及界面振幅效应，可直接作为实测反射光谱参数估计的前向约束。
+给定$\sigma,i,d,N,n_3$及Sellmeier参数$\boldsymbol\beta$，式\eqref{eq:q1-summary}即可逐点计算理论反射率$R_{\mathrm{th}}$。该响应函数同时保留厚度引起的传播相位、材料色散以及界面振幅效应，问题二将在此基础上由实测光谱反演未知参数。
 
 \subsection{模型求解}
 基于式\eqref{eq:q1-summary}，构造逐波数计算理论反射率的正演算法。对每一波数，依次计算Sellmeier--Drude折射率、Snell折射角、Fresnel振幅系数与传播相位，最后对$s,p$偏振反射率取算术平均。标准伪代码如下。
 
 \input{\ProjectRoot/modules/20_q1/paper/q1_algorithm.tex}
 
-计算过程中检查$n_2^2>0$以及Snell关系的可实现性，避免非物理解进入理论光谱计算。由此得到的正演算子可记为
+计算过程中要求$n_2^2>0$且Snell关系存在实数解，以保证当前弱吸收模型处于其物理适用范围。由此定义正演算子
 \begin{equation}
 \mathcal F:\ (\sigma,i;d,N,n_3,\boldsymbol\beta)\longmapsto R_{\mathrm{th}}.
 \label{eq:q1-forward-operator}
 \end{equation}
-对应的参数反演可表述为：在实测光谱约束下，寻找使前向算子$\mathcal F$与观测反射率最接近的参数向量。
+算子$\mathcal F$在给定一组厚度和光学参数后生成整段理论反射光谱；问题二据此以实测反射率为目标，通过最小化理论光谱与观测光谱之间的差异识别$d$及相关参数。
 
 \subsection{模型性质与厚度信息分析}
 
@@ -158,7 +158,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 =4\pi\times10^{-4}\sigma n_2\cos\gamma,
 \label{eq:q1-phase-thickness-sensitivity}
 \end{equation}
-因此，在材料光学参数固定时，厚度$d$与传播相位严格线性。厚度增大将使相位随波数变化得更快，从而在相同波数区间内产生更密集的干涉条纹，这说明条纹周期是厚度信息的直接载体。
+因此，在材料光学参数固定时，厚度$d$与传播相位严格线性。厚度增大将使相位随波数变化得更快，从而在相同波数区间内产生更密集的干涉条纹，条纹周期因而直接携带厚度信息。
 
 进一步考虑$n_2$及$\gamma$随波数缓慢变化的情况。相邻同类干涉极值近似满足$\Delta\Phi\approx2\pi$，于是局部条纹间距可写为
 \begin{equation}
@@ -169,7 +169,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \left[\sigma n_2(\sigma)\cos\gamma(\sigma)\right]\right|}.
 \label{eq:q1-fringe-spacing-general}
 \end{equation}
-若在较窄波段内忽略色散，则进一步退化为
+若在较窄波段内色散变化可以忽略，则式\eqref{eq:q1-fringe-spacing-general}退化为
 \begin{equation}
 \Delta\sigma
 \approx\frac{1}{2\times10^{-4}d n_2\cos\gamma},
@@ -177,15 +177,15 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
  d\approx\frac{1}{2\times10^{-4}n_2\cos\gamma\,\Delta\sigma}.
 \label{eq:q1-fringe-spacing-simple}
 \end{equation}
-式\eqref{eq:q1-fringe-spacing-simple}给出了传统“条纹间距测厚”的近似形式，而式\eqref{eq:q1-fringe-spacing-general}说明当材料存在明显色散时，不能简单把$n_2$视为常数。因此采用连续光谱整体拟合比仅依赖相邻峰谷间距能够保留更多色散信息。
+式\eqref{eq:q1-fringe-spacing-simple}对应常折射率近似下的条纹间距测厚关系；当$n_2(\sigma)$的变化不可忽略时，式\eqref{eq:q1-fringe-spacing-general}中的色散导数将直接修正条纹间距，因此实际反演采用连续光谱和完整色散关系，而不以单一常数折射率代替$n_2(\sigma)$。
 
 \subsubsection{色散、载流子与界面参数的作用}
-厚度主要通过$\Phi$控制条纹的相位与密度；Sellmeier参数和载流子浓度$N$则通过$n_2(\sigma)$同时改变相位演化和Fresnel系数，因此会与$d$产生一定耦合。衬底折射率$n_3$不进入外延层传播相位，但直接影响外延层--衬底界面的$r_{23}^{(u)}$，因而主要调节干涉振幅和包络。入射角$i$同时影响折射角$\gamma$及$s,p$偏振Fresnel系数，使不同角度的光谱具有不同的相位斜率和振幅响应。
+厚度$d$主要通过传播相位$\Phi$控制条纹位置与密度；Sellmeier参数和载流子浓度$N$通过$n_2(\sigma)$同时影响传播相位和Fresnel系数，因而与厚度存在参数耦合。衬底折射率$n_3$不进入外延层传播相位，但会改变外延层--衬底界面的$r_{23}^{(u)}$，主要影响干涉振幅与包络；入射角$i$则同时改变折射角$\gamma$以及$s,p$偏振的界面响应。
 
-由此可见，单个干涉条纹的位置并不足以独立区分$d$与全部材料参数；但厚度对整个波段相位斜率具有一致作用，而材料色散与界面参数对谱形的影响形式不同。连续波段能够利用厚度相位斜率与材料色散响应的差异增强参数分离；不同入射角则提供相互独立的重复观测，可通过跨角度厚度一致性检验反演结果的稳定性。由此，分角度全谱非线性最小二乘与多初值搜索具有明确的物理依据。
+这一作用路径与图\ref{fig:q1-flow}中的“材料光学模型--光束正演模型”关系相对应：$d$直接进入相位项，$N$和Sellmeier参数先改变$n_2$后同时传递至相位与界面系数，而$n_3$主要通过$r_{23}^{(u)}$作用于振幅。由于这些参数对整段光谱的作用形式不同，连续波段拟合能够同时利用条纹相位、局部周期和振幅包络的信息；不同入射角提供独立观测，可进一步比较厚度结果的一致性。因此后续采用分角度全谱非线性最小二乘并配合多初值搜索。
 
 \subsection{模型检验}
-对上述解析正演模型，检验重点放在公式极限关系、相位约定与数值实现的一致性上。表\ref{tab:q1-selfcheck}列出能够由当前双光束模型直接推出的主要自洽关系。
+问题一尚未使用实测数据反演未知参数，因此检验对象是解析关系及其数值实现，而不是拟合优度。首先利用可直接从模型推出的极限关系检查折射、相位和界面系数是否保持一致，结果见表\ref{tab:q1-selfcheck}。
 
 \begin{table}[!htbp]
 \centering
@@ -206,10 +206,10 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \end{table}
 
 \subsubsection{数值实现一致性检验}
-除解析极限外，对正演程序进行独立数值检查：正入射Fresnel极限、反射率有限且非负、波数--波长单位缩放以及半波相位不重复计入等检查均通过；公式与代码的相位单位换算测试最大数值误差为$1.25\times10^{-14}$。这些检查表明理论表达式与数值实现之间不存在可观测的单位或相位约定偏差。
+在解析关系之外，分别计算正入射Fresnel极限、理论反射率取值范围、波数--波长单位缩放以及界面相位处理，并将程序输出与相应解析表达式逐项比较。其中传播相位的公式值与程序值最大差异为$1.25\times10^{-14}$，处于双精度浮点舍入量级；各测试点的反射率均保持有限且非负。由此可确认代码实现与式\eqref{eq:q1-snell}--\eqref{eq:q1-reflectance}采用了相同的单位体系和相位约定。
 
-由于本问建立的是“参数$\rightarrow$理论光谱”的前向模型，在尚未引入观测数据时不人为定义RMSE、残差正态性等拟合优度指标；此处以物理极限、非负有限性和公式--代码一致性作为模型效果检验。上述检验同时核对了波数--波长换算中的$10^{-4}$因子。需要强调的是，$d\to0$时严格退化为空气--衬底单界面属于完整多光束级数的性质，并非当前只保留前两束反射光的截断模型所必然满足，因此不将其作为本模型的验证条件。
+需要说明的是，$d\to0$时完整薄膜反射应退化为空气--衬底单界面反射，而当前模型按题意只截取表面反射和第一束内部反射，并非完整Airy级数，因此该极限不作为双光束截断模型的必要验证条件。
 
-至此，模型完成了从光路几何、材料色散、界面反射到可执行正演算子的闭环建立，并给出了厚度信息在干涉条纹中的解析表征。
+上述解析与数值检验确认了折射关系、单位换算、界面相位和程序实现的一致性。由式\eqref{eq:q1-reflectance}得到的理论反射率函数可据此用于问题二的SiC光谱参数反演。
 
 \FloatBarrier
