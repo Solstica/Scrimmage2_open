@@ -53,7 +53,7 @@
 
 ### 图19：Si参数可辨识性气泡图
 
-**正文强保留，单图宽度`0.44\textwidth`。**
+**正文强保留。该文件本身已经是10°/15°双面板组合图，整体宽度统一为`0.88\textwidth`。**
 
 - X轴：$d,n_3,\log_{10}N,\log_{10}\Gamma_e$；
 - Y轴：$\log_{10}(\text{relative sensitivity})$；
@@ -104,7 +104,7 @@ D_\theta(\sigma)=200\frac{\eta_{3,10^\circ}(\sigma)-\eta_{3,15^\circ}(\sigma)}
 2. 多光束干涉机理图：约`0.70\textwidth`；
 3. 图15：`0.88\textwidth`；
 4. 图21：`0.88\textwidth`；
-5. 图19：`0.44\textwidth`。
+5. 图19：`0.88\textwidth`（其PNG本身为双面板组合图）。
 
 图16、22、23为备用/附录；图17、18、20、24不进入正式正文。
 
