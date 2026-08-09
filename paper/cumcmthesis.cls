@@ -74,7 +74,8 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \renewcommand{\cftsecdotsep}{1.5} 
 \setlength{\cftbeforesecskip}{7pt}
 \setlength{\cftbeforesubsecskip}{3pt}
-\renewcommand{\cftsecfont}{\bfseries\zihao{-4}\heiti}
+\renewcommand{\cftsecfont}{\bfseries\zihao{-4}\songti}
+\renewcommand{\cftsecpagefont}{\bfseries\zihao{-4}\songti}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftsecdotsep}}
 \renewcommand{\cftsecaftersnumb}{\hskip.4em}
 
