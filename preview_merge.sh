@@ -67,7 +67,6 @@ remove_preview_worktree() {
   cwd_c="$(pwd -P 2>/dev/null || pwd)"
   wt_c="$(canonical_dir "$wt")"
 
-  # Windows 下，父 Git Bash 若正位于目标目录，会锁住目录。此时不要尝试半删除。
   case "$cwd_c/" in
     "$wt_c"/*)
       die "当前终端正位于待删除的预览目录：$wt\n请先 cd 到任一正常 worktree，再重新运行 --clean。"
@@ -131,7 +130,6 @@ clean_preview() {
     say "没有检测到已注册的全文预览 worktree。"
   fi
 
-  # 兼容旧脚本遗留的本地 preview/full-paper-local 分支。
   if git show-ref --verify --quiet "refs/heads/${LEGACY_PREVIEW_BRANCH}"; then
     git branch -D "$LEGACY_PREVIEW_BRANCH" >/dev/null 2>&1 \
       || die "无法删除旧版临时分支 ${LEGACY_PREVIEW_BRANCH}。请确认没有 worktree 正在使用它。"
@@ -158,9 +156,14 @@ owned_prefix_for() {
   esac
 }
 
+# 这些文件/目录由 common-final 管理。模块分支中若残留旧副本，预览时一律保留 common-final。
+# feature/toc 是例外：因为 owned_prefix_for() 的模块规则优先于本函数，所以最后合入 toc 时
+# paper/paper_template.tex 会自动采用 toc 分支版本。
 is_common_owned_file() {
   case "$1" in
-    paper/main.tex|paper/preamble.tex|paper/sections/*|sections/*)
+    paper/main.tex|paper/preamble.tex|paper/paper_template.tex|paper/sections/*|sections/*|\
+    modules/60_references/*|modules/70_appendix/*|modules/80_ai_report/*|\
+    scripts/*|work/result_registry.csv|work/figure_registry.csv|docs/team_handoff/*)
       return 0 ;;
     *)
       return 1 ;;
@@ -169,7 +172,8 @@ is_common_owned_file() {
 
 is_ignorable_preview_file() {
   case "$1" in
-    work/archive/*|archive/*|work/*/archive/*|work/*/output/*|work/*/outputs/*|work/*/results/*|work/cache/*|work/tmp/*|output/*|outputs/*|results/*|*.aux|*.log|*.fls|*.fdb_latexmk|*.synctex.gz)
+    work/archive/*|archive/*|work/*/archive/*|work/*/output/*|work/*/outputs/*|work/*/results/*|\
+    work/cache/*|work/tmp/*|output/*|outputs/*|results/*|*.aux|*.log|*.fls|*.fdb_latexmk|*.synctex.gz)
       return 0 ;;
     *)
       return 1 ;;
@@ -289,7 +293,7 @@ compile_paper() {
 }
 
 main() {
-  local root old_wt preview_dir stamp branch prefix choice ans
+  local root old_wt preview_dir stamp branch prefix choice
   root="$(repo_root)" || die "当前目录不是有效 Git worktree。请先 cd 到任一正常 worktree 后运行。"
   cd "$root" || die "无法进入仓库根目录。"
 
@@ -330,7 +334,6 @@ main() {
     esac
   fi
 
-  # 清理旧版脚本遗留的本地汇总分支；新脚本不会再创建它。
   if git show-ref --verify --quiet "refs/heads/${LEGACY_PREVIEW_BRANCH}"; then
     git branch -D "$LEGACY_PREVIEW_BRANCH" >/dev/null 2>&1 \
       || die "旧版临时分支 ${LEGACY_PREVIEW_BRANCH} 仍被某个 worktree 使用，请先清理旧预览。"
