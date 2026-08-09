@@ -219,9 +219,33 @@ def run_phase_diagnostic(infos, warns):
         return
     infos.append("Q3峰谷/相位位置诊断（仅诊断，不改变拟合参数）：")
     for row in rows:
-        infos.append(
-            "  {angle} {kind}: matched={n_matched}, MAE={mae_cm1} cm^-1, max={max_abs_cm1} cm^-1".format(**row)
-        )
+        if {"angle", "kind", "n_matched", "mae_cm1", "max_abs_cm1"} <= row.keys():
+            infos.append(
+                "  {angle} {kind}: matched={n_matched}, MAE={mae_cm1} cm^-1, max={max_abs_cm1} cm^-1".format(**row)
+            )
+            continue
+
+        # Current Q3 exporter writes one row per angle and combines peaks and valleys.
+        required = {
+            "angle_deg",
+            "matched_peak_count",
+            "matched_valley_count",
+            "extremum_position_mae_cm-1",
+            "extremum_position_max_abs_cm-1",
+        }
+        if required <= row.keys():
+            matched = int(row["matched_peak_count"]) + int(row["matched_valley_count"])
+            infos.append(
+                "  {angle}° peaks+valleys: matched={matched}, MAE={mae} cm^-1, max={max_abs} cm^-1".format(
+                    angle=row["angle_deg"],
+                    matched=matched,
+                    mae=row["extremum_position_mae_cm-1"],
+                    max_abs=row["extremum_position_max_abs_cm-1"],
+                )
+            )
+            continue
+
+        warns.append("Q3峰谷位置诊断结果表字段无法识别：" + ", ".join(sorted(row.keys())))
 
 
 def check_build_log(errors, warns, infos):
