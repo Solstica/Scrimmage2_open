@@ -1,8 +1,8 @@
 research_problem_zh: 外延层厚度测量
-specific_model_zh: Sellmeier-Drude-Fresnel与Airy多光束模型
+specific_model_zh: 双光束与Airy多光束模型
 algorithm_zh: 分角度有界最小二乘
-long_title: 基于Sellmeier-Drude-Fresnel与Airy模型的外延层厚度测量
-remove_algorithm_candidate: 基于Fresnel干涉反演的外延层厚度测量
+long_title: 基于双光束–Airy模型的外延层厚度反演与误差分析
+remove_algorithm_candidate: 基于双光束–Airy模型的外延层厚度反演与误差分析
 remove_model_candidate: 外延层厚度的红外干涉测量
-final_title: 基于Fresnel干涉反演的外延层厚度测量
+final_title: 基于双光束–Airy模型的外延层厚度反演与误差分析
 status: FROZEN

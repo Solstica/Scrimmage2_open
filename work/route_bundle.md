@@ -2,7 +2,7 @@
 
 - route: `full_paper`
 - domain: `A`
-- task_zh: 将run_02切换为PAPER_A唯一主体并按Q1/Q2/Q3独立分支重建代码结果图表正文与门禁
+- task_zh: 训练赛终稿公共工程修复：保留目录，统一标题，修复摘要门禁与临时合并所有权
 
 > This file is generated from the exact mandatory source files. Read this bundle before writing. Do not rely on filenames alone.
 

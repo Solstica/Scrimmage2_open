@@ -46,3 +46,10 @@ Record model, solver, preprocessing, approximation, and reporting decisions. Eac
 - 待复核：固定硅背景参数时，Q3得到3.2178微米，较范文3.040微米高5.85%。传播支路、单位、波段、缩放和边界均已检查；范文最终代码实际释放了振子参数和有效质量，而本轮既定口径要求固定。
 - 影响：Q3标记为`REVIEW_REQUIRED`，摘要、标题、评价和最终PDF继续保持`STALE`；不得为通过门槛而硬编码或调整官方数据。
 - 归档：旧融合结果链移动至`work/archive/fusion_80_20_20260806/`，活动代码与正文不得读取。
+
+## 2026-08-09：训练赛目录、标题与公共入口所有权
+
+- 决策：run_02 作为训练赛保留目录；正式国赛版本再删除目录。目录结构写入公共 `paper/paper_template.tex`，不再由独立 `feature/toc` 分支覆盖总模板。
+- 标题：冻结为“基于双光束–Airy模型的外延层厚度反演与误差分析”，并同步标题注册表、总稿与摘要检查入口。
+- 局部编译：各问题预览继续调用公共 `paper/preamble.tex`，保留 `[!htbp]` 与问末 `FloatBarrier`；`preamble_simple.tex` 仅补齐 `placeins`，用于摘要和前置部分辅助门禁。
+- 明确保留：Q2 最新拟合图等待队友上传；算法标题维持英文 `Algorithm 1/2/3`；图11当前版式不调整。

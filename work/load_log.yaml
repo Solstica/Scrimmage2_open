@@ -1,4 +1,4 @@
-task_zh: 将run_02切换为PAPER_A唯一主体并按Q1/Q2/Q3独立分支重建代码结果图表正文与门禁
+task_zh: 训练赛终稿公共工程修复：保留目录，统一标题，修复摘要门禁与临时合并所有权
 route: full_paper
 domain: A
 required_files:
@@ -74,7 +74,7 @@ file_sha256:
   workflows/10_asset_learning.md: 2b127692d30f8f130c36bafdd599e6cea1c6833c3d64584a2b93b7e8390d8dcf
   rules/A_pde_inverse.md: 1d75f4f260a0e7f774cb23ac27fb3dd0e1d107b87bcd139aa23edd42518cc912
 bundle_path: work/route_bundle.md
-bundle_sha256: b7de62504f9255bf11d7746a2b3cab989ce7af2a4aa39e9e916d015c45ec98d0
+bundle_sha256: 460cb34d851af22ddefc84871f9a165e386cd4237e6387cd08567e7a0d7e56d8
 missing_files: []
-timestamp: '2026-08-06T10:24:27.628032+00:00'
+timestamp: '2026-08-09T14:06:17.373084+00:00'
 status: COMPLETE

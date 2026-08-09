@@ -5,7 +5,7 @@ set -u
 # 不创建 preview 汇总分支，不改动正式远端分支。
 
 REMOTE="origin"
-BASE_REMOTE="origin/feature/paper-common-final"
+BASE_REMOTE="${PREVIEW_BASE_REF:-origin/feature/paper-common-final}"
 PREVIEW_MARKER=".full-paper-preview"
 LEGACY_PREVIEW_BRANCH="preview/full-paper-local"
 
@@ -18,7 +18,6 @@ MERGE_BRANCHES=(
   "origin/feature/q2-paper-a"
   "origin/feature/q3-paper-a"
   "origin/feature/evaluation"
-  "origin/feature/toc"
 )
 
 say() { printf '%s\n' "$*"; }
@@ -127,14 +126,13 @@ owned_prefix_for() {
     origin/feature/q2-paper-a) printf '%s\n' 'modules/30_q2/' ;;
     origin/feature/q3-paper-a) printf '%s\n' 'modules/40_q3/' ;;
     origin/feature/evaluation) printf '%s\n' 'modules/50_evaluation/' ;;
-    origin/feature/toc) printf '%s\n' 'paper/paper_template.tex' ;;
     *) printf '%s\n' '' ;;
   esac
 }
 
 is_common_owned() {
   case "$1" in
-    paper/preamble.tex|paper/main.tex|preview_merge.sh) return 0 ;;
+    paper/preamble.tex|paper/preamble_simple.tex|paper/main.tex|paper/paper_template.tex|paper/abstract_check.tex|preview_merge.sh) return 0 ;;
     modules/60_references/*|modules/70_appendix/*|modules/80_ai_report/*) return 0 ;;
     scripts/*|work/*|docs/team_handoff/*) return 0 ;;
     *) return 1 ;;
@@ -143,11 +141,7 @@ is_common_owned() {
 
 is_module_owned() {
   local path="$1" prefix="$2"
-  if [[ "$prefix" == "paper/paper_template.tex" ]]; then
-    [[ "$path" == "$prefix" ]]
-  else
-    [[ -n "$prefix" && "$path" == "$prefix"* ]]
-  fi
+  [[ -n "$prefix" && "$path" == "$prefix"* ]]
 }
 
 take_side_or_delete() {
@@ -172,13 +166,8 @@ resolve_expected_conflicts() {
       say "  [模块] $f -> $branch"
       take_side_or_delete "$wt" theirs "$f"
     elif is_common_owned "$f"; then
-      if [[ "$branch" == "origin/feature/toc" && "$f" == "paper/paper_template.tex" ]]; then
-        say "  [入口] $f -> $branch"
-        take_side_or_delete "$wt" theirs "$f"
-      else
-        say "  [公共] $f -> common-final"
-        take_side_or_delete "$wt" ours "$f"
-      fi
+      say "  [公共] $f -> common-final"
+      take_side_or_delete "$wt" ours "$f"
     elif [[ "$f" == work/archive/* || "$f" == output/* || "$f" == modules/paper汇总/* ]]; then
       say "  [忽略] $f -> common-final/当前汇总"
       take_side_or_delete "$wt" ours "$f"
@@ -237,17 +226,21 @@ materialize_modular_entry() {
   local wt="$1" src dst
   src="$wt/paper/paper_template.tex"
   dst="$wt/paper/main.tex"
-  [[ -f "$src" ]] || die "找不到 $src；请确认 feature/toc 包含模块化全文入口。"
+  [[ -f "$src" ]] || die "找不到 $src；请确认公共论文分支包含模块化全文入口。"
   say "使用 paper/paper_template.tex 生成本次临时 paper/main.tex"
   cp "$src" "$dst" || die "无法生成临时 paper/main.tex。"
 }
 
 run_final_preflight() {
-  local wt="$1" py=""
-  if command -v python >/dev/null 2>&1; then
-    py="python"
+  local wt="$1"
+  local -a py_cmd=()
+  if command -v conda >/dev/null 2>&1 \
+    && conda run -n phasefield python -c "import sys" >/dev/null 2>&1; then
+    py_cmd=(conda run -n phasefield python)
+  elif command -v python >/dev/null 2>&1; then
+    py_cmd=(python)
   elif command -v python3 >/dev/null 2>&1; then
-    py="python3"
+    py_cmd=(python3)
   else
     warn "未检测到Python，跳过终稿preflight。"
     return 0
@@ -255,7 +248,7 @@ run_final_preflight() {
   [[ -f "$wt/scripts/final_preflight.py" ]] || { warn "未找到 scripts/final_preflight.py，跳过终稿preflight。"; return 0; }
   say ""
   say "========== 终稿 Preflight =========="
-  if ! (cd "$wt" && "$py" scripts/final_preflight.py --post-build); then
+  if ! (cd "$wt" && "${py_cmd[@]}" scripts/final_preflight.py --post-build); then
     warn "终稿preflight发现FAIL项。PDF仍保留，请按输出逐项处理后再提交。"
   fi
 }
@@ -308,8 +301,8 @@ main() {
   say "[1/6] 获取远端最新状态..."
   git fetch "$REMOTE" --prune || die "git fetch 失败。"
 
-  git show-ref --verify --quiet "refs/remotes/${BASE_REMOTE}" \
-    || die "找不到基底分支 ${BASE_REMOTE}。"
+  git rev-parse --verify --quiet "${BASE_REMOTE}^{commit}" >/dev/null \
+    || die "找不到基底引用 ${BASE_REMOTE}。"
   for branch in "${MERGE_BRANCHES[@]}"; do
     git show-ref --verify --quiet "refs/remotes/${branch}" \
       || die "找不到远端分支 ${branch}。"
