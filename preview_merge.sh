@@ -18,6 +18,7 @@ MERGE_BRANCHES=(
   "origin/feature/q2-paper-a"
   "origin/feature/q3-paper-a"
   "origin/feature/evaluation"
+  "origin/feature/toc"
 )
 
 say()  { printf '%s\n' "$*"; }
@@ -97,6 +98,7 @@ owned_prefix_for() {
     origin/feature/q2-paper-a)         printf '%s\n' 'modules/30_q2/' ;;
     origin/feature/q3-paper-a)         printf '%s\n' 'modules/40_q3/' ;;
     origin/feature/evaluation)         printf '%s\n' 'modules/50_evaluation/' ;;
+    origin/feature/toc)                printf '%s\n' 'paper/paper_template.tex' ;;
     *)                                 printf '%s\n' '' ;;
   esac
 }
@@ -226,6 +228,23 @@ finish_merge_interactively() {
   done
 }
 
+materialize_modular_entry() {
+  local wt="$1" src dst
+  src="$wt/paper/paper_template.tex"
+  dst="$wt/paper/main.tex"
+
+  [[ -f "$src" ]] || die "找不到 $src；请确认 feature/toc 已包含模块化全文入口。"
+  say ""
+  say "========== 生成本次预览的模块化全文入口 =========="
+  say "使用：paper/paper_template.tex -> paper/main.tex"
+  cp "$src" "$dst" || die "无法生成临时 paper/main.tex。"
+  git -C "$wt" add paper/main.tex
+  if ! git -C "$wt" diff --cached --quiet; then
+    git -C "$wt" commit -m "preview: materialize modular paper entry" >/dev/null 2>&1 \
+      || die "临时全文入口提交失败。"
+  fi
+}
+
 compile_paper() {
   local wt paper_dir pdf ans
   wt="$1"
@@ -285,7 +304,7 @@ main() {
   say "本脚本只创建本地临时 worktree；不会 push，不会修改 main，也不会改你当前工作区。"
 
   say ""
-  say "[1/5] 获取远端最新状态..."
+  say "[1/6] 获取远端最新状态..."
   git fetch "$REMOTE" --prune || die "git fetch 失败，请检查网络或 GitHub 权限。"
 
   git show-ref --verify --quiet "refs/remotes/${BASE_REMOTE}" \
@@ -337,14 +356,14 @@ main() {
   fi
 
   say ""
-  say "[2/5] 创建一次性本地预览 worktree..."
+  say "[2/6] 创建一次性本地预览 worktree..."
   say "基底：$BASE_REMOTE"
   say "目录：$preview_dir"
   git worktree add -b "$PREVIEW_BRANCH" "$preview_dir" "$BASE_REMOTE" \
     || die "创建预览 worktree 失败。"
 
   say ""
-  say "[3/5] 依次合并正式模块分支..."
+  say "[3/6] 依次合并正式模块分支..."
   for branch in "${MERGE_BRANCHES[@]}"; do
     say ""
     say "---- 合并 $branch ----"
@@ -363,7 +382,11 @@ main() {
   done
 
   say ""
-  say "[4/5] 合并完成，检查最终状态..."
+  say "[4/6] 使用 feature/toc 的模块化入口生成临时 paper/main.tex..."
+  materialize_modular_entry "$preview_dir"
+
+  say ""
+  say "[5/6] 检查最终状态..."
   if [[ -n "$(git -C "$preview_dir" status --porcelain)" ]]; then
     git -C "$preview_dir" status --short
   else
@@ -372,7 +395,7 @@ main() {
   say "详细临时 merge 历史不在终端展开。"
 
   say ""
-  say "[5/5] 编译全文..."
+  say "[6/6] 编译全文..."
   compile_paper "$preview_dir"
 
   say ""
