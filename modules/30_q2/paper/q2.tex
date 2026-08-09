@@ -113,54 +113,10 @@ J_k(\boldsymbol p_k),
 
 两个角度独立得到$d_{10^\circ}$和$d_{15^\circ}$后，取算术平均
 \begin{equation}
-\boxed{
-\bar d=\frac{d_{10^\circ}+d_{15^\circ}}{2}
-}.
+\bar d=\frac{d_{10^\circ}+d_{15^\circ}}{2}.
 \label{eq:q2-average}
 \end{equation}
 作为SiC晶圆的综合厚度。
-
-\subsection{模型汇总}
-
-将参数边界、色散参数扰动范围和拟合波段统一记入可行域。对$k\in\{10^\circ,15^\circ\}$，定义
-\begin{equation}
-\Omega_k=
-\left\{
-\begin{aligned}
-\boldsymbol p_k:\;&6.5\le d_k\le8.5,\quad
-14.0\le q_{N,k}\le20.5,\\
-&2.20\le n_{3,k}\le3.20,\\
-&\left|\frac{\beta_{k,j}}{\beta_{0,j}}-1\right|\le0.05,
-\quad j=1,\ldots,7
-\end{aligned}
-\right\},
-\label{eq:q2-feasible-set}
-\end{equation}
-其中$\boldsymbol\beta_k=(A_k,B_{1,k},B_{2,k},B_{3,k},C_{1,k},C_{2,k},C_{3,k})$。在正式拟合波段$2500\le\sigma_i\le3300\,\mathrm{cm}^{-1}$内，残差与目标函数分别为
-\begin{equation}
-e_{ki}=R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),
-\qquad
-J_k(\boldsymbol p_k)=\sum_i e_{ki}^2.
-\label{eq:q2-summary-residual}
-\end{equation}
-因此两个角度的反演问题写为
-\begin{equation}
-\boxed{
-\boldsymbol p_k^*
-=\operatorname*{arg\,min}_{\boldsymbol p_k\in\Omega_k}J_k(\boldsymbol p_k),
-\qquad k\in\{10^\circ,15^\circ\},
-}
-\label{eq:q2-summary-objective}
-\end{equation}
-最终厚度为
-\begin{equation}
-\boxed{
-d_{\mathrm{SiC}}
-=\frac{d_{10^\circ}+d_{15^\circ}}{2}.
-}
-\label{eq:q2-summary-thickness}
-\end{equation}
-这一写法将物理约束、观测残差和优化目标分别列出，完整给出问题二的有界非线性反演模型。
 
 \subsection{模型求解}
 
@@ -182,7 +138,7 @@ d_{15^\circ}=7.6230\,\mu\mathrm m.
 \end{equation}
 代入式\eqref{eq:q2-average}得到
 \begin{equation}
-\boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
+d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m.
 \label{eq:q2-final-thickness}
 \end{equation}
 两角度厚度相差$0.2337\,\mu\mathrm m$，相对于平均厚度的差异为$3.02\%$，半极差为$0.1168\,\mu\mathrm m$。半极差描述两个独立角度结果之间的离散程度。
@@ -244,7 +200,33 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 
 综上，SiC外延层厚度取
 \begin{equation}
-	\boxed{d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m}.
+	d_{\mathrm{SiC}}=7.7398\,\mu\mathrm m.
 \end{equation}
 
 \FloatBarrier
+
+\subsection{模型汇总}
+
+综合上述定义、约束、目标函数与厚度合成规则，问题二的双角度有界非线性反演模型可统一表示为
+\begin{equation}
+\begin{aligned}
+&\min_{\substack{\boldsymbol p_k\\ k\in\{10^\circ,15^\circ\}}}\quad J_k(\boldsymbol p_k)
+=\sum_{i:\,2500\le\sigma_i\le3300}e_{ki}^2(\boldsymbol p_k),\\[1mm]
+&\mathrm{s.t.}\quad
+\left\{
+\begin{aligned}
+e_{ki}(\boldsymbol p_k)
+    &=R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),\\
+6.5&\le d_k\le8.5,\quad
+14.0\le q_{N,k}\le20.5,\\
+2.20&\le n_{3,k}\le3.20,\\
+\left|\frac{\beta_{k,j}}{\beta_{0,j}}-1\right|&\le0.05,
+\quad j=1,\ldots,7,\\
+\bar d&=\frac{d_{10^\circ}+d_{15^\circ}}{2}.
+\end{aligned}
+\right.
+\end{aligned}
+\label{eq:q2-model-summary}
+\end{equation}
+其中$\boldsymbol p_k=(d_k,q_{N,k},n_{3,k},\boldsymbol\beta_k)$，
+$\boldsymbol\beta_k=(A_k,B_{1,k},B_{2,k},B_{3,k},C_{1,k},C_{2,k},C_{3,k})$，输入为$10^\circ$和$15^\circ$两组反射光谱，输出为综合厚度$\bar d$。
