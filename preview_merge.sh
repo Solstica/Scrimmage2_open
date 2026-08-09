@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# 本地全文预览：在 detached worktree 中临时汇总正式模块并编译全文。
-# 不创建 preview 汇总分支，不修改 main，不修改任何正式 feature 分支，不 push。
 set -u
-IFS=$'\n\t'
+
+# 本地全文合并预览：在 detached worktree 中临时汇总正式模块；
+# 不创建 preview 汇总分支，不改动正式远端分支。
 
 REMOTE="origin"
 BASE_REMOTE="origin/feature/paper-common-final"
-PREVIEW_NAME="run02-full-preview"
 PREVIEW_MARKER=".full-paper-preview"
 LEGACY_PREVIEW_BRANCH="preview/full-paper-local"
 
@@ -22,201 +21,178 @@ MERGE_BRANCHES=(
   "origin/feature/toc"
 )
 
-say()  { printf '%s\n' "$*"; }
-warn() { printf '\n[提示] %s\n' "$*"; }
-die()  { printf '\n[停止] %s\n' "$*" >&2; exit 1; }
+say() { printf '%s\n' "$*"; }
+warn() { printf '[警告] %s\n' "$*" >&2; }
+die() { printf '\n[停止] %s\n' "$*" >&2; exit 1; }
 
 repo_root() {
-  git rev-parse --show-toplevel 2>/dev/null || return 1
+  git rev-parse --show-toplevel 2>/dev/null
 }
 
-canonical_dir() {
+normalize_path() {
   local p="$1"
-  if [[ -d "$p" ]]; then
-    (cd "$p" 2>/dev/null && pwd -P) || printf '%s\n' "$p"
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -am "$p" 2>/dev/null || printf '%s\n' "$p"
   else
     printf '%s\n' "$p"
   fi
 }
 
 preview_worktree() {
-  local p base
-  while IFS= read -r p; do
-    [[ -n "$p" ]] || continue
-    base="$(basename "$p")"
-    if [[ -f "$p/$PREVIEW_MARKER" || "$base" == "$PREVIEW_NAME" || "$base" == "$PREVIEW_NAME"-* ]]; then
-      printf '%s\n' "$p"
+  local wt marker
+  while IFS= read -r wt; do
+    [[ -z "$wt" ]] && continue
+    marker="$wt/$PREVIEW_MARKER"
+    if [[ -f "$marker" ]]; then
+      printf '%s\n' "$wt"
       return 0
     fi
-  done < <(git worktree list --porcelain | awk '/^worktree / {print substr($0,10)}')
+  done < <(git worktree list --porcelain | awk '/^worktree /{sub(/^worktree /,""); print}')
   return 1
-}
-
-worktree_is_registered() {
-  local target="$1" target_c p
-  target_c="$(canonical_dir "$target")"
-  while IFS= read -r p; do
-    [[ -n "$p" ]] || continue
-    [[ "$(canonical_dir "$p")" == "$target_c" ]] && return 0
-  done < <(git worktree list --porcelain | awk '/^worktree / {print substr($0,10)}')
-  return 1
-}
-
-remove_preview_worktree() {
-  local wt="$1" cwd_c wt_c
-  cwd_c="$(pwd -P 2>/dev/null || pwd)"
-  wt_c="$(canonical_dir "$wt")"
-
-  case "$cwd_c/" in
-    "$wt_c"/*)
-      die "当前终端正位于待删除的预览目录：$wt\n请先 cd 到任一正常 worktree，再重新运行 --clean。"
-      ;;
-  esac
-
-  if git worktree remove --force "$wt"; then
-    return 0
-  fi
-
-  warn "Git 未能完整删除预览目录。Windows 上通常是 PDF 阅读器、Fork、资源管理器或其他终端仍占用该目录。"
-  if ! worktree_is_registered "$wt"; then
-    warn "该路径已不在 git worktree 列表中，仅剩普通目录残留。"
-    rm -rf -- "$wt" 2>/dev/null || true
-    if [[ -e "$wt" ]]; then
-      say "请关闭占用该目录或 main.pdf 的程序后，再手工删除：$wt"
-    fi
-    git worktree prune
-    return 0
-  fi
-
-  die "预览 worktree 仍处于 Git 注册状态。请关闭占用该目录的程序后，从正常 worktree 重新运行 --clean。"
 }
 
 suggest_preview_dir() {
-  local root="$1" parent grand
+  local root="$1" parent base
   parent="$(dirname "$root")"
-  grand="$(dirname "$parent")"
-  if [[ "$(basename "$parent")" == "worktrees" ]]; then
-    printf '%s/%s\n' "$parent" "$PREVIEW_NAME"
-  elif [[ -d "$parent/worktrees" ]]; then
-    printf '%s/worktrees/%s\n' "$parent" "$PREVIEW_NAME"
-  elif [[ -d "$grand/worktrees" ]]; then
-    printf '%s/worktrees/%s\n' "$grand" "$PREVIEW_NAME"
+  base="$(basename "$root")"
+  if [[ "$base" == run02-* ]]; then
+    printf '%s\n' "$parent/run02-full-preview"
   else
-    printf '%s/%s\n' "$parent" "$PREVIEW_NAME"
+    printf '%s\n' "$parent/full-paper-preview"
   fi
+}
+
+safe_cd_outside() {
+  local doomed="$1" wt
+  if [[ "$(normalize_path "$PWD")" == "$(normalize_path "$doomed")"* ]]; then
+    while IFS= read -r wt; do
+      [[ -z "$wt" ]] && continue
+      if [[ "$(normalize_path "$wt")" != "$(normalize_path "$doomed")" ]]; then
+        cd "$wt" 2>/dev/null && return 0
+      fi
+    done < <(git worktree list --porcelain | awk '/^worktree /{sub(/^worktree /,""); print}')
+    cd "$(dirname "$doomed")" 2>/dev/null || true
+  fi
+}
+
+remove_preview_worktree() {
+  local wt="$1"
+  safe_cd_outside "$wt"
+  git worktree remove --force "$wt" 2>/dev/null || {
+    git worktree prune 2>/dev/null || true
+    if [[ -e "$wt" ]]; then
+      rm -rf "$wt" 2>/dev/null || die "无法删除临时预览目录 $wt。请关闭PDF、Fork标签页、资源管理器和停在该目录中的终端后重试。"
+    fi
+  }
+  git worktree prune 2>/dev/null || true
+}
+
+clean_preview() {
+  local root wt
+  root="$(repo_root)" || die "当前目录不是有效 Git worktree。请先 cd 到任一正常 worktree 后运行。"
+  wt="$(preview_worktree || true)"
+  if [[ -n "$wt" ]]; then
+    say "========== 清理本地全文预览 =========="
+    say "检测到预览 worktree：$wt"
+    remove_preview_worktree "$wt"
+    say "已删除临时预览 worktree。"
+  fi
+  if git show-ref --verify --quiet "refs/heads/${LEGACY_PREVIEW_BRANCH}"; then
+    git branch -D "$LEGACY_PREVIEW_BRANCH" >/dev/null 2>&1 || true
+    say "已清理旧版临时分支 ${LEGACY_PREVIEW_BRANCH}。"
+  fi
+  git worktree prune 2>/dev/null || true
+  exit 0
 }
 
 open_pdf() {
   local pdf="$1"
-  [[ -f "$pdf" ]] || { warn "PDF 尚不存在：$pdf"; return 1; }
-  if command -v cygpath >/dev/null 2>&1 && command -v cmd.exe >/dev/null 2>&1; then
-    cmd.exe /c start "" "$(cygpath -w "$pdf")" >/dev/null 2>&1 || true
+  [[ -f "$pdf" ]] || return 0
+  if command -v start >/dev/null 2>&1; then
+    start "" "$pdf" >/dev/null 2>&1 || true
+  elif command -v cmd.exe >/dev/null 2>&1; then
+    cmd.exe /c start "" "$(cygpath -w "$pdf" 2>/dev/null || printf '%s' "$pdf")" >/dev/null 2>&1 || true
   elif command -v xdg-open >/dev/null 2>&1; then
     xdg-open "$pdf" >/dev/null 2>&1 || true
-  else
-    say "PDF 路径：$pdf"
   fi
-}
-
-clean_preview() {
-  local wt
-  say ""
-  say "========== 清理本地全文预览 =========="
-  wt="$(preview_worktree || true)"
-  if [[ -n "$wt" ]]; then
-    say "检测到预览 worktree：$wt"
-    remove_preview_worktree "$wt"
-  else
-    say "没有检测到已注册的全文预览 worktree。"
-  fi
-
-  if git show-ref --verify --quiet "refs/heads/${LEGACY_PREVIEW_BRANCH}"; then
-    git branch -D "$LEGACY_PREVIEW_BRANCH" >/dev/null 2>&1 \
-      || die "无法删除旧版临时分支 ${LEGACY_PREVIEW_BRANCH}。请确认没有 worktree 正在使用它。"
-    say "已删除旧版临时分支：${LEGACY_PREVIEW_BRANCH}"
-  fi
-
-  git worktree prune
-  say "清理完成。正式分支和远端仓库均未修改。"
-  exit 0
 }
 
 owned_prefix_for() {
   case "$1" in
-    origin/feature/abstract)           printf '%s\n' 'modules/00_abstract/' ;;
-    origin/feature/restatement)        printf '%s\n' 'modules/10_restatement/' ;;
-    origin/feature/notion-paper-a)     printf '%s\n' 'modules/11_notation/' ;;
+    origin/feature/abstract) printf '%s\n' 'modules/00_abstract/' ;;
+    origin/feature/restatement) printf '%s\n' 'modules/10_restatement/' ;;
+    origin/feature/notion-paper-a) printf '%s\n' 'modules/11_notation/' ;;
     origin/feature/assumption-paper-a) printf '%s\n' 'modules/12_assumptions/' ;;
-    origin/feature/q1update)           printf '%s\n' 'modules/20_q1/' ;;
-    origin/feature/q2-paper-a)         printf '%s\n' 'modules/30_q2/' ;;
-    origin/feature/q3-paper-a)         printf '%s\n' 'modules/40_q3/' ;;
-    origin/feature/evaluation)         printf '%s\n' 'modules/50_evaluation/' ;;
-    origin/feature/toc)                printf '%s\n' 'paper/paper_template.tex' ;;
-    *)                                 printf '%s\n' '' ;;
+    origin/feature/q1update) printf '%s\n' 'modules/20_q1/' ;;
+    origin/feature/q2-paper-a) printf '%s\n' 'modules/30_q2/' ;;
+    origin/feature/q3-paper-a) printf '%s\n' 'modules/40_q3/' ;;
+    origin/feature/evaluation) printf '%s\n' 'modules/50_evaluation/' ;;
+    origin/feature/toc) printf '%s\n' 'paper/paper_template.tex' ;;
+    *) printf '%s\n' '' ;;
   esac
 }
 
-# 这些文件/目录由 common-final 管理。模块分支中若残留旧副本，预览时一律保留 common-final。
-# feature/toc 是例外：因为 owned_prefix_for() 的模块规则优先于本函数，所以最后合入 toc 时
-# paper/paper_template.tex 会自动采用 toc 分支版本。
-is_common_owned_file() {
+is_common_owned() {
   case "$1" in
-    paper/main.tex|paper/preamble.tex|paper/paper_template.tex|paper/sections/*|sections/*|\
-    modules/60_references/*|modules/70_appendix/*|modules/80_ai_report/*|\
-    scripts/*|work/result_registry.csv|work/figure_registry.csv|docs/team_handoff/*)
-      return 0 ;;
-    *)
-      return 1 ;;
+    paper/preamble.tex|paper/main.tex|preview_merge.sh) return 0 ;;
+    modules/60_references/*|modules/70_appendix/*|modules/80_ai_report/*) return 0 ;;
+    scripts/*|work/*|docs/team_handoff/*) return 0 ;;
+    *) return 1 ;;
   esac
 }
 
-is_ignorable_preview_file() {
-  case "$1" in
-    work/archive/*|archive/*|work/*/archive/*|work/*/output/*|work/*/outputs/*|work/*/results/*|\
-    work/cache/*|work/tmp/*|output/*|outputs/*|results/*|*.aux|*.log|*.fls|*.fdb_latexmk|*.synctex.gz)
-      return 0 ;;
-    *)
-      return 1 ;;
-  esac
-}
-
-remove_conflict_from_preview() {
-  local wt="$1" file="$2"
-  git -C "$wt" rm -f --ignore-unmatch -- "$file" >/dev/null 2>&1 || true
-  if git -C "$wt" ls-files -u -- "$file" | grep -q .; then
-    git -C "$wt" update-index --force-remove -- "$file" >/dev/null 2>&1 || true
-    rm -f "$wt/$file" 2>/dev/null || true
+is_module_owned() {
+  local path="$1" prefix="$2"
+  if [[ "$prefix" == "paper/paper_template.tex" ]]; then
+    [[ "$path" == "$prefix" ]]
+  else
+    [[ -n "$prefix" && "$path" == "$prefix"* ]]
   fi
 }
 
 take_side_or_delete() {
-  local wt="$1" side="$2" file="$3"
-  if git -C "$wt" checkout "--${side}" -- "$file" >/dev/null 2>&1; then
-    git -C "$wt" add -- "$file"
-    return 0
+  local wt="$1" side="$2" path="$3"
+  if git -C "$wt" checkout "--$side" -- "$path" 2>/dev/null; then
+    git -C "$wt" add -- "$path"
+  else
+    git -C "$wt" rm -f --ignore-unmatch -- "$path" >/dev/null 2>&1 || true
+    git -C "$wt" add -A -- "$path" >/dev/null 2>&1 || true
   fi
-  remove_conflict_from_preview "$wt" "$file"
 }
 
 resolve_expected_conflicts() {
-  local wt="$1" branch="$2" prefix="$3" file unresolved
-  unresolved="$(git -C "$wt" diff --name-only --diff-filter=U)"
-  [[ -n "$unresolved" ]] || return 0
+  local wt="$1" branch="$2" prefix="$3" conflicts f unresolved=()
+  conflicts="$(git -C "$wt" diff --name-only --diff-filter=U)"
+  [[ -z "$conflicts" ]] && return 0
 
   say "发现冲突，按模块所有权处理可判断项："
-  while IFS= read -r file; do
-    [[ -n "$file" ]] || continue
-    if is_ignorable_preview_file "$file"; then
-      say "  [忽略] $file"
-      remove_conflict_from_preview "$wt" "$file"
-    elif [[ -n "$prefix" && "$file" == "$prefix"* ]]; then
-      say "  [模块] $file -> ${branch}"
-      take_side_or_delete "$wt" theirs "$file"
-    elif is_common_owned_file "$file"; then
-      say "  [公共] $file -> common-final"
-      take_side_or_delete "$wt" ours "$file"
+  while IFS= read -r f; do
+    [[ -z "$f" ]] && continue
+    if is_module_owned "$f" "$prefix"; then
+      say "  [模块] $f -> $branch"
+      take_side_or_delete "$wt" theirs "$f"
+    elif is_common_owned "$f"; then
+      if [[ "$branch" == "origin/feature/toc" && "$f" == "paper/paper_template.tex" ]]; then
+        say "  [入口] $f -> $branch"
+        take_side_or_delete "$wt" theirs "$f"
+      else
+        say "  [公共] $f -> common-final"
+        take_side_or_delete "$wt" ours "$f"
+      fi
+    elif [[ "$f" == work/archive/* || "$f" == output/* || "$f" == modules/paper汇总/* ]]; then
+      say "  [忽略] $f -> common-final/当前汇总"
+      take_side_or_delete "$wt" ours "$f"
+    else
+      unresolved+=("$f")
     fi
-  done <<< "$unresolved"
+  done <<< "$conflicts"
+
+  if [[ ${#unresolved[@]} -gt 0 ]]; then
+    say "仍有无法自动判断的冲突："
+    printf '  - %s\n' "${unresolved[@]}"
+    return 1
+  fi
+  return 0
 }
 
 finish_merge_interactively() {
@@ -266,6 +242,24 @@ materialize_modular_entry() {
   cp "$src" "$dst" || die "无法生成临时 paper/main.tex。"
 }
 
+run_final_preflight() {
+  local wt="$1" py=""
+  if command -v python >/dev/null 2>&1; then
+    py="python"
+  elif command -v python3 >/dev/null 2>&1; then
+    py="python3"
+  else
+    warn "未检测到Python，跳过终稿preflight。"
+    return 0
+  fi
+  [[ -f "$wt/scripts/final_preflight.py" ]] || { warn "未找到 scripts/final_preflight.py，跳过终稿preflight。"; return 0; }
+  say ""
+  say "========== 终稿 Preflight =========="
+  if ! (cd "$wt" && "$py" scripts/final_preflight.py --post-build); then
+    warn "终稿preflight发现FAIL项。PDF仍保留，请按输出逐项处理后再提交。"
+  fi
+}
+
 compile_paper() {
   local wt="$1" paper_dir pdf ans
   paper_dir="$wt/paper"
@@ -284,6 +278,8 @@ compile_paper() {
     warn "未检测到 latexmk/xelatex。临时汇总已完成，但无法自动编译。"
     return 0
   fi
+
+  run_final_preflight "$wt"
 
   say "全文预览生成完成：$pdf"
   if [[ -f "$pdf" ]]; then
@@ -377,7 +373,7 @@ main() {
   say ""
   say "临时预览 worktree：$preview_dir"
   say "该 worktree 为 detached HEAD，没有 preview/full-paper-local 分支。"
-  say "看完以后，从任一正常 worktree 运行："
+  say "看完以后，从任一正常 worktree运行："
   say "  bash <(git show origin/feature/paper-common-final:preview_merge.sh) --clean"
 }
 
