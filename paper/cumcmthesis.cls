@@ -148,8 +148,19 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \IfFileExists{C:/Windows/Fonts/times.ttf}{\setmainfont{Times New Roman}}{\setmainfont{Liberation Serif}}
 %\setmonofont{Courier New}
 \IfFileExists{C:/Windows/Fonts/arial.ttf}{\setsansfont{Arial}}{\setsansfont{Liberation Sans}}
-% 中文字体由 ctex 的 Fandol fontset 统一管理；不要再在此处切回 SimSun/KaiTi。
-% 保留旧类文件使用的 \song / \kai 接口，但映射到 ctex 标准族。
+% Windows 正文中文恢复为宋体；粗体仍沿用当前 Fandol 粗体，避免标题风格变化。
+% 非 Windows 环境继续使用 ctex 的 Fandol 字体族，保证可移植编译。
+\IfFileExists{C:/Windows/Fonts/simsun.ttc}{%
+  \setCJKmainfont{SimSun}[
+    BoldFont=FandolSong-Bold.otf,
+    ItalicFont=SimSun
+  ]%
+  \setCJKfamilyfont{zhsong}{SimSun}[
+    BoldFont=FandolSong-Bold.otf,
+    ItalicFont=SimSun
+  ]%
+}{}
+% 保留旧类文件使用的 \song / \kai 接口，并映射到 ctex 标准族。
 \newcommand*{\song}{\songti}
 \newcommand*{\kai}{\kaishu}
 
