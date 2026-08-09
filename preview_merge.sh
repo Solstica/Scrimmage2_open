@@ -29,11 +29,83 @@ repo_root() {
   git rev-parse --show-toplevel 2>/dev/null || return 1
 }
 
+canonical_dir() {
+  local p="$1"
+  if [[ -d "$p" ]]; then
+    (cd "$p" 2>/dev/null && pwd -P) || printf '%s\n' "$p"
+  else
+    printf '%s\n' "$p"
+  fi
+}
+
 preview_worktree_for_branch() {
   git worktree list --porcelain | awk -v ref="refs/heads/${PREVIEW_BRANCH}" '
     /^worktree / { p=substr($0,10) }
     /^branch /   { b=substr($0,8); if (b==ref) { print p; exit } }
   '
+}
+
+safe_worktree_for_cleanup() {
+  local target="$1" target_c p p_c
+  target_c="$(canonical_dir "$target")"
+  while IFS= read -r p; do
+    [[ -n "$p" ]] || continue
+    p_c="$(canonical_dir "$p")"
+    [[ "$p_c" == "$target_c" ]] && continue
+    if git -C "$p" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      printf '%s\n' "$p"
+      return 0
+    fi
+  done < <(git worktree list --porcelain | awk '/^worktree / {print substr($0,10)}')
+  return 1
+}
+
+worktree_is_registered() {
+  local target="$1" target_c p p_c
+  target_c="$(canonical_dir "$target")"
+  while IFS= read -r p; do
+    [[ -n "$p" ]] || continue
+    p_c="$(canonical_dir "$p")"
+    [[ "$p_c" == "$target_c" ]] && return 0
+  done < <(git worktree list --porcelain | awk '/^worktree / {print substr($0,10)}')
+  return 1
+}
+
+remove_preview_worktree_safely() {
+  local wt="$1" cwd_c wt_c safe
+  cwd_c="$(pwd -P 2>/dev/null || pwd)"
+  wt_c="$(canonical_dir "$wt")"
+
+  # Windows 不能删除当前 shell 正在占用的目录。若人在预览 worktree 内，先切到其他正常 worktree。
+  case "$cwd_c/" in
+    "$wt_c"/*)
+      safe="$(safe_worktree_for_cleanup "$wt" || true)"
+      [[ -n "$safe" ]] || die "当前 shell 位于待删除的预览 worktree 中，且没有找到其他可用 worktree。请先 cd 到任一正常 worktree 后重试。"
+      say "当前 shell 位于待删除目录内，先切换到安全 worktree：$safe"
+      cd "$safe" || die "无法切换到安全 worktree：$safe"
+      ;;
+  esac
+
+  if git worktree remove --force "$wt"; then
+    return 0
+  fi
+
+  warn "Git 未能完整删除预览目录。Windows 上通常是 PDF 阅读器、Fork、资源管理器或终端仍占用该目录。"
+
+  # 某些 Git for Windows 版本会先解除 worktree 注册，再因文件占用导致目录删除失败。
+  # 这种情况下只清理已经失去 Git 注册的普通残留目录，不触碰任何有效 worktree 的 .git 元数据。
+  if ! worktree_is_registered "$wt"; then
+    warn "该路径已经不在 git worktree 列表中，仅剩普通目录残留。尝试删除残留目录。"
+    rm -rf -- "$wt" 2>/dev/null || true
+    if [[ -e "$wt" ]]; then
+      warn "目录仍被 Windows 占用：$wt"
+      say "请关闭打开该目录/PDF的 Fork 标签页、文件资源管理器和阅读器后，再手工删除这个普通残留目录。"
+    fi
+    git worktree prune
+    return 0
+  fi
+
+  die "预览 worktree 仍处于 Git 注册状态，暂不做破坏性处理。请关闭占用该目录的程序后，从正常 worktree 重新运行 --clean。"
 }
 
 suggest_preview_dir() {
@@ -75,9 +147,9 @@ clean_preview() {
       read -r -p "删除这个临时预览并丢弃其中改动？[Y/n] " ans
       [[ ! "${ans:-Y}" =~ ^[Nn]$ ]] || { say "已取消。"; exit 0; }
     fi
-    git worktree remove --force "$wt" || die "worktree 删除失败，请不要手工乱删 .git 内容。"
+    remove_preview_worktree_safely "$wt"
   else
-    say "没有检测到 ${PREVIEW_BRANCH} 对应的 worktree。"
+    say "没有检测到 ${PREVIEW_BRANCH} 对应的已注册 worktree。"
   fi
 
   if git show-ref --verify --quiet "refs/heads/${PREVIEW_BRANCH}"; then
@@ -285,7 +357,7 @@ compile_paper() {
 
 main() {
   local root current old_wt preview_dir stamp branch prefix choice ans
-  root="$(repo_root)" || die "当前目录不是 Git 仓库。请在 Fork 对这个仓库点 Open Git Bash 后再运行。"
+  root="$(repo_root)" || die "当前目录不是 Git 仓库。请在任一正常 worktree 中运行本脚本。若刚才清理预览失败，请先 cd 到正常 worktree。"
   cd "$root" || die "无法进入仓库根目录。"
 
   if [[ "${1:-}" == "--clean" ]]; then
@@ -294,7 +366,7 @@ main() {
 
   current="$(git branch --show-current)"
   if [[ "$current" == "$PREVIEW_BRANCH" ]]; then
-    die "你现在就在临时预览分支里。请回到自己的正常 worktree，再运行本脚本。"
+    die "你现在就在临时预览分支里。正常生成预览请回到自己的正常 worktree；若只是清理，请使用 --clean。"
   fi
 
   say "========== 本地全文 Merge 预览 =========="
@@ -331,7 +403,7 @@ main() {
           read -r -p "直接丢弃旧临时预览并重建？[Y/n] " ans
           [[ ! "${ans:-Y}" =~ ^[Nn]$ ]] || { say "已取消。"; exit 0; }
         fi
-        git worktree remove --force "$old_wt" || die "旧预览 worktree 删除失败。"
+        remove_preview_worktree_safely "$old_wt"
         git branch -D "$PREVIEW_BRANCH" >/dev/null 2>&1 || true
         ;;
       2)
