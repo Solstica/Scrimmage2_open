@@ -148,11 +148,16 @@ def check_structure(errors, warns):
     if path is None:
         errors.append("找不到 paper/main.tex 或 paper/paper_template.tex")
         return
-    required = ["\\pagenumbering{gobble}", "\\tableofcontents", "\\pagenumbering{arabic}", "\\setcounter{page}{1}"]
+    toc_markers = ["\\tableofcontents", "\\input{training_toc.tex}"]
+    required = ["\\pagenumbering{gobble}", "\\pagenumbering{arabic}", "\\setcounter{page}{1}"]
     for item in required:
         if item not in text:
             errors.append(f"{rel(path)} 缺少分页控制 {item}")
-    positions = [text.find(x) for x in required]
+    toc_positions = [text.find(x) for x in toc_markers if text.find(x) >= 0]
+    if not toc_positions:
+        errors.append(f"{rel(path)} 缺少目录入口")
+    toc_pos = min(toc_positions, default=-1)
+    positions = [text.find(required[0]), toc_pos, text.find(required[1]), text.find(required[2])]
     if all(x >= 0 for x in positions) and positions != sorted(positions):
         errors.append(f"{rel(path)} 的摘要/目录/正文页码控制顺序异常")
 

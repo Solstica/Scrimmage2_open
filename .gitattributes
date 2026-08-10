@@ -1,2 +1,4 @@
 # Shell scripts must remain executable by Git Bash, WSL, and Linux CI.
 *.sh text eol=lf
+work/source_registry.csv text eol=lf
+work/literature_impact_log.yaml text eol=lf
