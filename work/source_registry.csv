@@ -1,8 +1,21 @@
 source_id,type,title,authors,year,quality,purpose,citation_location,verified,status
-PAPER_A,national_first_paper,基于色散模型和最小二乘拟合的外延层厚度测量,邱杰等,2025,national_first_training_reference,Q1至Q3唯一主体方法来源,Q1-Q3,true,accepted_primary
-PAPER_B,national_first_paper,基于Cauchy-Drude色散效应的外延层厚度红外干涉测量研究,路子涵等,2025,national_first_training_reference,仅作第一阶段比较_不进入当前核心路线,work/archive,true,archived_secondary
-OWN,own_model_archive,摄动反演与Neumann四轮完整数值包,用户已有方案,2026,internal_reference,仅保留单位符号门禁和简单验证思想,work/archive,true,archived_method_reference
+PAPER_A,national_first_paper,基于色散模型和最小二乘拟合的外延层厚度测量,邱杰等,2025,national_first_training_reference,Q1-Q3唯一主体方法来源,training_review,true,accepted_primary
+PAPER_B,national_first_paper,基于Cauchy-Drude色散效应的外延层厚度红外干涉测量研究,路子涵等,2025,national_first_training_reference,第一阶段比较来源,training_review,true,archived_secondary
+OWN,own_model_archive,摄动反演与Neumann验证数值包,用户已有方案,2026,internal_reference,通用验证方法来源,training_review,true,archived_method_reference
 S-PROBLEM,problem_statement,2025年全国大学生数学建模竞赛B题：碳化硅外延层厚度的确定,全国大学生数学建模竞赛组委会,2025,official,任务与附件语义,问题重述,true,accepted
-S-MARQ1963,journal_article,An Algorithm for Least-Squares Estimation of Nonlinear Parameters,D. W. Marquardt,1963,primary,有界非线性最小二乘思想,Q2-Q3,true,accepted
-S-DRUDE1900,journal_article,Zur Elektronentheorie der Metalle,P. Drude,1900,primary,自由载流子介电函数,Q1-Q3,true,accepted
-S-BORN1999,book,Principles of Optics,M. Born; E. Wolf,1999,authoritative_monograph,Fresnel边界与薄膜干涉,Q1-Q3,true,accepted
+S-POLITANO2023,review_article,Spectroscopic Ellipsometry: Advancements Applications and Future Prospects in Optical Characterization,G. G. Politano; C. Versace,2023,peer_reviewed,现代光谱椭偏与薄膜光学综述,Q1,true,accepted
+S-PARK2024,review_article,A Review of Thin-film Thickness Measurements using Optical Methods,J. Park et al.,2024,peer_reviewed,薄膜厚度光学测量综述,Q2,true,accepted
+S-GAIDUKASOV2024,review_article,Application of Spectral Ellipsometry for Dielectric Metal and Semiconductor Films in Microelectronics Technology,R. A. Gaidukasov; A. V. Miakonkikh,2024,peer_reviewed,半导体薄膜光谱测量综述,Q2,true,accepted
+S-KURAMSHINA2024,journal_article,Nonlinear inverse problems of vibrational spectroscopy,G. M. Kuramshina; A. G. Yagola,2024,peer_reviewed,光谱非线性反演方法,Q2,true,accepted
+S-THOMAS2024,journal_article,Temperature-dependent index of refraction Sellmeier model for crystalline and polycrystalline materials,M. E. Thomas,2024,peer_reviewed,Sellmeier色散模型的现代参数化依据,Q2,true,accepted
+S-ZHOU2023,journal_article,Simulation on a dispersion-managed 4H-SiC on insulator waveguide for infrared supercontinuum generation,J. Zhou et al.,2023,peer_reviewed,4H-SiC红外色散背景,Q1,true,accepted
+S-MOORE2022,journal_article,Temperature-dependent dielectric function of intrinsic silicon: Analytic models and atom-surface potentials,C. Moore et al.,2022,peer_reviewed,硅介电函数现代解析模型,Q3,true,accepted
+S-BORN1999,book,Principles of Optics,M. Born; E. Wolf,1999,authoritative_monograph,Fresnel边界与薄膜干涉模型,Q1-Q3,true,accepted
+S-YEH1988,book,Optical Waves in Layered Media,P. Yeh,1988,authoritative_monograph,分层介质传播模型,Q1,true,accepted
+S-DRUDE1900,journal_article,Zur Elektronentheorie der Metalle,P. Drude,1900,primary_historical,Drude自由载流子介电函数,Q1-Q3,true,accepted
+S-LI1980,journal_article,Refractive index of silicon and germanium and its wavelength and temperature derivatives,H. H. Li,1980,primary_reference_data,硅折射率参数来源,Q3,true,accepted
+S-MARQ1963,journal_article,An Algorithm for Least-Squares Estimation of Nonlinear Parameters,D. W. Marquardt,1963,primary_historical,非线性最小二乘算法依据,Q2-Q3,true,accepted
+S-GOLUB2013,book,Matrix Computations,G. H. Golub; C. F. Van Loan,2013,authoritative_monograph,Jacobian-SVD可辨识性分析,Q3,true,accepted
+S-TIWALD1999,journal_article,Carrier concentration and lattice absorption in bulk and epitaxial silicon carbide determined using infrared ellipsometry,T. E. Tiwald et al.,1999,peer_reviewed,SiC红外载流子与晶格吸收参数,Q1-Q2,true,accepted
+S-VOLM1996,journal_article,Determination of the electron effective-mass tensor in 4H SiC,D. Volm et al.,1996,peer_reviewed,4H-SiC有效质量参数,Q1-Q2,true,accepted
+S-HUMLICEK1985,journal_article,Infrared optical constants of intrinsic silicon,J. Humlicek; K. Vojtechovsky,1985,peer_reviewed,硅红外光学常数,Q3,true,accepted
