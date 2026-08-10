@@ -241,8 +241,16 @@ materialize_modular_entry() {
 
 run_final_preflight() {
   local wt="$1"
+  local conda_base phasefield_py
   local -a py_cmd=()
-  if command -v conda >/dev/null 2>&1 \
+  conda_base=""
+  if command -v conda >/dev/null 2>&1; then
+    conda_base="$(conda info --base 2>/dev/null || true)"
+  fi
+  phasefield_py="${conda_base}/envs/phasefield/python.exe"
+  if [[ -n "$conda_base" && -x "$phasefield_py" ]]; then
+    py_cmd=("$phasefield_py")
+  elif command -v conda >/dev/null 2>&1 \
     && conda run -n phasefield python -c "import sys" >/dev/null 2>&1; then
     py_cmd=(conda run -n phasefield python)
   elif command -v python >/dev/null 2>&1; then
