@@ -132,6 +132,21 @@ owned_prefix_for() {
   esac
 }
 
+resolve_merge_ref() {
+  local remote_ref="$1" local_ref
+  local_ref="${remote_ref#origin/}"
+  if git show-ref --verify --quiet "refs/remotes/${remote_ref}"; then
+    printf '%s\n' "$remote_ref"
+    return 0
+  fi
+  if git show-ref --verify --quiet "refs/heads/${local_ref}"; then
+    warn "远端 ${remote_ref} 不存在，改用本地正式分支 ${local_ref}。"
+    printf '%s\n' "$local_ref"
+    return 0
+  fi
+  return 1
+}
+
 is_common_owned() {
   case "$1" in
     paper/preamble.tex|paper/preamble_simple.tex|paper/main.tex|paper/paper_template.tex|paper/abstract_check.tex|paper/training_toc.tex|preview_merge.sh) return 0 ;;
@@ -298,7 +313,7 @@ compile_paper() {
 }
 
 main() {
-  local root old_wt preview_dir stamp branch prefix choice
+  local root old_wt preview_dir stamp branch merge_ref prefix choice
   root="$(repo_root)" || die "当前目录不是有效 Git worktree。请先 cd 到任一正常 worktree 后运行。"
   cd "$root" || die "无法进入仓库根目录。"
 
@@ -320,8 +335,8 @@ main() {
   git rev-parse --verify --quiet "${BASE_REMOTE}^{commit}" >/dev/null \
     || die "找不到基底引用 ${BASE_REMOTE}。"
   for branch in "${MERGE_BRANCHES[@]}"; do
-    git show-ref --verify --quiet "refs/remotes/${branch}" \
-      || die "找不到远端分支 ${branch}。"
+    resolve_merge_ref "$branch" >/dev/null \
+      || die "找不到模块分支 ${branch}，本地同名正式分支也不存在。"
   done
 
   old_wt="$(preview_worktree || true)"
@@ -358,16 +373,18 @@ main() {
 
   say "[3/6] 依次临时合并正式模块分支..."
   for branch in "${MERGE_BRANCHES[@]}"; do
-    say "---- $branch ----"
-    if git -C "$preview_dir" merge --no-ff --no-edit "$branch"; then
+    merge_ref="$(resolve_merge_ref "$branch")" \
+      || die "模块来源 ${branch} 在创建预览期间消失。"
+    say "---- $branch -> $merge_ref ----"
+    if git -C "$preview_dir" merge --no-ff --no-edit "$merge_ref"; then
       continue
     fi
     if [[ -z "$(git -C "$preview_dir" diff --name-only --diff-filter=U)" ]]; then
-      die "合并 ${branch} 失败，但没有检测到普通文本冲突。"
+      die "合并 ${merge_ref} 失败，但没有检测到普通文本冲突。"
     fi
     prefix="$(owned_prefix_for "$branch")"
-    resolve_expected_conflicts "$preview_dir" "$branch" "$prefix"
-    finish_merge_interactively "$preview_dir" "$branch"
+    resolve_expected_conflicts "$preview_dir" "$merge_ref" "$prefix"
+    finish_merge_interactively "$preview_dir" "$merge_ref"
   done
 
   say "[4/6] 生成模块化全文入口..."
