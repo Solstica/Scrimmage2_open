@@ -65,6 +65,10 @@ def main():
         for p in outside: print(" -",p)
     else:
         print("\n[PASS] 未检测到责任域外修改。")
+    content_changed=any(p.startswith(allowed[0]) for p in changed)
+    task_changed=m["task"] in changed
+    if content_changed and not task_changed:
+        print("[WARN] 本轮修改了模块内容，但任务文件没有同步变化；请确认待办/完成项/需要复核项是否已实时更新。")
     unchecked=sum(1 for line in task_text(m).splitlines() if line.lstrip().startswith("- [ ]"))
     print(f"[INFO] 当前任务文件仍有 {unchecked} 个未勾选项；允许保留，但结束汇报必须说明。")
     raise SystemExit(1 if outside else 0)
