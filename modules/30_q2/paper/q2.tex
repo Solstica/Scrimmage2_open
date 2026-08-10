@@ -1,4 +1,4 @@
-\subsection{问题二的描述与分析}
+\subsection{问题二的描述、数据分析与预处理}
 
 附件1、2为同一块SiC晶圆在$10^\circ$和$15^\circ$下的红外反射光谱。本问基于问题一双光束正演模型，由连续光谱反演外延层厚度。低波数区材料吸收显著，干涉相位导致目标函数存在多个厚度局部极小，载流子浓度、衬底折射率和Sellmeier参数均会影响谱形并与厚度耦合。据此先截取弱吸收波段，再对两个入射角分别进行有界多初值反演，并通过拟合误差、跨角度一致性和候选局部极小竞争关系分析厚度结果。
 
@@ -10,8 +10,6 @@
 \caption{问题二SiC外延层厚度反演总体流程。}
 \label{fig:q2-overall-flow}
 \end{figure}
-
-\subsection{数据分析与预处理}
 
 \subsubsection{原始光谱与拟合波段选取}
 
@@ -118,6 +116,32 @@ J_k(\boldsymbol p_k),
 \end{equation}
 作为SiC晶圆的综合厚度。
 
+\subsubsection{模型汇总}
+
+综合上述定义、约束、目标函数与厚度合成规则，问题二的双角度有界非线性反演模型可统一表示为
+\begin{equation}
+\begin{aligned}
+&\min_{\substack{\boldsymbol p_k\\ k\in\{10^\circ,15^\circ\}}}\quad J_k(\boldsymbol p_k)
+=\sum_{i:\,2500\le\sigma_i\le3300}e_{ki}^2(\boldsymbol p_k),\\[1mm]
+&\mathrm{s.t.}\quad
+\left\{
+\begin{aligned}
+e_{ki}(\boldsymbol p_k)
+    &=R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),\\
+6.5&\le d_k\le8.5,\quad
+14.0\le q_{N,k}\le20.5,\\
+2.20&\le n_{3,k}\le3.20,\\
+\left|\frac{\beta_{k,j}}{\beta_{0,j}}-1\right|&\le0.05,
+\quad j=1,\ldots,7,\\
+\bar d&=\frac{d_{10^\circ}+d_{15^\circ}}{2}.
+\end{aligned}
+\right.
+\end{aligned}
+\label{eq:q2-model-summary}
+\end{equation}
+其中$\boldsymbol p_k=(d_k,q_{N,k},n_{3,k},\boldsymbol\beta_k)$，
+$\boldsymbol\beta_k=(A_k,B_{1,k},B_{2,k},B_{3,k},C_{1,k},C_{2,k},C_{3,k})$，输入为$10^\circ$和$15^\circ$两组反射光谱，输出为综合厚度$\bar d$。
+
 \subsection{模型求解}
 
 两个角度采用相同的两阶段流程：低维搜索遍历表\ref{tab:q2-parameter-setting}中$10\times3\times3=90$组初值，合并近似收敛结果后保留前$8$个不同候选；完整精修释放七个Sellmeier参数，有界最小二乘收敛后按RMSE排序。伪代码见算法\ref{alg:q2-inversion}。
@@ -126,7 +150,7 @@ J_k(\boldsymbol p_k),
 
 多初值比较扩大了对不同厚度盆地的搜索覆盖，但最终结果仍应理解为当前物理边界和既定初值集合下的最低残差解。
 
-\subsection{结果与分析}
+\subsection{结果与可靠性分析}
 
 \subsubsection{厚度反演结果}
 
@@ -183,7 +207,7 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 \end{figure}
 \FloatBarrier
 
-\subsection{结果可靠性分析}
+\subsubsection{可靠性检验与参数解释}
 
 \textbf{（1）双角度一致性。} 两个角度独立反演的厚度差异为$3.02\%$，且RMSE、MAPE和$R^2$均相近，说明主要干涉条纹在两个角度下给出了一致的厚度尺度。
 
@@ -204,29 +228,3 @@ $15^\circ$ & 7.6230 & $7.0652\times10^{-4}$ & 0.2978 & 0.9526 & 单角度结果\
 \end{equation}
 
 \FloatBarrier
-
-\subsection{模型汇总}
-
-综合上述定义、约束、目标函数与厚度合成规则，问题二的双角度有界非线性反演模型可统一表示为
-\begin{equation}
-\begin{aligned}
-&\min_{\substack{\boldsymbol p_k\\ k\in\{10^\circ,15^\circ\}}}\quad J_k(\boldsymbol p_k)
-=\sum_{i:\,2500\le\sigma_i\le3300}e_{ki}^2(\boldsymbol p_k),\\[1mm]
-&\mathrm{s.t.}\quad
-\left\{
-\begin{aligned}
-e_{ki}(\boldsymbol p_k)
-    &=R_{ki}-R_{\mathrm{th}}(\sigma_i,\theta_k;\boldsymbol p_k),\\
-6.5&\le d_k\le8.5,\quad
-14.0\le q_{N,k}\le20.5,\\
-2.20&\le n_{3,k}\le3.20,\\
-\left|\frac{\beta_{k,j}}{\beta_{0,j}}-1\right|&\le0.05,
-\quad j=1,\ldots,7,\\
-\bar d&=\frac{d_{10^\circ}+d_{15^\circ}}{2}.
-\end{aligned}
-\right.
-\end{aligned}
-\label{eq:q2-model-summary}
-\end{equation}
-其中$\boldsymbol p_k=(d_k,q_{N,k},n_{3,k},\boldsymbol\beta_k)$，
-$\boldsymbol\beta_k=(A_k,B_{1,k},B_{2,k},B_{3,k},C_{1,k},C_{2,k},C_{3,k})$，输入为$10^\circ$和$15^\circ$两组反射光谱，输出为综合厚度$\bar d$。
