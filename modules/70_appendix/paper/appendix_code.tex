@@ -1,27 +1,50 @@
-\begingroup\small\sloppy
-\begin{longtable}{p{.38\textwidth}p{.52\textwidth}}
+\begingroup
+\sloppy
+\setlength{\parindent}{2em}
+
+本文训练赛仅提交PDF，故在附录中给出能够复现三问核心模型与正式结果的完整程序。运行环境为Python 3.11，主要依赖为\texttt{numpy}、\texttt{pandas}、\texttt{scipy}、\texttt{matplotlib}和\texttt{openpyxl}。原始附件置于同一数据目录后，问题二、问题三程序分别通过\texttt{--data-dir}和\texttt{--project}指定数据目录与项目根目录。附录省略仅用于Origin制图、临时诊断和论文预检的辅助脚本。
+
+\begin{longtable}{p{.39\textwidth}p{.51\textwidth}}
 \toprule
-文件 & 功能\\\midrule
+核心程序 & 对应功能\\\midrule
 \endfirsthead
-\toprule 文件 & 功能\\\midrule\endhead
-\path{shared/code/materials.py} & SiC Sellmeier--Drude关系和硅双振子--Drude复介电函数。\\
-\path{shared/code/optics.py} & Snell关系、s/p偏振Fresnel系数、双光束与Airy反射率。\\
-\path{modules/30_q2/code/solve_q2_paper_a.py} & 问题二分角度有界反演、厚度综合和拟合图表输出。\\
-\path{modules/30_q2/code/export_q2_diagnostics.py} & 问题二多初值候选与Origin诊断数据导出。\\
-\path{modules/40_q3/code/solve_q3_paper_a.py} & 问题三四参数Airy反演、第三束光强比和SiC多光束影响分析。\\
-\path{modules/40_q3/code/export_q3_identifiability.py} & 问题三Jacobian--SVD局部可辨识性数据导出。\\
-\path{modules/40_q3/code/export_q3_model_error.py} & Airy--双光束模型差向厚度偏差的一阶传播计算。\\
-\path{modules/40_q3/code/export_q3_phase_alignment.py} & 比较实测与Airy拟合峰谷位置，辅助区分相位对齐与幅值拟合误差。\\
-\path{scripts/test_physics.py} & 问题一物理极限、相位约定和单位缩放检验。\\
-\path{scripts/verify_paper_a_results.py} & 正式数值、跨问文件哈希和结果一致性复核。\\
-\path{scripts/check_writing_quality.py} & 正文结构、图表来源和浮动体规范检查。\\
-\path{scripts/final_preflight.py} & 终稿数值口径、引用、分页和关键图宽一致性检查。\\
-\path{scripts/build_previews.ps1} & 独立编译问题一、问题二和问题三局部稿。\\
-\path{scripts/build_paper.ps1} & 编译主文档并生成最终PDF。\\
+\toprule 核心程序 & 对应功能\\\midrule\endhead
+\path{shared/code/materials.py} & 问题一的SiC色散、载流子Drude修正及材料复折射率。\\
+\path{shared/code/optics.py} & 问题一的Snell关系、Fresnel系数、双光束和Airy反射率正算。\\
+\path{scripts/validate_q1_paper_a.py} & 问题一的物理极限、单位缩放和第三束光强比一致性检查。\\
+\path{modules/30_q2/code/solve_q2_paper_a.py} & 问题二的分角度有界最小二乘、多初值筛选、厚度综合及正式结果输出。\\
+\path{shared/code/data_io.py} & 问题三读取四个官方附件并执行确定性光谱预处理。\\
+\path{modules/40_q3/code/solve_q3_paper_a.py} & 问题三的四参数Airy反演、第三束光强比和SiC双光束适用性检查。\\
 \bottomrule
 \end{longtable}
-\endgroup
 
-\begingroup\sloppy
-数值程序统一使用Python实现，问题二、问题三分别生成\path{output/results/q2_paper_a_results.json}和\path{output/results/q3_paper_a_results.json}，问题一验证结果为\path{output/results/q1_validation.json}。图表的数据来源统一登记在\path{work/figure_registry.csv}，正式数值及其来源哈希登记在\path{work/result_registry.csv}。完整源代码与运行结果随论文工程提交，正文附录仅列出关键程序及其功能，避免重复粘贴大段代码。
-\par\endgroup
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=6pt,
+  keywordstyle=\color{CumcmBlue},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  tabsize=4
+}
+
+\noindent\textbf{附录A：问题一材料色散与光学正算程序。}
+\lstinputlisting[caption={问题一材料色散核心程序}]{../shared/code/materials.py}
+\lstinputlisting[caption={问题一双光束与Airy光学正算核心程序}]{../shared/code/optics.py}
+\lstinputlisting[caption={问题一物理一致性检验程序}]{../scripts/validate_q1_paper_a.py}
+
+\noindent\textbf{附录B：问题二SiC双角度反演程序。}
+\lstinputlisting[caption={问题二分角度有界反演核心程序}]{../modules/30_q2/code/solve_q2_paper_a.py}
+
+\noindent\textbf{附录C：问题三硅多光束反演程序。}
+\lstinputlisting[caption={官方光谱数据读取与预处理程序}]{../shared/code/data_io.py}
+\lstinputlisting[caption={问题三Airy反演与SiC适用性检查核心程序}]{../modules/40_q3/code/solve_q3_paper_a.py}
+
+\endgroup
