@@ -5,8 +5,13 @@
 ## 1. 开赛后先做什么
 
 ```bash
-# 1) 修改 config/project.json 中的项目名/题目数/负责人信息（如需要）
-# 2) 建立独立章节分支与 worktree
+# 1) 初始化项目名和题目数（模板当前支持 1–4 问）
+python scripts/set_questions.py 3 --name 2026CUMCM-A
+
+# 2) 先提交这次初始化，再建立全部独立章节分支与 worktree
+git add config/project.json paper/main.tex
+git commit -m "chore: initialize contest structure"
+git push
 python scripts/bootstrap_worktrees.py --push
 
 # 3) 每次开始一个模块任务
@@ -86,6 +91,8 @@ main
 
 一个章节一个分支，一个分支一个固定资源区。不要创建 `feature/张三`、`final2`、`真的final`、第二套 `document.tex`。
 
+题目数少于 4 时，`set_questions.py` 会把多余问题设为 inactive，并从 `paper/main.tex` 的活动输入中注释掉；`bootstrap_worktrees.py` 也不会为 inactive 问题创建活动 worktree。
+
 ## 5. 日常 Git 最小操作
 
 开始：
@@ -152,7 +159,7 @@ fetch origin
 1. 阅读仓库根目录 AGENTS.md、README.md、docs/RESOURCE_MAP.md。
 2. 运行 `python scripts/workflow.py start <模块key>`，读取它输出的当前分支、允许修改路径、固定资源位置和该模块实时待办。
 3. 读取 `work/tasks/<模块key>.md`；后续工作必须围绕当前待办推进。若实际工作产生新待办、阻塞项或需要检查项，实时更新这个任务文件，不要只在聊天中记录。
-4. 固定资源路径以 `docs/RESOURCE_MAP.md` 和 `config/modules.json` 为准。遇到“不知道文件在哪里”时先查询这两个文件及模块目录，不要要求队友重复提供已经固定的路径。
+4. 固定资源路径以 `docs/RESOURCE_MAP.md` 和 `config/project.json` 为准。遇到“不知道文件在哪里”时先查询这两个文件及模块目录，不要要求队友重复提供已经固定的路径。
 5. 只修改当前模块拥有的路径；跨模块内容先说明依赖，必要时记录到待办，不直接覆盖其他章节。
 6. 所有正式数值必须能追溯到当前活动代码/结果文件；不能从旧论文、旧 JSON、截图或范文手抄回正文。
 7. 需要人工判断的内容统一标记为“NEEDS_REVIEW/需要复核”，由管理员或指定复核成员检查；不要写成必须由某一个固定角色确认。
@@ -165,7 +172,7 @@ fetch origin
 4. 汇报：本轮改了什么、结果/文件在哪里、还剩什么待办、有哪些需要复核。
 ```
 
-即使已经把提示词发给 AI，也仍应保留 `AGENTS.md`；支持仓库级指令的 AI 工具可以自动读取它，降低“忘记喂提示词”的风险。
+即使队友忘记复制上面的提示词，根目录仍保留 `AGENTS.md`；支持仓库级指令的 AI 工具可以自动读取它。仓库还提供 `.github/copilot-instructions.md` 作为额外兜底。最稳妥的启动方式仍是让 AI 先执行 `workflow.py start <模块key>`。
 
 ## 9. 提交前检查层级
 
