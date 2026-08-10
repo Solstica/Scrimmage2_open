@@ -18,6 +18,7 @@ MERGE_BRANCHES=(
   "origin/feature/q2-paper-a"
   "origin/feature/q3-paper-a"
   "origin/feature/evaluation"
+  "origin/feature/appendix-code"
 )
 
 say() { printf '%s\n' "$*"; }
@@ -126,14 +127,15 @@ owned_prefix_for() {
     origin/feature/q2-paper-a) printf '%s\n' 'modules/30_q2/' ;;
     origin/feature/q3-paper-a) printf '%s\n' 'modules/40_q3/' ;;
     origin/feature/evaluation) printf '%s\n' 'modules/50_evaluation/' ;;
+    origin/feature/appendix-code) printf '%s\n' 'modules/70_appendix/' ;;
     *) printf '%s\n' '' ;;
   esac
 }
 
 is_common_owned() {
   case "$1" in
-    paper/preamble.tex|paper/preamble_simple.tex|paper/main.tex|paper/paper_template.tex|paper/abstract_check.tex|preview_merge.sh) return 0 ;;
-    modules/60_references/*|modules/70_appendix/*|modules/80_ai_report/*) return 0 ;;
+    paper/preamble.tex|paper/preamble_simple.tex|paper/main.tex|paper/paper_template.tex|paper/abstract_check.tex|paper/training_toc.tex|preview_merge.sh) return 0 ;;
+    modules/60_references/*|modules/80_ai_report/*) return 0 ;;
     scripts/*|work/*|docs/team_handoff/*) return 0 ;;
     *) return 1 ;;
   esac
@@ -223,12 +225,18 @@ finish_merge_interactively() {
 }
 
 materialize_modular_entry() {
-  local wt="$1" src dst
+  local wt="$1" src dst assumptions_src assumptions_dst
   src="$wt/paper/paper_template.tex"
   dst="$wt/paper/main.tex"
   [[ -f "$src" ]] || die "找不到 $src；请确认公共论文分支包含模块化全文入口。"
   say "使用 paper/paper_template.tex 生成本次临时 paper/main.tex"
   cp "$src" "$dst" || die "无法生成临时 paper/main.tex。"
+  # 稳定门禁按 paper/sections/02_assumptions.tex 统计 \item；预览时将
+  # 模块源临时物化到该路径，避免把模块化 \input 误判为“0 条假设”。
+  assumptions_src="$wt/modules/12_assumptions/paper/assumptions.tex"
+  assumptions_dst="$wt/paper/sections/02_assumptions.tex"
+  [[ -f "$assumptions_src" ]] || die "找不到 $assumptions_src。"
+  cp "$assumptions_src" "$assumptions_dst" || die "无法物化模型假设门禁输入。"
 }
 
 run_final_preflight() {
