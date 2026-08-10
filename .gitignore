@@ -1,25 +1,29 @@
-# Reproducible build and review scratch space
-build/
-tmp/
-
-# Python caches
-**/__pycache__/
+# Python
+__pycache__/
 *.py[cod]
-.pytest_cache/
+.venv/
 
-# Quick smoke-test output is not a frozen result
-output/results/analysis_quick.json
-
-# Generated compatibility mirror for the fixed-path CUMCM Skill gates.
-# Editable sources live under modules/ and are synced by build_paper.ps1.
-paper/abstract_content.tex
-paper/sections/*.tex
-
-# LaTeX auxiliary files that may be emitted beside sources
+# LaTeX build
 *.aux
+*.bbl
+*.blg
 *.fdb_latexmk
 *.fls
 *.log
 *.out
-*.xdv
 *.synctex.gz
+*.toc
+paper/main.pdf
+
+# Office temp
+~$*
+*.tmp
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Disposable preview marker
+.cumcm-preview-worktree

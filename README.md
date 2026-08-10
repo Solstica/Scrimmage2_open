@@ -1,56 +1,176 @@
-# Scrimmage2 · run_02 真题解析
+# CUMCM 通用协作仓库模板 v1
 
-2025 年全国大学生数学建模竞赛 B 题的模块化复现与完整解析。仓库按论文板块划分编辑边界；`paper/` 只承担整合与国赛模板，正文、图表和板块代码归属 `modules/`。
+面向数学建模竞赛的三人/多人 + AI 协作模板。核心原则：**单一真源、章节独立、固定路径、任务可见、结果可追溯、全文临时集成、稳定版本再进入 main**。
 
-## 目录职责
+## 1. 开赛后先做什么
+
+```bash
+# 1) 修改 config/project.json 中的项目名/题目数/负责人信息（如需要）
+# 2) 建立独立章节分支与 worktree
+python scripts/bootstrap_worktrees.py --push
+
+# 3) 每次开始一个模块任务
+python scripts/workflow.py start q2
+
+# 4) 每次结束前
+python scripts/workflow.py finish q2
+
+# 5) 随时生成临时全文，不污染任何正式分支
+python scripts/preview_merge.py
+```
+
+`main` 仅保存稳定版本。日常编辑发生在独立 `feature/*` 分支；全文预览使用 detached worktree，不创建长期“汇总分支”。
+
+## 2. 永久固定的资源路径
+
+| 模块 | 唯一正文/资源位置 | 分支 |
+|---|---|---|
+| 摘要 | `modules/00_abstract/` | `feature/abstract` |
+| 问题重述 | `modules/10_restatement/` | `feature/restatement` |
+| 符号说明 | `modules/11_notation/` | `feature/notation` |
+| 模型假设 | `modules/12_assumptions/` | `feature/assumptions` |
+| 问题一 | `modules/20_q1/` | `feature/q1` |
+| 问题二 | `modules/30_q2/` | `feature/q2` |
+| 问题三 | `modules/40_q3/` | `feature/q3` |
+| 问题四 | `modules/50_q4/` | `feature/q4` |
+| 模型评价 | `modules/60_evaluation/` | `feature/evaluation` |
+| 参考文献 | `modules/70_references/` | `feature/references` |
+| 附录 | `modules/80_appendix/` | `feature/appendix` |
+| AI 使用报告 | `modules/90_ai_report/` | `feature/ai-report` |
+| 跨问共享代码 | `shared/` | `feature/shared` |
+| 标题/目录/页码/模板 | `paper/` | `feature/paper-shell` |
+| 官方原始附件 | `data/raw/` | 不随章节移动 |
+| 外部补充数据 | `data/external/` | 不随章节移动 |
+| 模块待办 | `work/tasks/<模块>.md` | 跟随对应模块分支 |
+| 正式交付物 | `output/final/` | 仅稳定集成后生成 |
+| 废弃路线 | `work/archive/` | 只读归档，不被活动代码引用 |
+
+详细地图见 `docs/RESOURCE_MAP.md`。**路径是固定约定；找文件时先查资源地图和 `workflow.py start` 输出，不重新向队友询问已经固定的位置。**
+
+## 3. 每个问题模块内部固定结构
 
 ```text
-paper/       唯一全文整合入口、cumcmthesis.cls、公共导言和门禁兼容路由
-modules/     摘要、重述、符号、假设、问题一至三、评价、参考文献、附录、AI报告
-shared/      跨问题共享的光学/反演内核、公共图和环境文件
-scripts/     全流程计算、验证、制图与论文构建入口
-output/      正式结果 JSON 与最终 PDF
-work/        结果、来源、符号、跨问接口及训练状态注册表
-reports/     自动门禁、数值复核和人工审计
-training/    run_02 训练迭代记录
-build/       可再生 LaTeX 中间产物，不提交
+modules/30_q2/
+├─ paper/q2.tex              # 唯一正文源
+├─ code/                     # 本问题求解/验证代码
+├─ data/processed/           # 本问题派生数据
+├─ figures/                  # 正文引用图
+│  └─ editable/              # Origin/Excel/AGX 等可编辑图源
+├─ tables/                   # 精确结果表
+└─ results/registry.csv      # 结果状态、来源、复核状态
 ```
 
-每个模块内的 `paper/` 是该板块唯一正文编辑源。问题一至三分别拥有自己的 `code/`、`figures/` 和 `tables/`；真正被两问以上共同使用的实现放在 `shared/code/`，避免复制后产生公式漂移。
+跨两个及以上问题共用的数值内核进入 `shared/`，禁止在多个问题目录复制。
 
-## Python 复现
+## 4. 分支规则
 
-在仓库根目录的 PowerShell 中执行：
+长期活动分支只按**责任域**划分，不按人名划分：
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-& 'C:\Users\admin\miniconda3\shell\condabin\conda-hook.ps1'
-conda activate phasefield
-python -m scripts.run_analysis --data-dir ..\CUCCM2026\raw\prob25B --project .
-python -m unittest -v scripts.test_physics
-python -m scripts.verify_results --project .
-python -m scripts.make_all_figures
+```text
+main
+├─ feature/abstract
+├─ feature/restatement
+├─ feature/notation
+├─ feature/assumptions
+├─ feature/q1
+├─ feature/q2
+├─ feature/q3
+├─ feature/q4
+├─ feature/evaluation
+├─ feature/references
+├─ feature/appendix
+├─ feature/ai-report
+├─ feature/shared
+└─ feature/paper-shell
 ```
 
-正式数值结果写入 `output/results/analysis_results.json`；各问图表直接写回对应模块。
+一个章节一个分支，一个分支一个固定资源区。不要创建 `feature/张三`、`final2`、`真的final`、第二套 `document.tex`。
 
-## LaTeX 构建
+## 5. 日常 Git 最小操作
 
-全文使用 `paper/cumcmthesis.cls`，友好入口为 `paper/main.tex`，门禁兼容入口为 `paper/paper_template.tex`。两者合成同一篇论文。
+开始：
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build_paper.ps1
+```bash
+git status
+git fetch origin --prune
+git pull --ff-only
+python scripts/workflow.py start <模块key>
 ```
 
-最终 PDF 写入 `output/pdf/run_02_真题解析.pdf`。`paper/sections/` 和 `paper/abstract_content.tex` 是构建时生成、被 Git 忽略的门禁兼容镜像，不是正文编辑源。
+结束：
 
-## 编辑规则
+```bash
+python scripts/workflow.py finish <模块key>
+git diff
+git add <明确需要提交的文件>
+git commit -m "feat(q2): 完成……"
+git push
+```
 
-- 一个任务分支只由一个对话维护同一模块。
-- `paper/main.tex`、`paper/paper_template.tex`、参考文献、最终摘要、结果注册表和正式输出由整合者维护。
-- 模型或代码改变后，将依赖结果标为 `STALE`，重新运行验证后才能恢复为 `FROZEN`。
-- 不提交 `build/`、`tmp/`、官方论文 PDF、自有旧模型包或原始对话。
+公共分支禁止无脑 `git push --force`、`git reset --hard`。发生分叉先停止并检查差异。
 
-## AI 与队友协作
+## 6. 结果状态
 
-所有 AI 和自动化协作者在修改仓库前必须阅读 `AI_COLLABORATION_GUIDE.md`。活动结果以 `work/result_registry.csv` 为唯一事实源；`work/archive/` 只用于追溯，禁止被正文、摘要、结论或构建脚本引用。
+问题模块的 `results/registry.csv` 使用：
+
+- `DRAFT`：正在计算/尚未验证；
+- `VALIDATED`：代码与数据已复算，等待最终检查；
+- `FROZEN`：已完成规定检查，可进入正式论文。
+
+另有 `review_state`：`NEEDS_REVIEW` / `CHECKED`。需要检查时只标记“需要复核”；可由管理员或指定复核成员完成，不绑定某个固定角色。
+
+正文引用的关键数值必须来自 `FROZEN + CHECKED` 结果。模型或代码改变后，受影响结果应回到 `DRAFT`。
+
+## 7. 临时全文 Merge Test
+
+```bash
+python scripts/preview_merge.py
+```
+
+流程：
+
+```text
+fetch origin
+→ 从 origin/main 创建 detached 临时 worktree
+→ 按配置依次 merge 各独立章节分支
+→ feature/paper-shell 最后合入
+→ 编译 paper/main.tex
+→ final_preflight
+→ 打开 PDF
+```
+
+它只是演习，不会生成长期汇总分支。真正进入 `main` 应通过明确的稳定集成/PR。
+
+## 8. 给 AI 的规范提示词（队友可直接复制）
+
+将 `<模块key>` 与本次任务替换后直接发送给 AI：
+
+```text
+你正在 CUMCM 模块化 Git 仓库中工作，本次模块是 <模块key>，任务是：<任务>。
+
+开始任何修改前必须依次完成：
+1. 阅读仓库根目录 AGENTS.md、README.md、docs/RESOURCE_MAP.md。
+2. 运行 `python scripts/workflow.py start <模块key>`，读取它输出的当前分支、允许修改路径、固定资源位置和该模块实时待办。
+3. 读取 `work/tasks/<模块key>.md`；后续工作必须围绕当前待办推进。若实际工作产生新待办、阻塞项或需要检查项，实时更新这个任务文件，不要只在聊天中记录。
+4. 固定资源路径以 `docs/RESOURCE_MAP.md` 和 `config/modules.json` 为准。遇到“不知道文件在哪里”时先查询这两个文件及模块目录，不要要求队友重复提供已经固定的路径。
+5. 只修改当前模块拥有的路径；跨模块内容先说明依赖，必要时记录到待办，不直接覆盖其他章节。
+6. 所有正式数值必须能追溯到当前活动代码/结果文件；不能从旧论文、旧 JSON、截图或范文手抄回正文。
+7. 需要人工判断的内容统一标记为“NEEDS_REVIEW/需要复核”，由管理员或指定复核成员检查；不要写成必须由某一个固定角色确认。
+8. 不得 force push，不得 reset --hard，不得创建第二套全文 TeX 或新的随意汇总目录。
+
+结束本轮前必须：
+1. 更新 `work/tasks/<模块key>.md` 的完成项、剩余项、阻塞项和需要复核项；
+2. 运行 `python scripts/workflow.py finish <模块key>`；
+3. 检查 `git diff`，确认没有越权修改其他模块；
+4. 汇报：本轮改了什么、结果/文件在哪里、还剩什么待办、有哪些需要复核。
+```
+
+即使已经把提示词发给 AI，也仍应保留 `AGENTS.md`；支持仓库级指令的 AI 工具可以自动读取它，降低“忘记喂提示词”的风险。
+
+## 9. 提交前检查层级
+
+1. `structure_guard.py`：防止仓库骨架、文件所有权、第二套全文源被破坏；
+2. `final_preflight.py`：检查未解析引用、TODO/FIXME、结果状态、LaTeX 日志等；
+3. 人工检查：模型合理性、结果解释、图表视觉、论文表达。
+
+机器检查用于防灾难性错误，不替代人工判断。
