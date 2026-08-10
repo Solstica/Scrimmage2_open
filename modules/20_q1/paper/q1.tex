@@ -117,7 +117,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \end{equation}
 其中$\boldsymbol\beta=(A,B_1,B_2,B_3,C_1,C_2,C_3)$为Sellmeier参数向量。式\eqref{eq:q1-reflectance}由此给出厚度、色散参数和界面光学性质与可观测反射率之间的定量关系。
 
-\subsection{模型汇总}
+\subsubsection{模型汇总}
 综上，问题一的Sellmeier--Drude--Fresnel双光束模型可整理为
 \begin{equation}
 \left\{
@@ -151,7 +151,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \end{equation}
 算子$\mathcal F$在给定一组厚度和光学参数后生成整段理论反射光谱；问题二据此以实测反射率为目标，通过最小化理论光谱与观测光谱之间的差异识别$d$及相关参数。
 
-\subsection{模型性质与厚度信息分析}
+\subsection{结果分析与模型检验}
 
 \subsubsection{厚度对干涉条纹的控制作用}
 由式\eqref{eq:q1-phase}可直接得到
@@ -184,7 +184,7 @@ R_{\mathrm{th}}(\sigma,i;d,N,n_3,\boldsymbol\beta)
 \subsubsection{色散、载流子与界面参数的作用}
 厚度$d$通过传播相位$\Phi$控制条纹位置与密度；Sellmeier参数和载流子浓度$N$经$n_2(\sigma)$同时改变传播相位与Fresnel系数，因而与厚度耦合。衬底折射率$n_3$主要通过$r_{23}^{(u)}$影响振幅与包络，入射角$i$则改变折射角$\gamma$及$s,p$偏振响应。各参数对条纹相位、局部周期和振幅包络的作用不同，故问题二采用分角度全谱非线性最小二乘，并以多初值搜索区分厚度级次对应的局部极小值。
 
-\subsection{模型检验}
+\subsubsection{解析极限与物理一致性检验}
 问题一为正演建模，故从解析极限与数值实现两方面检验折射、相位和界面系数，结果见表\ref{tab:q1-selfcheck}。
 
 \begin{table}[!htbp]
